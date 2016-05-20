@@ -1,5 +1,5 @@
 /*
- * © 2016 咖枯. All Rights Reserved.
+ * Copyright (c) 2016 咖枯 <kaku201313@163.com | 3772304@qq.com>
  */
 package com.kaku.colorfulnews.utils;
 
