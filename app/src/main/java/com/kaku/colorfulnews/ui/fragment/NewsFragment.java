@@ -26,14 +26,16 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.component.DaggerNewsComponent;
+import com.kaku.colorfulnews.module.NewsModule;
 import com.kaku.colorfulnews.presenter.NewsPresenter;
-import com.kaku.colorfulnews.presenter.impl.NewsPresenterImpl;
 import com.kaku.colorfulnews.ui.adapter.NewsRecyclerViewAdapter;
 import com.kaku.colorfulnews.ui.fragment.base.BaseFragment;
 import com.kaku.colorfulnews.view.NewsView;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,10 +50,10 @@ public class NewsFragment extends BaseFragment implements NewsView {
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
 
-    private List<String> mNewsList;
-    private NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
-    private NewsPresenter mNewsPresenter;
-
+    @Inject
+    NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
+    @Inject
+    NewsPresenter mNewsPresenter;
 
     @Nullable
     @Override
@@ -60,15 +62,13 @@ public class NewsFragment extends BaseFragment implements NewsView {
         ButterKnife.bind(this, view);
 
         mNewsRV.setHasFixedSize(true);
-        //设置布局管理器
-//        mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
-        mNewsList = new ArrayList<>();
-        mNewsRecyclerViewAdapter = new NewsRecyclerViewAdapter(mNewsList);
-        mNewsRV.setAdapter(mNewsRecyclerViewAdapter);
 
-        mNewsPresenter = new NewsPresenterImpl(this);
+        DaggerNewsComponent.builder()
+                .newsModule(new NewsModule(this))
+                .build()
+                .inject(this);
         mNewsPresenter.onCreateView();
 
         return view;
@@ -93,9 +93,8 @@ public class NewsFragment extends BaseFragment implements NewsView {
 
     @Override
     public void setItems(List<String> items) {
-        mNewsList.clear();
-        mNewsList.addAll(items);
-        mNewsRecyclerViewAdapter.notifyDataSetChanged();
+        mNewsRecyclerViewAdapter.setItems(items);
+        mNewsRV.setAdapter(mNewsRecyclerViewAdapter);
     }
 
     @Override

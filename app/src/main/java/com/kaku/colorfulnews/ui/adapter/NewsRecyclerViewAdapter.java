@@ -34,8 +34,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     private List<String> mNewsList;
 
-    public NewsRecyclerViewAdapter(List<String> list) {
-        mNewsList = list;
+    public void setItems(List<String> items){
+        this.mNewsList = items;
     }
 
     @Override

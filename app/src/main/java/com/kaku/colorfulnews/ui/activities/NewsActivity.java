@@ -23,7 +23,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -104,7 +104,7 @@ public class NewsActivity extends BaseActivity
 
     }
 
-    private class NewsFragmentPagerAdapter extends FragmentStatePagerAdapter {
+    private class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private final String[] titles = {"要闻", "科技", "娱乐"};
 
