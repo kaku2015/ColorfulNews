@@ -14,8 +14,8 @@ gen/
 
 # Gradle files
 .gradle/
-./gradlew.bat
-./gradlew
+#./gradlew.bat
+#./gradlew
 build/
 
 # Mirror files
@@ -29,7 +29,6 @@ proguard/
 
 # Intellij project files
 *.iws
-.idea/workspace.xml
 .idea/tasks.xml
 .idea
 

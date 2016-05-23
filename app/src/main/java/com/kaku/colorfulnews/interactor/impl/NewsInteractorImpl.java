@@ -16,12 +16,17 @@
  */
 package com.kaku.colorfulnews.interactor.impl;
 
-import android.os.Handler;
-
 import com.kaku.colorfulnews.interactor.NewsInteractor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -30,12 +35,53 @@ import java.util.List;
 public class NewsInteractorImpl implements NewsInteractor {
     @Override
     public void loadNews(final OnFinishedListener listener) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                listener.onFinished(createArrayList());
-            }
-        }, 2000);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                listener.onFinished(createArrayList());
+//            }
+//        }, 2000);
+
+        final List<String> list = new ArrayList<>();
+
+        Observable.from(createArrayList())
+/*                .flatMap(new Func1<String, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(String s) {
+                        String[] str = new String[]{s.split(" ")[0], s.split(" ")[1]};
+                        return Observable.from(str);
+                    }
+                })*/
+                .filter(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        return !s.contains("12");
+                    }
+                })
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return s + "_rxjava";
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+                        listener.onFinished(list);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        list.add(s);
+                    }
+                });
 
     }
 
@@ -98,7 +144,27 @@ public class NewsInteractorImpl implements NewsInteractor {
                 "Item 12",
                 "Item 12",
                 "Item 12",
-                "Item 12"
+                "Item 12",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13",
+                "Item 13"
         );
     }
 }

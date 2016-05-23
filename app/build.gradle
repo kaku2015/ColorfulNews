@@ -35,4 +35,8 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.2' //指定注解处理器
     compile 'com.google.dagger:dagger:2.2'  //dagger公用api
     provided 'org.glassfish:javax.annotation:10.0-b28'  //添加android缺失的部分javax注解
+    compile 'io.reactivex:rxandroid:1.2.0'
+// Because RxAndroid releases are few and far between, it is recommended you also
+// explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile 'io.reactivex:rxjava:1.1.5'
 }
