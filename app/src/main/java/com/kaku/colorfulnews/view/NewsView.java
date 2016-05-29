@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.view;
 
+import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.view.base.BaseView;
 
 import java.util.List;
@@ -26,5 +27,5 @@ import java.util.List;
  */
 public interface NewsView extends BaseView {
 
-    void setItems(List<String> items);
+    void setItems(List<NewsSummary> items);
 }

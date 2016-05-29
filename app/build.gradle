@@ -13,10 +13,21 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+        }
         release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
     }
 }
 
@@ -32,11 +43,22 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+
     apt 'com.google.dagger:dagger-compiler:2.2' //指定注解处理器
     compile 'com.google.dagger:dagger:2.2'  //dagger公用api
     provided 'org.glassfish:javax.annotation:10.0-b28'  //添加android缺失的部分javax注解
+
     compile 'io.reactivex:rxandroid:1.2.0'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile 'io.reactivex:rxjava:1.1.5'
+
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    compile 'com.squareup.okhttp3:okhttp:3.0.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.0.1'
+    compile 'com.squareup.okio:okio:1.6.0'
+    compile 'com.github.zhaokaiqiang.klog:library:1.4.0'
 }

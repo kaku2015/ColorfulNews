@@ -16,17 +16,15 @@
  */
 package com.kaku.colorfulnews.interactor;
 
-import java.util.List;
-
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public interface NewsInteractor {
+public interface NewsInteractor<T> {
 
-    interface OnFinishedListener {
-        void onFinished(List<String> items);
+    interface OnFinishedListener<T> {
+        void onFinished(T items);
     }
 
-    void loadNews(OnFinishedListener listener);
+    void loadNews(OnFinishedListener<T> listener);
 }

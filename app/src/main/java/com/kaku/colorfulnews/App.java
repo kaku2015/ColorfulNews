@@ -22,6 +22,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.kaku.colorfulnews.utils.LogUtil;
+import com.socks.library.KLog;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -29,14 +30,20 @@ import com.squareup.leakcanary.RefWatcher;
  * @author 咖枯
  * @version 1.0 2016/05/20
  */
-public class LeakCanaryApplication extends Application {
+public class App extends Application {
 
     public static RefWatcher getRefWatcher(Context context) {
-        LeakCanaryApplication application = (LeakCanaryApplication) context.getApplicationContext();
+        App application = (App) context.getApplicationContext();
         return application.refWatcher;
     }
 
     private RefWatcher refWatcher;
+
+    private static Context sAppContext;
+
+    public static Context getAppContext() {
+        return sAppContext;
+    }
 
     /**
      * release版本使用此方法
@@ -48,6 +55,9 @@ public class LeakCanaryApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        sAppContext = getApplicationContext();
+        KLog.init(BuildConfig.LOG_DEBUG);
+
 /*        // 注册M权限回调
         Dexter.initialize(this);*/
 

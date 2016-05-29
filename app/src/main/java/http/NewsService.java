@@ -14,23 +14,26 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.ui.fragment.base;
+package http;
 
-import android.support.v4.app.Fragment;
+import com.kaku.colorfulnews.bean.NewsSummary;
 
-import com.kaku.colorfulnews.App;
-import com.squareup.leakcanary.RefWatcher;
+import java.util.List;
+import java.util.Map;
+
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Path;
+import rx.Observable;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/20
+ * @version 1.0 2016/5/24
  */
-public class BaseFragment extends Fragment {
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        RefWatcher refWatcher = App.getRefWatcher(getActivity());
-        refWatcher.watch(this);
-    }
+public interface NewsService {
+    @GET("nc/article/{type}/{id}/{startPage}-20.html")
+    Observable<Map<String, List<NewsSummary>>> getNewsList(
+            @Header("Cache-Control") String cacheControl,
+            @Path("type") String type, @Path("id") String id,
+            @Path("startPage") int startPage);
 }

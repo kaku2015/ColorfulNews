@@ -19,7 +19,7 @@ package com.kaku.colorfulnews.ui.activities.base;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.kaku.colorfulnews.LeakCanaryApplication;
+import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.utils.LogUtil;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -42,7 +42,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RefWatcher refWatcher = LeakCanaryApplication.getRefWatcher(this);
+        RefWatcher refWatcher = App.getRefWatcher(this);
         refWatcher.watch(this);
     }
 }

@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.bean.NewsSummary;
 
 import java.util.List;
 
@@ -32,9 +33,9 @@ import java.util.List;
  */
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.ViewHolder> {
 
-    private List<String> mNewsList;
+    private List<NewsSummary> mNewsList;
 
-    public void setItems(List<String> items){
+    public void setItems(List<NewsSummary> items){
         this.mNewsList = items;
     }
 
@@ -47,7 +48,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        String msg = mNewsList.get(position);
+        String msg = mNewsList.get(position).getTitle();
         holder.mItemTv.setText(msg);
 
     }

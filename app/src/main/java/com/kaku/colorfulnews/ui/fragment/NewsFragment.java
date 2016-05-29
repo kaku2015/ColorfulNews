@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.component.DaggerNewsComponent;
 import com.kaku.colorfulnews.module.NewsModule;
 import com.kaku.colorfulnews.presenter.NewsPresenter;
@@ -92,7 +93,7 @@ public class NewsFragment extends BaseFragment implements NewsView {
     }
 
     @Override
-    public void setItems(List<String> items) {
+    public void setItems(List<NewsSummary> items) {
         mNewsRecyclerViewAdapter.setItems(items);
         mNewsRV.setAdapter(mNewsRecyclerViewAdapter);
     }

@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.presenter.impl;
 
+import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.interactor.NewsInteractor;
 import com.kaku.colorfulnews.interactor.impl.NewsInteractorImpl;
 import com.kaku.colorfulnews.presenter.NewsPresenter;
@@ -62,11 +63,12 @@ public class NewsPresenterImpl implements NewsPresenter, NewsInteractor.OnFinish
     }
 
     @Override
-    public void onFinished(List<String> items) {
+    public void onFinished(Object items) {
         if (mNewsView != null) {
-            mNewsView.setItems(items);
+            mNewsView.setItems((List<NewsSummary> )items);
             mNewsView.hideProgress();
         }
 
     }
+
 }

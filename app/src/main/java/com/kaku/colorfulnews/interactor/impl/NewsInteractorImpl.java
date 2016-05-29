@@ -16,42 +16,73 @@
  */
 package com.kaku.colorfulnews.interactor.impl;
 
+import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.common.ApiConstants;
+import com.kaku.colorfulnews.common.HostType;
 import com.kaku.colorfulnews.interactor.NewsInteractor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import http.RetrofitManager;
 import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Subscriber;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import rx.functions.Func2;
 
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsInteractorImpl implements NewsInteractor {
+public class NewsInteractorImpl implements NewsInteractor<List<NewsSummary>> {
+
+    private String type = ApiConstants.HEADLINE_TYPE;
+    private String id = ApiConstants.HEADLINE_ID;
+    private int startPage = 0;
+
     @Override
     public void loadNews(final OnFinishedListener listener) {
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                listener.onFinished(createArrayList());
-//            }
-//        }, 2000);
+        RetrofitManager.getInstance(HostType.NETEASE_NEWS_VIDEO).getNewsListObservable(type, id, startPage)
+                .flatMap(new Func1<Map<String, List<NewsSummary>>, Observable<NewsSummary>>() {
+                    @Override
+                    public Observable<NewsSummary> call(Map<String, List<NewsSummary>> map) {
+                        if (id.endsWith(ApiConstants.HOUSE_ID)) {
+                            // 房产实际上针对地区的它的id与返回key不同
+                            return Observable.from(map.get("北京"));
+                        }
+                        return Observable.from(map.get(id));
+                    }
+                })
+                .toSortedList(new Func2<NewsSummary, NewsSummary, Integer>() {
+                    @Override
+                    public Integer call(NewsSummary newsSummary, NewsSummary newsSummary2) {
+                        return newsSummary2.getPtime().compareTo(newsSummary.getPtime());
+                    }
+                })
+                .subscribe(new Subscriber<List<NewsSummary>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-        final List<String> list = new ArrayList<>();
+                    @Override
+                    public void onError(Throwable e) {
 
-        Observable.from(createArrayList())
-/*                .flatMap(new Func1<String, Observable<String>>() {
+                    }
+
+                    @Override
+                    public void onNext(List<NewsSummary> newsSummaries) {
+                        listener.onFinished(newsSummaries);
+                    }
+                });
+
+/*                        Observable.from(createArrayList())
+*//*                .flatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String s) {
                         String[] str = new String[]{s.split(" ")[0], s.split(" ")[1]};
                         return Observable.from(str);
                     }
-                })*/
+                })*//*
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
@@ -81,90 +112,7 @@ public class NewsInteractorImpl implements NewsInteractor {
                     public void onNext(String s) {
                         list.add(s);
                     }
-                });
+                });*/
 
-    }
-
-    private List<String> createArrayList() {
-        return Arrays.asList(
-                "Item 1",
-                "Item 2",
-                "Item 3",
-                "Item 4",
-                "Item 5",
-                "Item 6",
-                "Item 7",
-                "Item 8",
-                "Item 9",
-                "Item 10",
-                "Item 10",
-                "Item 10",
-                "Item 10",
-                "Item 10",
-                "Item 10",
-                "Item 10",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 11",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 12",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13",
-                "Item 13"
-        );
     }
 }
