@@ -1,16 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal">
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/msg"
+    <!--app:contentPadding="0dp"-->
+    <!--app:cardCornerRadius="2dp"-->
+    <!--android:foreground="?android:attr/selectableItemBackground"-->
+    <!--app:cardElevation="5dp"-->
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="123"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        />
+        android:gravity="center">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/news_summary_photo_iv"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_margin="4dp"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/news_summary_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/news_summary_photo_iv"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@+id/news_summary_photo_iv"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="?android:attr/textColorPrimary"
+            tools:text="习近平:吹响建设科技强国号角"/>
+
+        <TextView
+            android:id="@+id/news_summary_Digest_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/news_summary_photo_iv"
+            android:layout_alignLeft="@+id/news_summary_title_tv"
+            android:layout_below="@+id/news_summary_title_tv"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="科技是国之利器，中国人民生活要好，必须有强大科技。"/>
+
+        <!--        <TextView
+                    android:id="@+id/ews_summary_ptime_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/news_summary_photo_iv"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="12sp"
+                    tools:text="2016-05-28 20:09:16"/>-->
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

@@ -48,8 +48,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -214,9 +212,7 @@ public class RetrofitManager {
      * @return 被观察对象
      */
     public Observable<Map<String, List<NewsSummary>>> getNewsListObservable(String type, String id, int startPage) {
-        return mNewsService.getNewsList(getCacheControl(), type, id, startPage)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io());
+        return mNewsService.getNewsList(getCacheControl(), type, id, startPage);
     }
 
 }

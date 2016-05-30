@@ -20,6 +20,8 @@ import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.ApiConstants;
 import com.kaku.colorfulnews.common.HostType;
 import com.kaku.colorfulnews.interactor.NewsInteractor;
+import com.kaku.colorfulnews.listener.RequestCallback;
+import com.socks.library.KLog;
 
 import java.util.List;
 import java.util.Map;
@@ -27,8 +29,10 @@ import java.util.Map;
 import http.RetrofitManager;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -41,8 +45,14 @@ public class NewsInteractorImpl implements NewsInteractor<List<NewsSummary>> {
     private int startPage = 0;
 
     @Override
-    public void loadNews(final OnFinishedListener listener) {
+    public void loadNews(final RequestCallback<List<NewsSummary>> listener) {
+        // 对API调用了observeOn(MainThread)之后，线程会跑在主线程上，包括onComplete也是，
+        // unsubscribe也在主线程，然后如果这时候调用call.cancel会导致NetworkOnMainThreadException
+        // 加一句unsubscribeOn(io)
         RetrofitManager.getInstance(HostType.NETEASE_NEWS_VIDEO).getNewsListObservable(type, id, startPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
                 .flatMap(new Func1<Map<String, List<NewsSummary>>, Observable<NewsSummary>>() {
                     @Override
                     public Observable<NewsSummary> call(Map<String, List<NewsSummary>> map) {
@@ -66,53 +76,14 @@ public class NewsInteractorImpl implements NewsInteractor<List<NewsSummary>> {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        KLog.e(e.getLocalizedMessage() + "\n" + e.toString());
+                        listener.onError("加载失败");
                     }
 
                     @Override
                     public void onNext(List<NewsSummary> newsSummaries) {
-                        listener.onFinished(newsSummaries);
+                        listener.success(newsSummaries);
                     }
                 });
-
-/*                        Observable.from(createArrayList())
-*//*                .flatMap(new Func1<String, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(String s) {
-                        String[] str = new String[]{s.split(" ")[0], s.split(" ")[1]};
-                        return Observable.from(str);
-                    }
-                })*//*
-                .filter(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String s) {
-                        return !s.contains("12");
-                    }
-                })
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String s) {
-                        return s + "_rxjava";
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
-                        listener.onFinished(list);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        list.add(s);
-                    }
-                });*/
-
     }
 }

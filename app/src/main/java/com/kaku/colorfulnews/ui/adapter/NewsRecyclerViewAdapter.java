@@ -20,12 +20,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author 咖枯
@@ -33,10 +40,10 @@ import java.util.List;
  */
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.ViewHolder> {
 
-    private List<NewsSummary> mNewsList;
+    private List<NewsSummary> mNewsSummaryList;
 
-    public void setItems(List<NewsSummary> items){
-        this.mNewsList = items;
+    public void setItems(List<NewsSummary> items) {
+        this.mNewsSummaryList = items;
     }
 
     @Override
@@ -48,22 +55,40 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        String msg = mNewsList.get(position).getTitle();
-        holder.mItemTv.setText(msg);
+        String title = mNewsSummaryList.get(position).getTitle();
+//        String ptime = mNewsSummaryList.get(position).getPtime();
+        String digest = mNewsSummaryList.get(position).getDigest();
+        String imgSrc = mNewsSummaryList.get(position).getImgsrc();
+
+        holder.mNewsSummaryTitleTv.setText(title);
+//        holder.mEwsSummaryPtimeTv.setText(ptime);
+        holder.mNewsSummaryDigestTv.setText(digest);
+
+        Glide.with(App.getAppContext()).load(imgSrc).asBitmap()/*.animate(R.anim.image_load)*/
+                .diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_menu_gallery)
+                .error(R.drawable.ic_menu_camera)
+                .into(holder.mNewsSummaryPhotoIv);
 
     }
 
     @Override
     public int getItemCount() {
-        return mNewsList.size();
+        return mNewsSummaryList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mItemTv;
+        @BindView(R.id.news_summary_photo_iv)
+        ImageView mNewsSummaryPhotoIv;
+        @BindView(R.id.news_summary_title_tv)
+        TextView mNewsSummaryTitleTv;
+        @BindView(R.id.news_summary_Digest_tv)
+        TextView mNewsSummaryDigestTv;
+/*        @BindView(R.id.ews_summary_ptime_tv)
+        TextView mEwsSummaryPtimeTv;*/
 
         public ViewHolder(View view) {
             super(view);
-            mItemTv = (TextView) view.findViewById(R.id.msg);
+            ButterKnife.bind(this, view);
         }
     }
 }

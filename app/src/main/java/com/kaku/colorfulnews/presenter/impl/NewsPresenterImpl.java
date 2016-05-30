@@ -19,6 +19,7 @@ package com.kaku.colorfulnews.presenter.impl;
 import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.interactor.NewsInteractor;
 import com.kaku.colorfulnews.interactor.impl.NewsInteractorImpl;
+import com.kaku.colorfulnews.listener.RequestCallback;
 import com.kaku.colorfulnews.presenter.NewsPresenter;
 import com.kaku.colorfulnews.view.NewsView;
 
@@ -28,10 +29,10 @@ import java.util.List;
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsPresenterImpl implements NewsPresenter, NewsInteractor.OnFinishedListener {
+public class NewsPresenterImpl implements NewsPresenter, RequestCallback<List<NewsSummary>> {
 
     private NewsView mNewsView;
-    private NewsInteractor mNewsInteractor;
+    private NewsInteractor<List<NewsSummary>> mNewsInteractor;
 
     public NewsPresenterImpl(NewsView newsView) {
         mNewsView = newsView;
@@ -63,12 +64,17 @@ public class NewsPresenterImpl implements NewsPresenter, NewsInteractor.OnFinish
     }
 
     @Override
-    public void onFinished(Object items) {
+    public void success(List<NewsSummary> items) {
         if (mNewsView != null) {
-            mNewsView.setItems((List<NewsSummary> )items);
+            mNewsView.setItems(items);
             mNewsView.hideProgress();
         }
 
+    }
+
+    @Override
+    public void onError(String errorMsg) {
+        mNewsView.showMessage(errorMsg);
     }
 
 }

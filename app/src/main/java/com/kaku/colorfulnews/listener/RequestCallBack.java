@@ -14,15 +14,15 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.interactor;
-
-import com.kaku.colorfulnews.listener.RequestCallback;
+package com.kaku.colorfulnews.listener;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/19
+ * @version 1.0 2016/5/29
  */
-public interface NewsInteractor<T> {
+public interface RequestCallback<T> {
 
-    void loadNews(RequestCallback<T> listener);
+    void success(T data);
+
+    void onError(String errorMsg);
 }
