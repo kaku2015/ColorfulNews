@@ -23,7 +23,11 @@ import com.kaku.colorfulnews.interactor.NewsInteractor;
 import com.kaku.colorfulnews.listener.RequestCallback;
 import com.socks.library.KLog;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import http.RetrofitManager;
@@ -61,6 +65,20 @@ public class NewsInteractorImpl implements NewsInteractor<List<NewsSummary>> {
                             return Observable.from(map.get("北京"));
                         }
                         return Observable.from(map.get(id));
+                    }
+                })
+                .map(new Func1<NewsSummary, NewsSummary>() {
+                    @Override
+                    public NewsSummary call(NewsSummary newsSummary) {
+                        try {
+                            Date date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
+                                    .parse(newsSummary.getPtime());
+                            String ptime = new SimpleDateFormat("MM-dd hh:mm", Locale.getDefault()).format(date);
+                            newsSummary.setPtime(ptime);
+                        } catch (ParseException e) {
+                            KLog.e("转换新闻日期格式异常：" + e.toString());
+                        }
+                        return newsSummary;
                     }
                 })
                 .toSortedList(new Func2<NewsSummary, NewsSummary, Integer>() {

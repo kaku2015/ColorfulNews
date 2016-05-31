@@ -32,6 +32,7 @@ public class NewsSummary {
     private boolean hasIcon;
     private String docid;
     private String title;
+    private String ltitle;
     private int order;
     private int priority;
     private String lmodify;
@@ -134,6 +135,14 @@ public class NewsSummary {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getLtitle() {
+        return ltitle;
+    }
+
+    public void setLtitle(String ltitle) {
+        this.ltitle = ltitle;
     }
 
     public int getOrder() {
