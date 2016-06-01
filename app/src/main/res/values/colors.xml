@@ -3,4 +3,24 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="night_mask">#00000000</color>
+    <!--transparent-->
+    <color name="container_background">#deffffff</color>
+    <!--87%white-->
+    <color name="item_background">#deffffff</color>
+    <!--87%white-->
+    <color name="primary_text">#de000000</color>
+    <!--87%black-->
+    <color name="secondary_text">#8a000000</color>
+    <!--54%black-->
+    <color name="tertiary_text">#8a000000</color>
+    <!--54%black-->
+
+    <color name="icons">#212121</color>
+    <color name="divider">#B6B6B6</color>
+    <color name="background_color">#E1E6EB</color>
+    <color name="item_color">#FAFAFA</color>
+    <color name="fab_color">#99ff8f00</color>
+    <color name="textColorSecondary">#212121</color>
 </resources>

@@ -36,6 +36,7 @@ import android.view.View;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.ui.fragment.NewsFragment;
+import com.kaku.colorfulnews.utils.MyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +167,14 @@ public class NewsActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            if (MyUtils.isNightMode()) {
+                changeToDay();
+                MyUtils.saveTheme(false);
+            } else {
+                changeToNight();
+                MyUtils.saveTheme(true);
+            }
+            recreate();
             return true;
         }
 
