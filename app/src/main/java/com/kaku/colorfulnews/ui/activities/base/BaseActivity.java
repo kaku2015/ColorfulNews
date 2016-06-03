@@ -48,6 +48,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         LogUtil.i(LOG_TAG, getClass().getSimpleName());
 
+
         if (MyUtils.isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 

@@ -14,17 +14,14 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.view.base;
+package com.kaku.colorfulnews.module.base;
+
+import com.kaku.colorfulnews.view.base.BaseView;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/20
+ * @version 1.0 2016/6/2
  */
-public interface BaseView {
-
-    void showProgress();
-
-    void hideProgress();
-
-    void showErrorMsg(String message);
+public class BaseModule<T extends BaseView> {
+    protected T mView;
 }

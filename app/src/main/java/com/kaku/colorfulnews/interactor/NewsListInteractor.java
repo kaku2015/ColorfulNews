@@ -14,17 +14,15 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.view.base;
+package com.kaku.colorfulnews.interactor;
+
+import com.kaku.colorfulnews.listener.RequestCallBack;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/20
+ * @version 1.0 2016/5/19
  */
-public interface BaseView {
+public interface NewsListInteractor<T> {
 
-    void showProgress();
-
-    void hideProgress();
-
-    void showErrorMsg(String message);
+    void loadNews(RequestCallBack<T> listener, String type, String id, int startPage);
 }

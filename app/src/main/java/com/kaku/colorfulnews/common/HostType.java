@@ -35,13 +35,11 @@ public class HostType {
     /**
      * 网易新闻视频的host
      */
-    @HostTypeChecker
     public static final int NETEASE_NEWS_VIDEO = 1;
 
     /**
      * 新浪图片的host
      */
-    @HostTypeChecker
     public static final int SINA_NEWS_PHOTO = 2;
 
     /**

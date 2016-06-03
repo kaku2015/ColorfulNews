@@ -6,6 +6,10 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- 新闻 -->
+    <string name="load_error">加载失败(m´・ω・｀)m</string>
+    <string name="db_error">数据库出错了(つд⊂)</string>
+    <string name="internet_error">网络异常,请检查网络设置|･ω･｀)</string>
+
+
 </resources>

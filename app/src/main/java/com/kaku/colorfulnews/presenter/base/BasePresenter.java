@@ -24,7 +24,7 @@ public interface BasePresenter {
 
 //    void onResume();
 
-    void onCreateView();
+    void onCreate();
 
     void onDestroy();
 }

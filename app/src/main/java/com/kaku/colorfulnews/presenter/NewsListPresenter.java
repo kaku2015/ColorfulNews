@@ -14,17 +14,16 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.view.base;
+package com.kaku.colorfulnews.presenter;
+
+import com.kaku.colorfulnews.presenter.base.BasePresenter;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/20
+ * @version 1.0 2016/5/19
  */
-public interface BaseView {
+public interface NewsListPresenter extends BasePresenter {
 
-    void showProgress();
+    void onItemClicked(int position);
 
-    void hideProgress();
-
-    void showErrorMsg(String message);
 }

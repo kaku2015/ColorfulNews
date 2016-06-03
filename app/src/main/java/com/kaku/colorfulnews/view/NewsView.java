@@ -16,16 +16,16 @@
  */
 package com.kaku.colorfulnews.view;
 
-import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.view.base.BaseView;
 
 import java.util.List;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/19
+ * @version 1.0 2016/6/2
  */
 public interface NewsView extends BaseView {
 
-    void setItems(List<NewsSummary> items);
+    void initViewPager(List<NewsChannelTable> newsChannels);
 }

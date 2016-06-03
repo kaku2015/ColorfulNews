@@ -16,8 +16,8 @@
  */
 package com.kaku.colorfulnews.interactor.impl;
 
-import com.kaku.colorfulnews.interactor.NewsInteractor;
-import com.kaku.colorfulnews.listener.RequestCallback;
+import com.kaku.colorfulnews.interactor.NewsListInteractor;
+import com.kaku.colorfulnews.listener.RequestCallBack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,9 +33,10 @@ import rx.schedulers.Schedulers;
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsInteractorSample implements NewsInteractor {
+public class NewsListInteractorSample implements NewsListInteractor {
     @Override
-    public void loadNews(final RequestCallback listener) {
+    public void loadNews(final RequestCallBack listener, String type,
+                         final String id, int startPag) {
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {

@@ -14,17 +14,18 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.view.base;
+package com.kaku.colorfulnews.component;
+
+import com.kaku.colorfulnews.module.NewsListModule;
+import com.kaku.colorfulnews.ui.fragment.NewsListFragment;
+
+import dagger.Component;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/20
+ * @version 1.0 2016/5/21
  */
-public interface BaseView {
-
-    void showProgress();
-
-    void hideProgress();
-
-    void showErrorMsg(String message);
+@Component(modules = {NewsListModule.class})
+public interface NewsListComponent {
+    void inject(NewsListFragment newsFragment);
 }

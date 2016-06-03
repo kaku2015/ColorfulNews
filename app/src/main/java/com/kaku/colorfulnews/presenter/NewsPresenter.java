@@ -23,9 +23,4 @@ import com.kaku.colorfulnews.presenter.base.BasePresenter;
  * @version 1.0 2016/5/19
  */
 public interface NewsPresenter extends BasePresenter {
-
-    void onFabClicked();
-
-    void onItemClicked(int position);
-
 }

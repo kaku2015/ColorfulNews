@@ -16,65 +16,38 @@
  */
 package com.kaku.colorfulnews.presenter.impl;
 
-import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.interactor.NewsInteractor;
 import com.kaku.colorfulnews.interactor.impl.NewsInteractorImpl;
-import com.kaku.colorfulnews.listener.RequestCallback;
 import com.kaku.colorfulnews.presenter.NewsPresenter;
+import com.kaku.colorfulnews.presenter.base.BasePresenterImpl;
 import com.kaku.colorfulnews.view.NewsView;
 
 import java.util.List;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/19
+ * @version 1.0 2016/6/2
  */
-public class NewsPresenterImpl implements NewsPresenter, RequestCallback<List<NewsSummary>> {
+public class NewPresenterImpl extends BasePresenterImpl<NewsView, List<NewsChannelTable>>
+        implements NewsPresenter {
 
-    private NewsView mNewsView;
-    private NewsInteractor<List<NewsSummary>> mNewsInteractor;
+    private NewsInteractor<List<NewsChannelTable>> mNewsInteractor;
 
-    public NewsPresenterImpl(NewsView newsView) {
-        mNewsView = newsView;
+    public NewPresenterImpl(NewsView newsView) {
+        mView = newsView;
         mNewsInteractor = new NewsInteractorImpl();
     }
 
     @Override
-    public void onCreateView() {
-        if (mNewsView != null) {
-            mNewsView.showProgress();
-        }
-        mNewsInteractor.loadNews(this);
+    public void onCreate() {
+        super.onCreate();
+        mSubscription = mNewsInteractor.lodeNewsChannels(this);
     }
 
     @Override
-    public void onFabClicked() {
-
+    public void success(List<NewsChannelTable> data) {
+        super.success(data);
+        mView.initViewPager(data);
     }
-
-    @Override
-    public void onItemClicked(int position) {
-
-    }
-
-    @Override
-    public void onDestroy() {
-        mNewsView = null;
-
-    }
-
-    @Override
-    public void success(List<NewsSummary> items) {
-        if (mNewsView != null) {
-            mNewsView.setItems(items);
-            mNewsView.hideProgress();
-        }
-
-    }
-
-    @Override
-    public void onError(String errorMsg) {
-        mNewsView.showMessage(errorMsg);
-    }
-
 }

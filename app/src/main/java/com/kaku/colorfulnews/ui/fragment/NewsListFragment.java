@@ -18,21 +18,26 @@ package com.kaku.colorfulnews.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
-import com.kaku.colorfulnews.component.DaggerNewsComponent;
-import com.kaku.colorfulnews.module.NewsModule;
-import com.kaku.colorfulnews.presenter.NewsPresenter;
+import com.kaku.colorfulnews.common.Constants;
+import com.kaku.colorfulnews.component.DaggerNewsListComponent;
+import com.kaku.colorfulnews.module.NewsListModule;
+import com.kaku.colorfulnews.presenter.NewsListPresenter;
 import com.kaku.colorfulnews.ui.adapter.NewsRecyclerViewAdapter;
 import com.kaku.colorfulnews.ui.fragment.base.BaseFragment;
-import com.kaku.colorfulnews.view.NewsView;
+import com.kaku.colorfulnews.utils.NetUtil;
+import com.kaku.colorfulnews.view.NewsListView;
 
 import java.util.List;
 
@@ -45,7 +50,7 @@ import butterknife.ButterKnife;
  * @author 咖枯
  * @version 1.0 2016/5/18
  */
-public class NewsFragment extends BaseFragment implements NewsView {
+public class NewsListFragment extends BaseFragment implements NewsListView {
     @BindView(R.id.news_rv)
     RecyclerView mNewsRV;
     @BindView(R.id.progress_bar)
@@ -54,7 +59,21 @@ public class NewsFragment extends BaseFragment implements NewsView {
     @Inject
     NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
     @Inject
-    NewsPresenter mNewsPresenter;
+    NewsListPresenter mNewsListPresenter;
+
+    private String mNewsId;
+    private String mNewsType;
+    private int mStartPage;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mNewsId = getArguments().getString(Constants.NEWS_ID);
+            mNewsType = getArguments().getString(Constants.NEWS_TYPE);
+            mStartPage = getArguments().getInt(Constants.CHANNEL_POSITION);
+        }
+    }
 
     @Nullable
     @Override
@@ -66,13 +85,27 @@ public class NewsFragment extends BaseFragment implements NewsView {
         mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
 
-        DaggerNewsComponent.builder()
-                .newsModule(new NewsModule(this))
+        DaggerNewsListComponent.builder()
+                .newsListModule(new NewsListModule(this, mNewsType, mNewsId))
                 .build()
                 .inject(this);
-        mNewsPresenter.onCreateView();
+        mNewsListPresenter.onCreate();
+
+        checkNetState();
 
         return view;
+    }
+
+    private void checkNetState() {
+        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
+            //TODO: 刚启动app Snackbar不起作用，延迟显示也不好使，这是why？
+            Toast.makeText(getActivity(), getActivity().getString(R.string.internet_error), Toast.LENGTH_SHORT).show();
+/*            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    Snackbar.make(mNewsRV, App.getAppContext().getString(R.string.internet_error), Snackbar.LENGTH_LONG);
+                }
+            }, 1000);*/
+        }
     }
 
     @Override
@@ -99,12 +132,14 @@ public class NewsFragment extends BaseFragment implements NewsView {
     }
 
     @Override
-    public void showMessage(String message) {
+    public void showErrorMsg(String message) {
+        mProgressBar.setVisibility(View.GONE);
+        Snackbar.make(mNewsRV, message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onDestroyView() {
-        mNewsPresenter.onDestroy();
+        mNewsListPresenter.onDestroy();
         super.onDestroyView();
     }
 }

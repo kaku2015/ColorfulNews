@@ -16,13 +16,14 @@
  */
 package com.kaku.colorfulnews.interactor;
 
-import com.kaku.colorfulnews.listener.RequestCallback;
+import com.kaku.colorfulnews.listener.RequestCallBack;
+
+import rx.Subscription;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/19
+ * @version 1.0 2016/6/2
  */
 public interface NewsInteractor<T> {
-
-    void loadNews(RequestCallback<T> listener);
+    Subscription lodeNewsChannels(RequestCallBack<T> callback);
 }

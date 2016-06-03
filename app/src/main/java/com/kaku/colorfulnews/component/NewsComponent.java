@@ -17,15 +17,15 @@
 package com.kaku.colorfulnews.component;
 
 import com.kaku.colorfulnews.module.NewsModule;
-import com.kaku.colorfulnews.ui.fragment.NewsFragment;
+import com.kaku.colorfulnews.ui.activities.NewsActivity;
 
 import dagger.Component;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/21
+ * @version 1.0 2016/6/2
  */
 @Component(modules = {NewsModule.class})
 public interface NewsComponent {
-    void inject(NewsFragment newsFragment);
+    void inject(NewsActivity newsActivity);
 }
