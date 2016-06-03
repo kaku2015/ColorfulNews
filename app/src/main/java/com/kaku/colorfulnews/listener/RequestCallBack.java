@@ -20,7 +20,7 @@ package com.kaku.colorfulnews.listener;
  * @author 咖枯
  * @version 1.0 2016/5/29
  */
-public interface RequestCallback<T> {
+public interface RequestCallBack<T> {
 
     void success(T data);
 
