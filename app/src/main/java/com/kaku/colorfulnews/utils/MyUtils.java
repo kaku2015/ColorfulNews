@@ -17,6 +17,7 @@
 package com.kaku.colorfulnews.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.kaku.colorfulnews.App;
@@ -40,6 +41,11 @@ public class MyUtils {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(Constants.NIGHT_THEME_MODE, isNight);
         editor.apply();
+    }
+
+    public static SharedPreferences getSharedPreferences() {
+        return App.getAppContext()
+                .getSharedPreferences(Constants.SHARES_COLOURFUL_NEWS, Context.MODE_PRIVATE);
     }
 
 }
