@@ -21,6 +21,7 @@ import com.kaku.colorfulnews.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.interactor.impl.NewsListInteractorImpl;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.presenter.NewsListPresenter;
+import com.kaku.colorfulnews.presenter.base.BasePresenterImpl;
 import com.kaku.colorfulnews.view.NewsListView;
 
 import java.util.List;
@@ -29,9 +30,9 @@ import java.util.List;
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsListPresenterImpl implements NewsListPresenter, RequestCallBack<List<NewsSummary>> {
+public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<NewsSummary>>
+        implements NewsListPresenter, RequestCallBack<List<NewsSummary>> {
 
-    private NewsListView mNewsListView;
     private NewsListInteractor<List<NewsSummary>> mNewsListInteractor;
     private String mNewsType;
     private String mNewsId;
@@ -43,7 +44,7 @@ public class NewsListPresenterImpl implements NewsListPresenter, RequestCallBack
     private boolean misLoaded;
 
     public NewsListPresenterImpl(NewsListView newsListView, String newsType, String newsId) {
-        mNewsListView = newsListView;
+        mView = newsListView;
         mNewsListInteractor = new NewsListInteractorImpl();
         mNewsType = newsType;
         mNewsId = newsId;
@@ -51,8 +52,8 @@ public class NewsListPresenterImpl implements NewsListPresenter, RequestCallBack
 
     @Override
     public void onCreate() {
-        if (mNewsListView != null) {
-            mNewsListInteractor.loadNews(this, mNewsType, mNewsId, mStartPage);
+        if (mView != null) {
+            mSubscription = mNewsListInteractor.loadNews(this, mNewsType, mNewsId, mStartPage);
         }
     }
 
@@ -63,30 +64,30 @@ public class NewsListPresenterImpl implements NewsListPresenter, RequestCallBack
 
     @Override
     public void onDestroy() {
-        mNewsListView = null;
+        mView = null;
 
     }
 
     @Override
     public void beforeRequest() {
         if (!misLoaded) {
-            mNewsListView.showProgress();
+            mView.showProgress();
         }
     }
 
     @Override
     public void success(List<NewsSummary> items) {
         misLoaded = true;
-        if (mNewsListView != null) {
-            mNewsListView.setItems(items);
-            mNewsListView.hideProgress();
+        if (mView != null) {
+            mView.setItems(items);
+            mView.hideProgress();
         }
 
     }
 
     @Override
     public void onError(String errorMsg) {
-        mNewsListView.showErrorMsg(errorMsg);
+        mView.showErrorMsg(errorMsg);
     }
 
 }
