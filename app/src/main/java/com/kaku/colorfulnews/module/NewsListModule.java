@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.module;
 
+import com.kaku.colorfulnews.module.base.BaseModule;
 import com.kaku.colorfulnews.presenter.NewsListPresenter;
 import com.kaku.colorfulnews.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.ui.adapter.NewsRecyclerViewAdapter;
@@ -29,20 +30,19 @@ import dagger.Provides;
  * @version 1.0 2016/5/21
  */
 @Module
-public class NewsListModule {
-    private NewsListView mNewsListView;
+public class NewsListModule extends BaseModule<NewsListView> {
     private String mNewsType;
     private String mNewsId;
 
     public NewsListModule(NewsListView newsListView, String newsType, String newsId) {
-        mNewsListView = newsListView;
+        mView = newsListView;
         mNewsType = newsType;
         mNewsId = newsId;
     }
 
     @Provides
     public NewsListPresenter provideNewsListPresenter() {
-        return new NewsListPresenterImpl(mNewsListView, mNewsType, mNewsId);
+        return new NewsListPresenterImpl(mView, mNewsType, mNewsId);
     }
 
     @Provides

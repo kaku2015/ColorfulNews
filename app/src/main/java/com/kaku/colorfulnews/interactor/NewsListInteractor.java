@@ -18,11 +18,13 @@ package com.kaku.colorfulnews.interactor;
 
 import com.kaku.colorfulnews.listener.RequestCallBack;
 
+import rx.Subscription;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
 public interface NewsListInteractor<T> {
 
-    void loadNews(RequestCallBack<T> listener, String type, String id, int startPage);
+    Subscription loadNews(RequestCallBack<T> listener, String type, String id, int startPage);
 }

@@ -84,7 +84,6 @@ public class NewsListFragment extends BaseFragment implements NewsListView {
         mNewsRV.setHasFixedSize(true);
         mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
-
         DaggerNewsListComponent.builder()
                 .newsListModule(new NewsListModule(this, mNewsType, mNewsId))
                 .build()
@@ -134,7 +133,10 @@ public class NewsListFragment extends BaseFragment implements NewsListView {
     @Override
     public void showErrorMsg(String message) {
         mProgressBar.setVisibility(View.GONE);
-        Snackbar.make(mNewsRV, message, Snackbar.LENGTH_LONG).show();
+        // 网络不可用状态在此之前已经显示了提示信息
+        if (NetUtil.isNetworkAvailable(App.getAppContext())) {
+            Snackbar.make(mNewsRV, message, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override

@@ -35,6 +35,7 @@ import java.util.Map;
 import http.RetrofitManager;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -46,16 +47,16 @@ import rx.schedulers.Schedulers;
  */
 public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSummary>> {
 
-    private boolean mIsNetError;
+//    private boolean mIsNetError;
 
     @Override
-    public void loadNews(final RequestCallBack<List<NewsSummary>> listener, String type,
+    public Subscription loadNews(final RequestCallBack<List<NewsSummary>> listener, String type,
                          final String id, int startPage) {
-        mIsNetError = false;
+//        mIsNetError = false;
         // 对API调用了observeOn(MainThread)之后，线程会跑在主线程上，包括onComplete也是，
         // unsubscribe也在主线程，然后如果这时候调用call.cancel会导致NetworkOnMainThreadException
         // 加一句unsubscribeOn(io)
-        RetrofitManager.getInstance(HostType.NETEASE_NEWS_VIDEO).getNewsListObservable(type, id, startPage)
+       return RetrofitManager.getInstance(HostType.NETEASE_NEWS_VIDEO).getNewsListObservable(type, id, startPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -73,9 +74,9 @@ public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSumma
                     @Override
                     public NewsSummary call(NewsSummary newsSummary) {
                         try {
-                            Date date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
+                            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                                     .parse(newsSummary.getPtime());
-                            String ptime = new SimpleDateFormat("MM-dd hh:mm", Locale.getDefault()).format(date);
+                            String ptime = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()).format(date);
                             newsSummary.setPtime(ptime);
                         } catch (ParseException e) {
                             KLog.e("转换新闻日期格式异常：" + e.toString());
@@ -92,32 +93,32 @@ public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSumma
                 .subscribe(new Subscriber<List<NewsSummary>>() {
                     @Override
                     public void onCompleted() {
+//                        checkNetState(listener);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         KLog.e(e.getLocalizedMessage() + "\n" + e.toString());
 //                        checkNetState(listener);
-//                        if (!mIsNetError) {
+//                        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
                         listener.onError(App.getAppContext().getString(R.string.load_error));
 //                        }
                     }
 
                     @Override
                     public void onNext(List<NewsSummary> newsSummaries) {
-//                        checkNetState(listener);
                         listener.success(newsSummaries);
                     }
                 });
 
     }
-/*
-    private void checkNetState(RequestCallback<List<NewsSummary>> listener) {
-        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
-            mIsNetError = true;
-            listener.onError(App.getAppContext().getString(R.string.internet_error));
-        } else {
-            mIsNetError = false;
-        }
-    }*/
+
+//    private void checkNetState(RequestCallBack<List<NewsSummary>> listener) {
+//        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
+//            mIsNetError = true;
+//            listener.onError(App.getAppContext().getString(R.string.internet_error));
+//        } else {
+//            mIsNetError = false;
+//        }
+//    }
 }

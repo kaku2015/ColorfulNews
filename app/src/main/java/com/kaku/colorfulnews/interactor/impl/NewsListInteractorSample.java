@@ -16,25 +16,12 @@
  */
 package com.kaku.colorfulnews.interactor.impl;
 
-import com.kaku.colorfulnews.interactor.NewsListInteractor;
-import com.kaku.colorfulnews.listener.RequestCallBack;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsListInteractorSample implements NewsListInteractor {
-    @Override
+public class NewsListInteractorSample /*implements NewsListInteractor*/ {
+/*    @Override
     public void loadNews(final RequestCallBack listener, String type,
                          final String id, int startPag) {
 //        new Handler().postDelayed(new Runnable() {
@@ -47,13 +34,13 @@ public class NewsListInteractorSample implements NewsListInteractor {
         final List<String> list = new ArrayList<>();
 
         Observable.from(createArrayList())
-/*                .flatMap(new Func1<String, Observable<String>>() {
+*//*                .flatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String s) {
                         String[] str = new String[]{s.split(" ")[0], s.split(" ")[1]};
                         return Observable.from(str);
                     }
-                })*/
+                })*//*
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
@@ -168,5 +155,5 @@ public class NewsListInteractorSample implements NewsListInteractor {
                 "Item 13",
                 "Item 13"
         );
-    }
+    }*/
 }

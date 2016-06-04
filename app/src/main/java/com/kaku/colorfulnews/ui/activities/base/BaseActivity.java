@@ -60,11 +60,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void changeToDay() {
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         mNightView.setBackgroundResource(android.R.color.transparent);
     }
 
     public void changeToNight() {
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         initNightView();
         mNightView.setBackgroundResource(R.color.night_mask);

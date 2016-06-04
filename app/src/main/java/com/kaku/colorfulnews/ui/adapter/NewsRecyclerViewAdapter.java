@@ -64,7 +64,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         String imgSrc = mNewsSummaryList.get(position).getImgsrc();
 
         holder.mNewsSummaryTitleTv.setText(title);
-        holder.mEwsSummaryPtimeTv.setText(ptime);
+        holder.mNewsSummaryPtimeTv.setText(ptime);
         holder.mNewsSummaryDigestTv.setText(digest);
 
         Glide.with(App.getAppContext()).load(imgSrc).asBitmap()/*.animate(R.anim.image_load)*/
@@ -86,8 +86,8 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         TextView mNewsSummaryTitleTv;
         @BindView(R.id.news_summary_Digest_tv)
         TextView mNewsSummaryDigestTv;
-        @BindView(R.id.ews_summary_ptime_tv)
-        TextView mEwsSummaryPtimeTv;
+        @BindView(R.id.news_summary_ptime_tv)
+        TextView mNewsSummaryPtimeTv;
 
         public ViewHolder(View view) {
             super(view);
