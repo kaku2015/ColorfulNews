@@ -16,6 +16,8 @@
  */
 package com.kaku.colorfulnews.presenter;
 
+import android.content.Context;
+
 import com.kaku.colorfulnews.presenter.base.BasePresenter;
 
 /**
@@ -24,6 +26,6 @@ import com.kaku.colorfulnews.presenter.base.BasePresenter;
  */
 public interface NewsListPresenter extends BasePresenter {
 
-    void onItemClicked(int position);
+    void onItemClicked(Context context, String postId,String imgSrc);
 
 }

@@ -16,12 +16,17 @@
  */
 package com.kaku.colorfulnews.presenter.impl;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.interactor.impl.NewsListInteractorImpl;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.presenter.NewsListPresenter;
 import com.kaku.colorfulnews.presenter.base.BasePresenterImpl;
+import com.kaku.colorfulnews.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.view.NewsListView;
 
 import java.util.List;
@@ -58,14 +63,12 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
     }
 
     @Override
-    public void onItemClicked(int position) {
-
-    }
-
-    @Override
-    public void onDestroy() {
-        mView = null;
-
+    public void onItemClicked(Context context, String postId, String imgSrc) {
+        // Fixme: context
+        Intent intent = new Intent(context, NewsDetailActivity.class);
+        intent.putExtra(Constants.NEWS_POST_ID, postId);
+        intent.putExtra(Constants.NEWS_IMG_RES, imgSrc);
+        context.startActivity(intent);
     }
 
     @Override
@@ -79,15 +82,10 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
     public void success(List<NewsSummary> items) {
         misLoaded = true;
         if (mView != null) {
-            mView.setItems(items);
+            mView.setNewsList(items);
             mView.hideProgress();
         }
 
-    }
-
-    @Override
-    public void onError(String errorMsg) {
-        mView.showErrorMsg(errorMsg);
     }
 
 }

@@ -28,6 +28,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.listener.OnItemClickListener;
 
 import java.util.List;
 
@@ -42,15 +43,35 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     private List<NewsSummary> mNewsSummaryList;
 
+    private OnItemClickListener mOnItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    public List<NewsSummary> getNewsSummaryList() {
+        return mNewsSummaryList;
+    }
+
     public void setItems(List<NewsSummary> items) {
         this.mNewsSummaryList = items;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         View view =
                 LayoutInflater.from(parent.getContext()).inflate(R.layout.list_news, parent, false);
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+
+        if (mOnItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.onItemClick(holder.itemView, holder.getLayoutPosition());
+                }
+            });
+        }
+        return holder;
     }
 
     @Override
@@ -71,6 +92,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 .diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_menu_gallery)
                 .error(R.drawable.ic_menu_camera)
                 .into(holder.mNewsSummaryPhotoIv);
+
 
     }
 

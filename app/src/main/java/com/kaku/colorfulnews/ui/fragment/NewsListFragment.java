@@ -32,6 +32,7 @@ import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.component.DaggerNewsListComponent;
+import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.module.NewsListModule;
 import com.kaku.colorfulnews.presenter.NewsListPresenter;
 import com.kaku.colorfulnews.ui.adapter.NewsRecyclerViewAdapter;
@@ -50,7 +51,7 @@ import butterknife.ButterKnife;
  * @author 咖枯
  * @version 1.0 2016/5/18
  */
-public class NewsListFragment extends BaseFragment implements NewsListView {
+public class NewsListFragment extends BaseFragment implements NewsListView, OnItemClickListener {
     @BindView(R.id.news_rv)
     RecyclerView mNewsRV;
     @BindView(R.id.progress_bar)
@@ -84,11 +85,14 @@ public class NewsListFragment extends BaseFragment implements NewsListView {
         mNewsRV.setHasFixedSize(true);
         mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
+
         DaggerNewsListComponent.builder()
                 .newsListModule(new NewsListModule(this, mNewsType, mNewsId))
                 .build()
                 .inject(this);
+
         mNewsListPresenter.onCreate();
+        mNewsRecyclerViewAdapter.setOnItemClickListener(this);
 
         checkNetState();
 
@@ -125,8 +129,8 @@ public class NewsListFragment extends BaseFragment implements NewsListView {
     }
 
     @Override
-    public void setItems(List<NewsSummary> items) {
-        mNewsRecyclerViewAdapter.setItems(items);
+    public void setNewsList(List<NewsSummary> newsSummary) {
+        mNewsRecyclerViewAdapter.setItems(newsSummary);
         mNewsRV.setAdapter(mNewsRecyclerViewAdapter);
     }
 
@@ -143,5 +147,13 @@ public class NewsListFragment extends BaseFragment implements NewsListView {
     public void onDestroyView() {
         mNewsListPresenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
+//        Toast.makeText(getActivity(), "点击了新闻位置： " + position, Toast.LENGTH_SHORT).show();
+        mNewsListPresenter.onItemClicked(getActivity(), newsSummaryList.get(position).getPostid(),
+                newsSummaryList.get(position).getImgsrc());
     }
 }

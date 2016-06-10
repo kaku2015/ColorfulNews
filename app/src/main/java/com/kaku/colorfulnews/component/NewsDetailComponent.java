@@ -14,23 +14,18 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.common;
+package com.kaku.colorfulnews.component;
+
+import com.kaku.colorfulnews.module.NewsDetailModule;
+import com.kaku.colorfulnews.ui.activities.NewsDetailActivity;
+
+import dagger.Component;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/31
+ * @version 1.0 2016/6/7
  */
-public class Constants {
-    public static final String DB_NAME = "NewsChannelTable";
-    public static final String SHARES_COLOURFUL_NEWS = "shares_colourful_news";
-    public static final String NIGHT_THEME_MODE = "night_theme_mode";
-    public static final String INIT_DB = "init_db";
-
-    public static final String NEWS_ID = "news_id";
-    public static final String NEWS_TYPE = "news_type";
-    public static final String CHANNEL_POSITION = "channel_position";
-
-    public static final String NEWS_POST_ID = "news_post_id";
-    public static final String NEWS_IMG_RES = "news_img_res";
-
+@Component(modules = {NewsDetailModule.class})
+public interface NewsDetailComponent {
+    void Inject(NewsDetailActivity newsDetailActivity);
 }

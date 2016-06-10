@@ -18,39 +18,40 @@ package com.kaku.colorfulnews.interactor.impl;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.db.NewsChannelTableManager;
-import com.kaku.colorfulnews.greendao.NewsChannelTable;
-import com.kaku.colorfulnews.interactor.NewsInteractor;
+import com.kaku.colorfulnews.bean.NewsDetail;
+import com.kaku.colorfulnews.common.HostType;
+import com.kaku.colorfulnews.http.RetrofitManager;
+import com.kaku.colorfulnews.interactor.NewsDetailInteractor;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.socks.library.KLog;
 
-import java.util.List;
+import java.util.Map;
 
-import rx.Observable;
-import rx.Subscriber;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/2
+ * @version 1.0 2016/6/4
  */
-public class NewsInteractorImpl implements NewsInteractor<List<NewsChannelTable>> {
+public class NewsDetailInteractorImpl implements NewsDetailInteractor<NewsDetail> {
+
     @Override
-    public Subscription lodeNewsChannels(final RequestCallBack<List<NewsChannelTable>> callback) {
-        return Observable.create(new Observable.OnSubscribe<List<NewsChannelTable>>() {
-            @Override
-            public void call(Subscriber<? super List<NewsChannelTable>> subscriber) {
-                NewsChannelTableManager.initDB();
-                subscriber.onNext(NewsChannelTableManager.loadNewsChannels());
-                subscriber.onCompleted();
-            }
-        })
+    public Subscription loadNewsDetail(final RequestCallBack<NewsDetail> callBack, final String postId) {
+        return RetrofitManager.getInstance(HostType.NETEASE_NEWS_VIDEO).getNewsDetailObservable(postId)
                 .unsubscribeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<NewsChannelTable>>() {
+                .map(new Func1<Map<String, NewsDetail>, NewsDetail>() {
+                    @Override
+                    public NewsDetail call(Map<String, NewsDetail> map) {
+                        return map.get(postId);
+                    }
+                })
+                .subscribe(new Observer<NewsDetail>() {
                     @Override
                     public void onCompleted() {
 
@@ -58,14 +59,13 @@ public class NewsInteractorImpl implements NewsInteractor<List<NewsChannelTable>
 
                     @Override
                     public void onError(Throwable e) {
-                        // FIXME: getLocalizedMessage()??
-                        KLog.e(e.getLocalizedMessage() + "\n" + e.toString());
-                        callback.onError(App.getAppContext().getString(R.string.db_error));
+                        KLog.e(e.toString());
+                        callBack.onError(App.getAppContext().getString(R.string.load_error));
                     }
 
                     @Override
-                    public void onNext(List<NewsChannelTable> newsChannelTables) {
-                        callback.success(newsChannelTables);
+                    public void onNext(NewsDetail newsDetail) {
+                        callBack.success(newsDetail);
                     }
                 });
     }

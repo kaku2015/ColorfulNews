@@ -14,12 +14,13 @@
  * limitations under the License.
  *
  */
-package http;
+package com.kaku.colorfulnews.http;
 
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.kaku.colorfulnews.App;
+import com.kaku.colorfulnews.bean.NewsDetail;
 import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.ApiConstants;
 import com.kaku.colorfulnews.common.HostType;
@@ -134,6 +135,7 @@ public class RetrofitManager {
         }
     };
 
+    // FIXME：
     private final Interceptor mLoggingInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -178,6 +180,9 @@ public class RetrofitManager {
         }
     };
 
+    /**
+     * @param hostType NETEASE_NEWS_VIDEO：1 （新闻，视频），SINA_NEWS_PHOTO：2（图片新闻）
+     */
     public static RetrofitManager getInstance(int hostType) {
         RetrofitManager retrofitManager = sRetrofitManager.get(hostType);
         if (retrofitManager == null) {
@@ -192,7 +197,6 @@ public class RetrofitManager {
     /**
      * 根据网络状况获取缓存的策略
      *
-     * @return http缓存策略
      */
     @NonNull
     private String getCacheControl() {
@@ -200,19 +204,19 @@ public class RetrofitManager {
     }
 
     /**
-     * 网易新闻列表 例子：http://c.m.163.com/nc/article/headline/T1348647909107/0-20.html
-     * <p>
-     * 对API调用了observeOn(MainThread)之后，线程会跑在主线程上，包括onComplete也是，
-     * unsubscribe也在主线程，然后如果这时候调用call.cancel会导致NetworkOnMainThreadException
-     * 加一句unsubscribeOn(io)
+     * example：http://c.m.163.com/nc/article/headline/T1348647909107/0-20.html
      *
-     * @param type      新闻类别：headline为头条,list为其他
-     * @param id        新闻类别id
-     * @param startPage 开始的页码
-     * @return 被观察对象
+     * @param newsType ：headline为头条,house为房产，list为其他
      */
-    public Observable<Map<String, List<NewsSummary>>> getNewsListObservable(String type, String id, int startPage) {
-        return mNewsService.getNewsList(getCacheControl(), type, id, startPage);
+    public Observable<Map<String, List<NewsSummary>>> getNewsListObservable(
+            String newsType, String newsId, int startPage) {
+        return mNewsService.getNewsList(getCacheControl(), newsType, newsId, startPage);
     }
 
+    /**
+     * example：http://c.m.163.com/nc/article/BG6CGA9M00264N2N/full.html
+     */
+    public Observable<Map<String, NewsDetail>> getNewsDetailObservable(String postId) {
+        return mNewsService.getNewDetail(getCacheControl(), postId);
+    }
 }

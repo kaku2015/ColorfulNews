@@ -27,5 +27,5 @@ import java.util.List;
  */
 public interface NewsListView extends BaseView {
 
-    void setItems(List<NewsSummary> items);
+    void setNewsList(List<NewsSummary> newsSummary);
 }
