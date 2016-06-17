@@ -19,18 +19,25 @@ package com.kaku.colorfulnews.ui.fragment.base;
 import android.support.v4.app.Fragment;
 
 import com.kaku.colorfulnews.App;
+import com.kaku.colorfulnews.presenter.base.BasePresenter;
 import com.squareup.leakcanary.RefWatcher;
 
 /**
  * @author 咖枯
  * @version 1.0 2016/5/20
  */
-public class BaseFragment extends Fragment {
+public class BaseFragment<T extends BasePresenter> extends Fragment {
+
+    protected T mPresenter;
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         RefWatcher refWatcher = App.getRefWatcher(getActivity());
         refWatcher.watch(this);
+
+        if (mPresenter != null) {
+            mPresenter.onDestroy();
+        }
     }
 }

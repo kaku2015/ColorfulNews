@@ -79,6 +79,7 @@ public class NewsActivity extends BaseActivity
         setContentView(R.layout.activity_news);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+        setStatusBarTranslucent();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -90,7 +91,8 @@ public class NewsActivity extends BaseActivity
                 .newsModule(new NewsModule(this))
                 .build().inject(this);
 
-        mNewsPresenter.onCreate();
+        mPresenter = mNewsPresenter;
+        mPresenter.onCreate();
     }
 
     @OnClick(R.id.fab)

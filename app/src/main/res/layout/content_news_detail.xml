@@ -6,31 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_newsdetail">
-    <!--tools:context=".module.news.ui.NewsDetailActivity"-->
+    tools:context=".ui.activities.NewsDetailActivity"
+    tools:showIn="@layout/activity_news_detail">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/news_detail_title_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="?android:textColorPrimary"
-            tools:text="习近平绿色发展理念引领中国环境治理新实践"/>
+        <!--        <TextView
+                    android:id="@+id/news_detail_title_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="?android:textColorPrimary"
+                    tools:text="习近平绿色发展理念引领中国环境治理新实践"/>-->
 
         <TextView
             android:id="@+id/news_detail_from_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/news_detail_title_tv"
-            android:layout_marginTop="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="?android:textColorSecondary"
             tools:text="澎湃新闻 06-06 17:24"/>
+        <!--        android:layout_below="@id/news_detail_title_tv"
+                android:layout_marginTop="10dp"-->
 
         <TextView
             android:id="@+id/news_detail_body_tv"

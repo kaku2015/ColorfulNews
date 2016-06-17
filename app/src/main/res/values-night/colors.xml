@@ -9,11 +9,11 @@
     <color name="container_background">#383838</color>
     <color name="item_background">#2E3537</color>
     <color name="primary_text">#deffffff</color>
-    <!--87%black-->
+    <!--87%white-->
     <color name="secondary_text">#8affffff</color>
-    <!--54%black-->
+    <!--54%white-->
     <color name="tertiary_text">#8affffff</color>
-    <!--54%black-->
+    <!--54%white-->
 
     <color name="icons">#FFFFFF</color>
     <color name="divider">#a5FFFFFF</color>

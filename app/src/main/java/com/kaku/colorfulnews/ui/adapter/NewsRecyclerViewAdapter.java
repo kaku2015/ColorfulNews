@@ -60,7 +60,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         View view =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.list_news, parent, false);
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false);
         final ViewHolder holder = new ViewHolder(view);
 
         if (mOnItemClickListener != null) {
@@ -88,9 +88,10 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.mNewsSummaryPtimeTv.setText(ptime);
         holder.mNewsSummaryDigestTv.setText(digest);
 
-        Glide.with(App.getAppContext()).load(imgSrc).asBitmap()/*.animate(R.anim.image_load)*/
-                .diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_menu_gallery)
-                .error(R.drawable.ic_menu_camera)
+        Glide.with(App.getAppContext()).load(imgSrc)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .placeholder(R.mipmap.ic_loading)
+                .error(R.mipmap.ic_load_fail)
                 .into(holder.mNewsSummaryPhotoIv);
 
 

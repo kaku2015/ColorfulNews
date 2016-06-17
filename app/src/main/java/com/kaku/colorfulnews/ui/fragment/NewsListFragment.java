@@ -16,14 +16,21 @@
  */
 package com.kaku.colorfulnews.ui.fragment;
 
+import android.annotation.TargetApi;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -35,6 +42,7 @@ import com.kaku.colorfulnews.component.DaggerNewsListComponent;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.module.NewsListModule;
 import com.kaku.colorfulnews.presenter.NewsListPresenter;
+import com.kaku.colorfulnews.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.ui.adapter.NewsRecyclerViewAdapter;
 import com.kaku.colorfulnews.ui.fragment.base.BaseFragment;
 import com.kaku.colorfulnews.utils.NetUtil;
@@ -91,7 +99,8 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
                 .build()
                 .inject(this);
 
-        mNewsListPresenter.onCreate();
+        mPresenter = mNewsListPresenter;
+        mPresenter.onCreate();
         mNewsRecyclerViewAdapter.setOnItemClickListener(this);
 
         checkNetState();
@@ -149,11 +158,37 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
         super.onDestroyView();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onItemClick(View view, int position) {
         List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
-//        Toast.makeText(getActivity(), "点击了新闻位置： " + position, Toast.LENGTH_SHORT).show();
-        mNewsListPresenter.onItemClicked(getActivity(), newsSummaryList.get(position).getPostid(),
-                newsSummaryList.get(position).getImgsrc());
+        goToNewsDetailActivity(view, position, newsSummaryList);
+    }
+
+    private void goToNewsDetailActivity(View view, int position, List<NewsSummary> newsSummaryList) {
+        Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+        intent.putExtra(Constants.NEWS_POST_ID, newsSummaryList.get(position).getPostid());
+        intent.putExtra(Constants.NEWS_IMG_RES, newsSummaryList.get(position).getImgsrc());
+
+        ImageView newsSummaryPhotoIv = (ImageView) view.findViewById(R.id.news_summary_photo_iv);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(getActivity(), newsSummaryPhotoIv, Constants.TRANSITION_ANIMATION_NEWS_PHOTOS);
+            startActivity(intent, options.toBundle());
+        } else {
+/*            ActivityOptionsCompat.makeCustomAnimation(this,
+                    R.anim.slide_bottom_in, R.anim.slide_bottom_out);
+            这个我感觉没什么用处，类似于
+            overridePendingTransition(R.anim.slide_bottom_in, android.R.anim.fade_out);*/
+
+/*            ActivityOptionsCompat.makeThumbnailScaleUpAnimation(source, thumbnail, startX, startY)
+            这个方法可以用于4.x上，是将一个小块的Bitmpat进行拉伸的动画。*/
+
+            //让新的Activity从一个小的范围扩大到全屏
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeScaleUpAnimation(view, view.getWidth() / 2, view.getHeight() / 2, 0, 0);
+            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+        }
     }
 }

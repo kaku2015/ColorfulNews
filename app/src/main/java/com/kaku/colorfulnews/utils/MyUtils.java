@@ -69,4 +69,14 @@ public class MyUtils {
         }
         return after;
     }
+
+    public static int getStatusBarHeight(Activity activity) {
+        int height = 0;
+        int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen",
+                "android");
+        if (resourceId > 0) {
+            height = activity.getResources().getDimensionPixelSize(resourceId);
+        }
+        return height;
+    }
 }

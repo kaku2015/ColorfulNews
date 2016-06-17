@@ -16,17 +16,12 @@
  */
 package com.kaku.colorfulnews.presenter.impl;
 
-import android.content.Context;
-import android.content.Intent;
-
 import com.kaku.colorfulnews.bean.NewsSummary;
-import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.interactor.impl.NewsListInteractorImpl;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.presenter.NewsListPresenter;
 import com.kaku.colorfulnews.presenter.base.BasePresenterImpl;
-import com.kaku.colorfulnews.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.view.NewsListView;
 
 import java.util.List;
@@ -60,15 +55,6 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
         if (mView != null) {
             mSubscription = mNewsListInteractor.loadNews(this, mNewsType, mNewsId, mStartPage);
         }
-    }
-
-    @Override
-    public void onItemClicked(Context context, String postId, String imgSrc) {
-        // Fixme: context
-        Intent intent = new Intent(context, NewsDetailActivity.class);
-        intent.putExtra(Constants.NEWS_POST_ID, postId);
-        intent.putExtra(Constants.NEWS_IMG_RES, imgSrc);
-        context.startActivity(intent);
     }
 
     @Override

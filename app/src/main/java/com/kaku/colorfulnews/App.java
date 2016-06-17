@@ -21,6 +21,7 @@ import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.kaku.colorfulnews.common.Constants;
@@ -66,13 +67,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sAppContext = getApplicationContext();
-
-        if (MyUtils.isNightMode()) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-
+        initDayNightMode();
+        initStrictMode();
         KLog.init(BuildConfig.LOG_DEBUG);
         // 官方推荐将获取 DaoMaster 对象的方法放到 Application 层，这样将避免多次创建生成 Session 对象
         setupDatabase();
@@ -119,6 +115,30 @@ public class App extends Application {
                 LogUtil.v("=========", activity + "  onActivityDestroyed");
             }
         });
+    }
+
+    private void initStrictMode() {
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(
+                    new StrictMode.ThreadPolicy.Builder()
+                            .detectAll()
+//                            .penaltyDialog() // 弹出违规提示对话框
+                            .penaltyLog() // 在logcat中打印违规异常信息
+                            .build());
+            StrictMode.setVmPolicy(
+                    new StrictMode.VmPolicy.Builder()
+                            .detectAll()
+                            .penaltyLog()
+                            .build());
+        }
+    }
+
+    private void initDayNightMode() {
+        if (MyUtils.isNightMode()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     public static NewsChannelTableDao getNewsChannelTableDao() {

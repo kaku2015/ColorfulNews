@@ -16,7 +16,6 @@
  */
 package com.kaku.colorfulnews.ui.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -63,8 +62,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     CollapsingToolbarLayout mToolbarLayout;
     @BindView(R.id.app_bar)
     AppBarLayout mAppBar;
-    @BindView(R.id.news_detail_title_tv)
-    TextView mNewsDetailTitleTv;
+    /*    @BindView(R.id.news_detail_title_tv)
+        TextView mNewsDetailTitleTv;*/
     @BindView(R.id.news_detail_from_tv)
     TextView mNewsDetailFromTv;
     @BindView(R.id.news_detail_body_tv)
@@ -80,8 +79,9 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_newsdetail);
+        setContentView(R.layout.activity_news_detail);
         init();
+        setSupportActionBar(mToolbar);
     }
 
     private void init() {
@@ -92,9 +92,11 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
                 .newsDetailModule(new NewsDetailModule(this, postId))
                 .build().Inject(this);
 
-        mNewsDetailPresenter.onCreate();
+        mPresenter = mNewsDetailPresenter;
+        mPresenter.onCreate();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setNewsDetail(NewsDetail newsDetail) {
         String newsTitle = newsDetail.getTitle();
@@ -102,7 +104,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
         List<NewsDetail.ImgBean> imgSrcs = newsDetail.getImg();
         String imgSrc;
-        if (imgSrcs.size() > 0) {
+        if (imgSrcs != null && imgSrcs.size() > 0) {
             imgSrc = imgSrcs.get(0).getSrc();
         } else {
             imgSrc = getIntent().getStringExtra(Constants.NEWS_IMG_RES);
@@ -111,20 +113,22 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
         String newsTime = MyUtils.formatDate(newsDetail.getPtime());
         String newsBody = newsDetail.getBody();
 
-        mNewsDetailTitleTv.setText(newsTitle);
+//        mNewsDetailTitleTv.setText(newsTitle);
         mNewsDetailFromTv.setText(getString(R.string.news_from, newsSource, newsTime));
 
-            Glide.with(App.getAppContext()).load(imgSrc).asBitmap()/*.animate(R.anim.image_load)*/
-                    .diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_menu_gallery)
-                    .error(R.drawable.ic_menu_camera)
-                    .into(mNewsDetailPhotoIv);
+        Glide.with(App.getAppContext()).load(imgSrc)
+//                .placeholder(R.mipmap.ic_loading)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.mipmap.ic_load_fail)
+                .into(mNewsDetailPhotoIv);
 
-        RichText.from(newsBody).into(mNewsDetailBodyTv);
+        if (mNewsDetailBodyTv != null) {
+            RichText.from(newsBody).into(mNewsDetailBodyTv);
+        }
 
         mToolbarLayout.setTitle(newsTitle);
         mToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        mToolbarLayout
-                .setCollapsedTitleTextColor(Color.WHITE);
+        mToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.primary_text_white));
     }
 
     @Override

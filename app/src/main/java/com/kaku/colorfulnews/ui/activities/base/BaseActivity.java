@@ -18,23 +18,27 @@ package com.kaku.colorfulnews.ui.activities.base;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.presenter.base.BasePresenter;
 import com.kaku.colorfulnews.utils.LogUtil;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.squareup.leakcanary.RefWatcher;
 
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
     /**
      * Log tag ：BaseActivity
      */
@@ -42,13 +46,18 @@ public class BaseActivity extends AppCompatActivity {
     private WindowManager mWindowManager = null;
     private View mNightView = null;
     private boolean mIsAddedView;
+    protected T mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LogUtil.i(LOG_TAG, getClass().getSimpleName());
+//        setStatusBarTranslucent();
 
+        setNightOrDayMode();
+    }
 
+    private void setNightOrDayMode() {
         if (MyUtils.isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
@@ -56,6 +65,16 @@ public class BaseActivity extends AppCompatActivity {
             mNightView.setBackgroundResource(R.color.night_mask);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
+    // TODO:适配4.4
+    protected void setStatusBarTranslucent() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.colorPrimary);
         }
     }
 
@@ -88,10 +107,28 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    finishAfterTransition();
+                } else {
+                    finish();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         RefWatcher refWatcher = App.getRefWatcher(this);
         refWatcher.watch(this);
+
+        if (mPresenter != null) {
+            mPresenter.onDestroy();
+        }
 
         if (mIsAddedView) {
             // 移除夜间模式蒙板

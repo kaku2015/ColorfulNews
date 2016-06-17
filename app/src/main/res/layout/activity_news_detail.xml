@@ -5,9 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-    <!--android:background="@color/background_color"-->
-    <!--tools:context=".module.news.ui.NewsDetailActivity"-->
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activities.NewsDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -22,8 +21,8 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="48dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="@dimen/material_component_button_text_left_and_right_padding"
+            app:expandedTitleMarginStart="@dimen/material_component_button_text_left_and_right_padding"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <!--app:expandedTitleGravity="bottom"-->
@@ -34,16 +33,26 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
+                android:transitionName="@string/transition_photos"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"
-                tools:src="@drawable/leak_canary_icon"/>
+                tools:src="@drawable/leak_canary_icon"
+                tools:targetApi="lollipop"/>
             <!--android:transitionName="photos"-->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/mask_news_detail_photo"
+                android:fitsSystemWindows="true"
+                />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                app:navigationIcon="@mipmap/ic_action_previous_item"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 />
 
