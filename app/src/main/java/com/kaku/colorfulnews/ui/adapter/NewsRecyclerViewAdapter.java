@@ -88,7 +88,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.mNewsSummaryPtimeTv.setText(ptime);
         holder.mNewsSummaryDigestTv.setText(digest);
 
-        Glide.with(App.getAppContext()).load(imgSrc)
+        Glide.with(App.getAppContext()).load(imgSrc).asBitmap() // gif格式有时会导致整体图片不显示，貌似有冲突
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                .placeholder(R.mipmap.ic_loading)
                 .error(R.mipmap.ic_load_fail)

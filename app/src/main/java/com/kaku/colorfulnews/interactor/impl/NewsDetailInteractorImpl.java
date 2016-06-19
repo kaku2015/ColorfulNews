@@ -25,6 +25,7 @@ import com.kaku.colorfulnews.interactor.NewsDetailInteractor;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.socks.library.KLog;
 
+import java.util.List;
 import java.util.Map;
 
 import rx.Observer;
@@ -48,7 +49,19 @@ public class NewsDetailInteractorImpl implements NewsDetailInteractor<NewsDetail
                 .map(new Func1<Map<String, NewsDetail>, NewsDetail>() {
                     @Override
                     public NewsDetail call(Map<String, NewsDetail> map) {
-                        return map.get(postId);
+                        NewsDetail newsDetail = map.get(postId);
+                        List<NewsDetail.ImgBean> imgSrcs = newsDetail.getImg();
+                        if (imgSrcs != null && imgSrcs.size() >= 2 && App.isHavePhoto()) {
+                            String newsBody = newsDetail.getBody();
+                            for (int i = 1; i < imgSrcs.size(); i++) {
+                                String oldChars = "<!--IMG#" + i + "-->";
+                                String newChars = "<img src=\"" + imgSrcs.get(i).getSrc() + "\" />";
+                                newsBody = newsBody.replace(oldChars, newChars);
+
+                            }
+                            newsDetail.setBody(newsBody);
+                        }
+                        return newsDetail;
                     }
                 })
                 .subscribe(new Observer<NewsDetail>() {

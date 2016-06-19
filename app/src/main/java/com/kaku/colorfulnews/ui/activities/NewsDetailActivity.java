@@ -23,6 +23,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -40,7 +41,7 @@ import com.kaku.colorfulnews.presenter.NewsDetailPresenter;
 import com.kaku.colorfulnews.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.view.NewsDetailView;
-import com.zzhoujay.richtext.RichText;
+import com.kaku.colorfulnews.widget.URLImageGetter;
 
 import java.util.List;
 
@@ -116,14 +117,21 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 //        mNewsDetailTitleTv.setText(newsTitle);
         mNewsDetailFromTv.setText(getString(R.string.news_from, newsSource, newsTime));
 
-        Glide.with(App.getAppContext()).load(imgSrc)
+        Glide.with(this).load(imgSrc).asBitmap()
 //                .placeholder(R.mipmap.ic_loading)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.mipmap.ic_load_fail)
                 .into(mNewsDetailPhotoIv);
 
         if (mNewsDetailBodyTv != null) {
-            RichText.from(newsBody).into(mNewsDetailBodyTv);
+            if (App.isHavePhoto() && newsDetail.getImg().size() >= 2) {
+///               mNewsDetailBodyTv.setMovementMethod(LinkMovementMethod.getInstance());//加这句才能让里面的超链接生效,实测经常卡机崩溃
+                int total = newsDetail.getImg().size();
+                URLImageGetter urlImageGetter = new URLImageGetter(mNewsDetailBodyTv, newsBody, total);
+                mNewsDetailBodyTv.setText(Html.fromHtml(newsBody, urlImageGetter, null));
+            } else {
+                mNewsDetailBodyTv.setText(Html.fromHtml(newsBody));
+            }
         }
 
         mToolbarLayout.setTitle(newsTitle);

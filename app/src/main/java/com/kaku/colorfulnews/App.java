@@ -145,6 +145,10 @@ public class App extends Application {
         return mDaoSession.getNewsChannelTableDao();
     }
 
+    public static boolean isHavePhoto() {
+        return MyUtils.getSharedPreferences().getBoolean(Constants.SHOW_NEWS_PHOTO, true);
+    }
+
     private void setupDatabase() {
         // 通过 DaoMaster 的内部类 DevOpenHelper，你可以得到一个便利的 SQLiteOpenHelper 对象。
         // 可能你已经注意到了，你并不需要去编写「CREATE TABLE」这样的 SQL 语句，因为 greenDAO 已经帮你做了。
