@@ -186,6 +186,6 @@ public class RetrofitManager {
     }
 
     public Observable<ResponseBody> getNewsBodyHtmlPhoto(String photoPath) {
-        return mNewsService.getNewsBodyHtmlPhoto(getCacheControl(), photoPath);
+        return mNewsService.getNewsBodyHtmlPhoto(photoPath);
     }
 }

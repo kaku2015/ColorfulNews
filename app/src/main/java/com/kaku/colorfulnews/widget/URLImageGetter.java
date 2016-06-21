@@ -36,6 +36,7 @@ import java.io.InputStream;
 
 import okhttp3.ResponseBody;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -51,6 +52,7 @@ public class URLImageGetter implements Html.ImageGetter {
     private int mPicCount;
     private int mPicTotal;
     private static final String mFilePath = App.getAppContext().getCacheDir().getAbsolutePath();
+    public Subscription mSubscription;
 
     public URLImageGetter(TextView textView, String newsBody, int picTotal) {
         mTextView = textView;
@@ -72,9 +74,27 @@ public class URLImageGetter implements Html.ImageGetter {
         return drawable;
     }
 
+    @Nullable
+    private Drawable getDrawableFromDisk(File file) {
+        Drawable drawable = Drawable.createFromPath(file.getAbsolutePath());
+        if (drawable != null) {
+            int picHeight = calculatePicHeight(drawable);
+            drawable.setBounds(0, 0, mPicWidth, picHeight);
+        }
+        return drawable;
+    }
+
+    private int calculatePicHeight(Drawable drawable) {
+        float imgWidth = drawable.getIntrinsicWidth();
+        float imgHeight = drawable.getIntrinsicHeight();
+        float rate = imgHeight / imgWidth;
+        return (int) (mPicWidth * rate);
+    }
+
     @NonNull
     private Drawable getDrawableFromNet(final String source) {
-        RetrofitManager.getInstance(HostType.NEWS_DETAIL_HTML_PHOTO).getNewsBodyHtmlPhoto(source)
+        mSubscription = RetrofitManager.getInstance(HostType.NEWS_DETAIL_HTML_PHOTO)
+                .getNewsBodyHtmlPhoto(source)
                 .unsubscribeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -84,36 +104,6 @@ public class URLImageGetter implements Html.ImageGetter {
                         return WritePicToDisk(response, source);
                     }
                 }).subscribe(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-                KLog.i();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                KLog.e(e.toString());
-            }
-
-            @Override
-            public void onNext(Boolean isLoadSuccess) {
-                KLog.i();
-                mPicCount++;
-                if (/*isLoadSuccess &&*/ (mPicCount == mPicTotal - 1)) {
-                    mTextView.setText(Html.fromHtml(mNewsBody, URLImageGetter.this, null));
-                }
-            }
-        });
-
-/*        Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(loadNetPicture(source));
-                subscriber.onCompleted();
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
                         KLog.i();
@@ -128,11 +118,11 @@ public class URLImageGetter implements Html.ImageGetter {
                     public void onNext(Boolean isLoadSuccess) {
                         KLog.i();
                         mPicCount++;
-                        if (*//*isLoadSuccess &&*//* (mPicCount == mPicTotal - 1)) {
+                        if (isLoadSuccess && (mPicCount == mPicTotal - 1)) {
                             mTextView.setText(Html.fromHtml(mNewsBody, URLImageGetter.this, null));
                         }
                     }
-                });*/
+                });
 
         return createPicPlaceholder();
     }
@@ -163,7 +153,7 @@ public class URLImageGetter implements Html.ImageGetter {
                     out.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                KLog.e();
             }
         }
     }
@@ -177,74 +167,4 @@ public class URLImageGetter implements Html.ImageGetter {
         return drawable;
     }
 
-    @Nullable
-    private Drawable getDrawableFromDisk(File file) {
-        Drawable drawable;
-        drawable = Drawable.createFromPath(file.getAbsolutePath());
-        if (drawable != null) {
-            float imgWidth = drawable.getIntrinsicWidth();
-            float imgHeight = drawable.getIntrinsicHeight();
-            float rate = imgHeight / imgWidth;
-
-            int picHeight = (int) (mPicWidth * rate);
-            drawable.setBounds(0, 0, mPicWidth, picHeight);
-        }
-        return drawable;
-    }
-
-/*    private boolean loadNetPicture(String mFilePath) {
-
-        File file = new File(App.getAppContext().getCacheDir(), mFilePath.hashCode() + "");
-
-        InputStream in = null;
-
-        FileOutputStream out = null;
-
-        try {
-            URL url = new URL(mFilePath);
-
-            HttpURLConnection connUrl = (HttpURLConnection) url.openConnection();
-
-            connUrl.setConnectTimeout(5000);
-
-            connUrl.setRequestMethod("GET");
-
-            if (connUrl.getResponseCode() == 200) {
-
-                in = connUrl.getInputStream();
-
-                out = new FileOutputStream(file);
-
-                byte[] buffer = new byte[1024];
-
-                int len;
-
-                while ((len = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, len);
-                }
-            } else {
-                KLog.i(connUrl.getResponseCode() + "");
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }*/
 }

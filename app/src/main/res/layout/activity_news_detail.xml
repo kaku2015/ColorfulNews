@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.activities.NewsDetailActivity">
+    tools:context=".mvp.ui.activities.NewsDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -36,15 +36,18 @@
                 android:transitionName="@string/transition_photos"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"
-                tools:src="@drawable/leak_canary_icon"
+                tools:src="@mipmap/ic_launcher"
                 tools:targetApi="lollipop"/>
             <!--android:transitionName="photos"-->
 
             <View
+                android:id="@+id/mask_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/mask_news_detail_photo"
                 android:fitsSystemWindows="true"
+                android:visibility="gone"
+                tools:visibility="visible"
                 />
 
             <android.support.v7.widget.Toolbar

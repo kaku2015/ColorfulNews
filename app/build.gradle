@@ -30,12 +30,12 @@ android {
     }
 }
 
-/*buildscript {
+buildscript {
     repositories {
         mavenCentral()
         jcenter()
     }
-}*/
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
