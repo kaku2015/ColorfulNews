@@ -25,18 +25,19 @@ import android.widget.TextView;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.common.HostType;
+import com.kaku.colorfulnews.http.RetrofitManager;
 import com.socks.library.KLog;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-import rx.Observable;
+import okhttp3.ResponseBody;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -49,7 +50,7 @@ public class URLImageGetter implements Html.ImageGetter {
     private String mNewsBody;
     private int mPicCount;
     private int mPicTotal;
-//    private static final String filePath = App.getAppContext().getCacheDir().getAbsolutePath();
+    private static final String mFilePath = App.getAppContext().getCacheDir().getAbsolutePath();
 
     public URLImageGetter(TextView textView, String newsBody, int picTotal) {
         mTextView = textView;
@@ -60,21 +61,50 @@ public class URLImageGetter implements Html.ImageGetter {
 
     @Override
     public Drawable getDrawable(final String source) {
-        Drawable drawable = null;
-        File file = new File(App.getAppContext().getCacheDir(), source.hashCode() + "");
-        if (source.startsWith("http")) {
-            if (file.exists()) {
-                drawable = getDrawableFromDisk(file);
-            } else {
-                drawable = getDrawableFromNet(source);
-            }
+        Drawable drawable;
+        File file = new File(mFilePath, source.hashCode() + "");
+        if (file.exists()) {
+            mPicCount++;
+            drawable = getDrawableFromDisk(file);
+        } else {
+            drawable = getDrawableFromNet(source);
         }
         return drawable;
     }
 
     @NonNull
     private Drawable getDrawableFromNet(final String source) {
-        Observable.create(new Observable.OnSubscribe<Boolean>() {
+        RetrofitManager.getInstance(HostType.NEWS_DETAIL_HTML_PHOTO).getNewsBodyHtmlPhoto(source)
+                .unsubscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<ResponseBody, Boolean>() {
+                    @Override
+                    public Boolean call(ResponseBody response) {
+                        return WritePicToDisk(response, source);
+                    }
+                }).subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                KLog.i();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                KLog.e(e.toString());
+            }
+
+            @Override
+            public void onNext(Boolean isLoadSuccess) {
+                KLog.i();
+                mPicCount++;
+                if (/*isLoadSuccess &&*/ (mPicCount == mPicTotal - 1)) {
+                    mTextView.setText(Html.fromHtml(mNewsBody, URLImageGetter.this, null));
+                }
+            }
+        });
+
+/*        Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 subscriber.onNext(loadNetPicture(source));
@@ -86,8 +116,7 @@ public class URLImageGetter implements Html.ImageGetter {
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
-                        KLog.i("onCompleted");
-
+                        KLog.i();
                     }
 
                     @Override
@@ -97,14 +126,46 @@ public class URLImageGetter implements Html.ImageGetter {
 
                     @Override
                     public void onNext(Boolean isLoadSuccess) {
+                        KLog.i();
                         mPicCount++;
-                        if (/*isLoadSuccess &&*/ (mPicCount == mPicTotal - 1)) {
+                        if (*//*isLoadSuccess &&*//* (mPicCount == mPicTotal - 1)) {
                             mTextView.setText(Html.fromHtml(mNewsBody, URLImageGetter.this, null));
                         }
                     }
-                });
+                });*/
 
         return createPicPlaceholder();
+    }
+
+    @NonNull
+    private Boolean WritePicToDisk(ResponseBody response, String source) {
+        File file = new File(mFilePath, source.hashCode() + "");
+        InputStream in = null;
+        FileOutputStream out = null;
+        try {
+            in = response.byteStream();
+            out = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+            return true;
+        } catch (Exception e) {
+            KLog.e(e.toString());
+            return false;
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -131,16 +192,16 @@ public class URLImageGetter implements Html.ImageGetter {
         return drawable;
     }
 
-    private boolean loadNetPicture(String filePath) {
+/*    private boolean loadNetPicture(String mFilePath) {
 
-        File file = new File(App.getAppContext().getCacheDir(), filePath.hashCode() + "");
+        File file = new File(App.getAppContext().getCacheDir(), mFilePath.hashCode() + "");
 
         InputStream in = null;
 
         FileOutputStream out = null;
 
         try {
-            URL url = new URL(filePath);
+            URL url = new URL(mFilePath);
 
             HttpURLConnection connUrl = (HttpURLConnection) url.openConnection();
 
@@ -185,5 +246,5 @@ public class URLImageGetter implements Html.ImageGetter {
                 }
             }
         }
-    }
+    }*/
 }

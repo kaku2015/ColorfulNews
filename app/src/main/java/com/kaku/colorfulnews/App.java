@@ -42,18 +42,40 @@ import de.greenrobot.dao.query.QueryBuilder;
  */
 public class App extends Application {
 
+    private RefWatcher refWatcher;
+
     public static RefWatcher getRefWatcher(Context context) {
         App application = (App) context.getApplicationContext();
         return application.refWatcher;
     }
-
-    private RefWatcher refWatcher;
 
     private static Context sAppContext;
     private static DaoSession mDaoSession;
 
     public static Context getAppContext() {
         return sAppContext;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        sAppContext = getApplicationContext();
+        initLeakCanary();
+        initActivityLifecycleLogs();
+        initStrictMode();
+        initDayNightMode();
+        KLog.init(BuildConfig.LOG_DEBUG);
+        // 官方推荐将获取 DaoMaster 对象的方法放到 Application 层，这样将避免多次创建生成 Session 对象
+        setupDatabase();
+
+    }
+
+    private void initLeakCanary() {
+        if (BuildConfig.DEBUG) {
+            refWatcher = LeakCanary.install(this);
+        } else {
+            refWatcher = installLeakCanary();
+        }
     }
 
     /**
@@ -63,23 +85,8 @@ public class App extends Application {
         return RefWatcher.DISABLED;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        sAppContext = getApplicationContext();
-        initDayNightMode();
-        initStrictMode();
-        KLog.init(BuildConfig.LOG_DEBUG);
-        // 官方推荐将获取 DaoMaster 对象的方法放到 Application 层，这样将避免多次创建生成 Session 对象
-        setupDatabase();
-
-/*        // 注册M权限回调
-        Dexter.initialize(this);*/
-
-        refWatcher = LeakCanary.install(this);
-//        refWatcher = installLeakCanary();
-
-        this.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+    private void initActivityLifecycleLogs() {
+        this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                 LogUtil.v("=========", activity + "  onActivityCreated");
@@ -141,14 +148,6 @@ public class App extends Application {
         }
     }
 
-    public static NewsChannelTableDao getNewsChannelTableDao() {
-        return mDaoSession.getNewsChannelTableDao();
-    }
-
-    public static boolean isHavePhoto() {
-        return MyUtils.getSharedPreferences().getBoolean(Constants.SHOW_NEWS_PHOTO, true);
-    }
-
     private void setupDatabase() {
         // 通过 DaoMaster 的内部类 DevOpenHelper，你可以得到一个便利的 SQLiteOpenHelper 对象。
         // 可能你已经注意到了，你并不需要去编写「CREATE TABLE」这样的 SQL 语句，因为 greenDAO 已经帮你做了。
@@ -162,6 +161,14 @@ public class App extends Application {
         // 在 QueryBuilder 类中内置两个 Flag 用于方便输出执行的 SQL 语句与传递参数的值
         QueryBuilder.LOG_SQL = BuildConfig.DEBUG;
         QueryBuilder.LOG_VALUES = BuildConfig.DEBUG;
+    }
+
+    public static NewsChannelTableDao getNewsChannelTableDao() {
+        return mDaoSession.getNewsChannelTableDao();
+    }
+
+    public static boolean isHavePhoto() {
+        return MyUtils.getSharedPreferences().getBoolean(Constants.SHOW_NEWS_PHOTO, true);
     }
 
 }

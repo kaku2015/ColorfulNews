@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
@@ -118,6 +119,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
         mNewsDetailFromTv.setText(getString(R.string.news_from, newsSource, newsTime));
 
         Glide.with(this).load(imgSrc).asBitmap()
+                .format(DecodeFormat.PREFER_ARGB_8888)
 //                .placeholder(R.mipmap.ic_loading)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.mipmap.ic_load_fail)

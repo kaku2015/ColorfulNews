@@ -40,6 +40,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -145,7 +146,8 @@ public class RetrofitManager {
     };
 
     /**
-     * @param hostType NETEASE_NEWS_VIDEO：1 （新闻，视频），SINA_NEWS_PHOTO：2（图片新闻）
+     * @param hostType NETEASE_NEWS_VIDEO：1 （新闻，视频），SINA_NEWS_PHOTO：2（图片新闻）;
+     *                 EWS_DETAIL_HTML_PHOTO:3新闻详情html图片)
      */
     public static RetrofitManager getInstance(int hostType) {
         RetrofitManager retrofitManager = sRetrofitManager.get(hostType);
@@ -160,7 +162,6 @@ public class RetrofitManager {
 
     /**
      * 根据网络状况获取缓存的策略
-     *
      */
     @NonNull
     private String getCacheControl() {
@@ -182,5 +183,9 @@ public class RetrofitManager {
      */
     public Observable<Map<String, NewsDetail>> getNewsDetailObservable(String postId) {
         return mNewsService.getNewDetail(getCacheControl(), postId);
+    }
+
+    public Observable<ResponseBody> getNewsBodyHtmlPhoto(String photoPath) {
+        return mNewsService.getNewsBodyHtmlPhoto(getCacheControl(), photoPath);
     }
 }

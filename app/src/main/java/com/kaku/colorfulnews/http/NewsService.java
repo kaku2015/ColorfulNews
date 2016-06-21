@@ -22,9 +22,11 @@ import com.kaku.colorfulnews.bean.NewsSummary;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -42,4 +44,11 @@ public interface NewsService {
     Observable<Map<String, NewsDetail>> getNewDetail(
             @Header("Cache-Control") String cacheControl,
             @Path("postId") String postId);
+
+    @GET
+    Observable<ResponseBody> getNewsBodyHtmlPhoto(
+            @Header("Cache-Control") String cacheControl,
+            @Url String photoPath);
+    //@Url，它允许我们直接传入一个请求的URL。这样以来我们可以将上一个请求的获得的url直接传入进来，baseUrl将被无视
+    // baseUrl 需要符合标准，为空、""、或不合法将会报错
 }

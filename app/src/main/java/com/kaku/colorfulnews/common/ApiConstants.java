@@ -165,12 +165,21 @@ public class ApiConstants {
      * @return host
      */
     public static String getHost(int hostType) {
+        String host;
         switch (hostType) {
             case HostType.NETEASE_NEWS_VIDEO:
-                return NETEAST_HOST;
+                host = NETEAST_HOST;
+                break;
             case HostType.SINA_NEWS_PHOTO:
-                return SINA_PHOTO_HOST;
+                host = SINA_PHOTO_HOST;
+                break;
+            case HostType.NEWS_DETAIL_HTML_PHOTO:
+                host = "http://kaku.com/";
+                break;
+            default:
+                host = "";
+                break;
         }
-        return "";
+        return host;
     }
 }
