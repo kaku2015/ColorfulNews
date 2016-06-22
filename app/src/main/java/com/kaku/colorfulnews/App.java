@@ -25,6 +25,9 @@ import android.os.StrictMode;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.kaku.colorfulnews.common.Constants;
+import com.kaku.colorfulnews.di.component.AppComponent;
+import com.kaku.colorfulnews.di.component.DaggerAppComponent;
+import com.kaku.colorfulnews.di.module.AppModule;
 import com.kaku.colorfulnews.greendao.DaoMaster;
 import com.kaku.colorfulnews.greendao.DaoSession;
 import com.kaku.colorfulnews.greendao.NewsChannelTableDao;
@@ -42,6 +45,7 @@ import de.greenrobot.dao.query.QueryBuilder;
  */
 public class App extends Application {
 
+    private AppComponent mAppComponent;
     private RefWatcher refWatcher;
 
     public static RefWatcher getRefWatcher(Context context) {
@@ -51,10 +55,6 @@ public class App extends Application {
 
     private static Context sAppContext;
     private static DaoSession mDaoSession;
-
-    public static Context getAppContext() {
-        return sAppContext;
-    }
 
     @Override
     public void onCreate() {
@@ -67,6 +67,7 @@ public class App extends Application {
         KLog.init(BuildConfig.LOG_DEBUG);
         // 官方推荐将获取 DaoMaster 对象的方法放到 Application 层，这样将避免多次创建生成 Session 对象
         setupDatabase();
+        setupAppComponent();
 
     }
 
@@ -161,6 +162,21 @@ public class App extends Application {
         // 在 QueryBuilder 类中内置两个 Flag 用于方便输出执行的 SQL 语句与传递参数的值
         QueryBuilder.LOG_SQL = BuildConfig.DEBUG;
         QueryBuilder.LOG_VALUES = BuildConfig.DEBUG;
+    }
+
+    public static Context getAppContext() {
+        return sAppContext;
+    }
+
+    private void setupAppComponent() {
+        mAppComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .build();
+        mAppComponent.inject(this);
+    }
+
+    public AppComponent getAppComponent() {
+        return mAppComponent;
     }
 
     public static NewsChannelTableDao getNewsChannelTableDao() {

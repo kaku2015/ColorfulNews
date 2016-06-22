@@ -27,9 +27,9 @@
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share"/>
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/no_photo"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send"/>
+                android:title="无图"/>
         </menu>
     </item>
 

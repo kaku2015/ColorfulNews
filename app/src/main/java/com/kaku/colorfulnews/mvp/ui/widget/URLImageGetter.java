@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.widget;
+package com.kaku.colorfulnews.mvp.ui.widget;
 
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.HostType;
-import com.kaku.colorfulnews.http.RetrofitManager;
+import com.kaku.colorfulnews.domain.RetrofitManager;
 import com.socks.library.KLog;
 
 import java.io.File;

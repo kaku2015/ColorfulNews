@@ -39,13 +39,13 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsDetail;
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.inject.component.DaggerNewsDetailComponent;
-import com.kaku.colorfulnews.inject.module.NewsDetailModule;
+import com.kaku.colorfulnews.di.component.DaggerNewsDetailComponent;
+import com.kaku.colorfulnews.di.module.NewsDetailModule;
 import com.kaku.colorfulnews.mvp.presenter.NewsDetailPresenter;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.mvp.view.NewsDetailView;
-import com.kaku.colorfulnews.widget.URLImageGetter;
+import com.kaku.colorfulnews.mvp.ui.widget.URLImageGetter;
 import com.socks.library.KLog;
 
 import java.util.List;

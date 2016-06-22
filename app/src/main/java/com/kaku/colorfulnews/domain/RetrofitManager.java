@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.http;
+package com.kaku.colorfulnews.domain;
 
 import android.support.annotation.NonNull;
 import android.util.SparseArray;

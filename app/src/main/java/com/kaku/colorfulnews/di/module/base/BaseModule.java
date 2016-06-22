@@ -14,18 +14,14 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.inject.component;
+package com.kaku.colorfulnews.di.module.base;
 
-import com.kaku.colorfulnews.inject.module.NewsDetailModule;
-import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
-
-import dagger.Component;
+import com.kaku.colorfulnews.mvp.view.base.BaseView;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/7
+ * @version 1.0 2016/6/2
  */
-@Component(modules = {NewsDetailModule.class})
-public interface NewsDetailComponent {
-    void Inject(NewsDetailActivity newsDetailActivity);
+public class BaseModule<T extends BaseView> {
+    protected T mView;
 }

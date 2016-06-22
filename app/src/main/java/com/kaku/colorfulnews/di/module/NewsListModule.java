@@ -14,9 +14,9 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.inject.module;
+package com.kaku.colorfulnews.di.module;
 
-import com.kaku.colorfulnews.inject.module.base.BaseModule;
+import com.kaku.colorfulnews.di.module.base.BaseModule;
 import com.kaku.colorfulnews.mvp.presenter.NewsListPresenter;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsRecyclerViewAdapter;

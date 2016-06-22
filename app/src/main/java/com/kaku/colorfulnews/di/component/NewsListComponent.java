@@ -14,18 +14,18 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.inject.component;
+package com.kaku.colorfulnews.di.component;
 
-import com.kaku.colorfulnews.inject.module.NewsModule;
-import com.kaku.colorfulnews.mvp.ui.activities.NewsActivity;
+import com.kaku.colorfulnews.di.module.NewsListModule;
+import com.kaku.colorfulnews.mvp.ui.fragment.NewsListFragment;
 
 import dagger.Component;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/2
+ * @version 1.0 2016/5/21
  */
-@Component(modules = {NewsModule.class})
-public interface NewsComponent {
-    void inject(NewsActivity newsActivity);
+@Component(modules = {NewsListModule.class})
+public interface NewsListComponent {
+    void inject(NewsListFragment newsFragment);
 }

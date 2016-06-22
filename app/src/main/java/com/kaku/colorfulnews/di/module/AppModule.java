@@ -14,31 +14,32 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.inject.module;
+package com.kaku.colorfulnews.di.module;
 
-import com.kaku.colorfulnews.inject.module.base.BaseModule;
-import com.kaku.colorfulnews.mvp.presenter.NewsDetailPresenter;
-import com.kaku.colorfulnews.mvp.presenter.impl.NewsDetailPresenterImpl;
-import com.kaku.colorfulnews.mvp.view.NewsDetailView;
+import android.content.Context;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/7
+ * @version 1.0 2016/6/21
  */
-@Module
-public class NewsDetailModule extends BaseModule<NewsDetailView> {
-    private String mPostId;
 
-    public NewsDetailModule(NewsDetailView newsDetailView, String postId) {
-        mView = newsDetailView;
-        mPostId = postId;
+@Module
+public class AppModule {
+    private Context mContext;
+
+    public AppModule(Context appContext) {
+        mContext = appContext;
     }
 
     @Provides
-    public NewsDetailPresenter provideNewsDetailPresenter() {
-        return new NewsDetailPresenterImpl(mView, mPostId);
+    @Singleton
+    public Context provideApplicationContext() {
+        return mContext;
     }
+
 }

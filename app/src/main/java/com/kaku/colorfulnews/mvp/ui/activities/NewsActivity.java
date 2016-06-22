@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -34,9 +35,9 @@ import android.view.MenuItem;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.inject.component.DaggerNewsComponent;
+import com.kaku.colorfulnews.di.component.DaggerNewsComponent;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
-import com.kaku.colorfulnews.inject.module.NewsModule;
+import com.kaku.colorfulnews.di.module.NewsModule;
 import com.kaku.colorfulnews.mvp.presenter.NewsPresenter;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.fragment.NewsListFragment;
@@ -233,7 +234,19 @@ public class NewsActivity extends BaseActivity
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.no_photo) {
+            // Fixme
+            SharedPreferences sharedPreferences = MyUtils.getSharedPreferences();
+            boolean isShowNewsPhoto = sharedPreferences.getBoolean(Constants.SHOW_NEWS_PHOTO, true);
+            if (isShowNewsPhoto) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Constants.SHOW_NEWS_PHOTO, false);
+                editor.apply();
+            } else {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Constants.SHOW_NEWS_PHOTO, true);
+                editor.apply();
+            }
 
         }
 
