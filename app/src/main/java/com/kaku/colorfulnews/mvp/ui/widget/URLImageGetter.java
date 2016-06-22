@@ -27,6 +27,7 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.HostType;
 import com.kaku.colorfulnews.domain.RetrofitManager;
+import com.kaku.colorfulnews.utils.MyUtils;
 import com.socks.library.KLog;
 
 import java.io.File;
@@ -162,7 +163,14 @@ public class URLImageGetter implements Html.ImageGetter {
     @NonNull
     private Drawable createPicPlaceholder() {
         Drawable drawable;
-        drawable = new ColorDrawable(App.getAppContext().getResources().getColor(R.color.background_color));
+        // Fixme:动态不能自动换肤
+        int color;
+        if (!MyUtils.isNightMode()) {
+            color = R.color.image_place_holder;
+        } else {
+            color = R.color.image_place_holder_night;
+        }
+        drawable = new ColorDrawable(App.getAppContext().getResources().getColor(color));
         drawable.setBounds(0, 0, mPicWidth, mPicWidth / 3);
         return drawable;
     }

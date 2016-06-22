@@ -23,8 +23,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -36,13 +34,14 @@ import android.view.MenuItem;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.di.component.DaggerNewsComponent;
-import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.di.module.NewsModule;
+import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.mvp.presenter.NewsPresenter;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
+import com.kaku.colorfulnews.mvp.ui.adapter.PagerAdapter.NewsFragmentPagerAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.NewsListFragment;
-import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.mvp.view.NewsView;
+import com.kaku.colorfulnews.utils.MyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +77,10 @@ public class NewsActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        init();
+    }
+
+    private void init() {
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         setStatusBarTranslucent();
@@ -91,15 +94,17 @@ public class NewsActivity extends BaseActivity
         DaggerNewsComponent.builder()
                 .newsModule(new NewsModule(this))
                 .build().inject(this);
-
         mPresenter = mNewsPresenter;
         mPresenter.onCreate();
     }
 
     @OnClick(R.id.fab)
     public void onClick() {
-/*        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();*/
+        changeToDayOrNightMode();
+        recreate();
+    }
+
+    private void changeToDayOrNightMode() {
         if (MyUtils.isNightMode()) {
             changeToDay();
             MyUtils.saveTheme(false);
@@ -107,43 +112,42 @@ public class NewsActivity extends BaseActivity
             changeToNight();
             MyUtils.saveTheme(true);
         }
-        recreate();
     }
 
     @Override
     public void initViewPager(List<NewsChannelTable> newsChannels) {
         final List<String> channelNames = new ArrayList<>();
         if (newsChannels != null) {
-            for (NewsChannelTable newsChannel : newsChannels) {
-                NewsListFragment newsListFragment = createListFragments(newsChannel.getNewsChannelId(),
-                        newsChannel.getNewsChannelType(), newsChannel.getNewsChannelIndex());
-                mNewsFragmentList.add(newsListFragment);
-                channelNames.add(newsChannel.getNewsChannelName());
-
-            }
-
-            //设置TabLayout的模式
-            mTabs.setTabMode(TabLayout.MODE_FIXED);
-            //为TabLayout添加tab名称
-//        mTabs.addTab(mTabs.newTab().setText("要闻"));
-//        mTabs.addTab(mTabs.newTab().setText("科技"));
-//        mTabs.addTab(mTabs.newTab().setText("娱乐"));
-
-            NewsFragmentPagerAdapter adapter = new NewsFragmentPagerAdapter(getSupportFragmentManager(), channelNames);
-            mViewPager.setAdapter(adapter);
-            mTabs.setupWithViewPager(mViewPager);
-//        mTabs.setTabsFromPagerAdapter(adapter);
+            setNewsList(newsChannels, channelNames);
+            setViewPager(channelNames);
         }
     }
 
-    private NewsListFragment createListFragments(String newsId, String newsType, int channelPosition) {
+    private void setNewsList(List<NewsChannelTable> newsChannels, List<String> channelNames) {
+        for (NewsChannelTable newsChannel : newsChannels) {
+            NewsListFragment newsListFragment = createListFragments(newsChannel);
+            mNewsFragmentList.add(newsListFragment);
+            channelNames.add(newsChannel.getNewsChannelName());
+        }
+    }
+
+    private NewsListFragment createListFragments(NewsChannelTable newsChannel) {
         NewsListFragment fragment = new NewsListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.NEWS_ID, newsId);
-        bundle.putString(Constants.NEWS_TYPE, newsType);
-        bundle.putInt(Constants.CHANNEL_POSITION, channelPosition);
+        bundle.putString(Constants.NEWS_ID, newsChannel.getNewsChannelId());
+        bundle.putString(Constants.NEWS_TYPE, newsChannel.getNewsChannelType());
+        bundle.putInt(Constants.CHANNEL_POSITION, newsChannel.getNewsChannelIndex());
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    private void setViewPager(List<String> channelNames) {
+        mTabs.setTabMode(TabLayout.MODE_FIXED);
+        NewsFragmentPagerAdapter adapter = new NewsFragmentPagerAdapter(
+                getSupportFragmentManager(), channelNames, mNewsFragmentList);
+        mViewPager.setAdapter(adapter);
+        mTabs.setupWithViewPager(mViewPager);
+//        mTabs.setTabsFromPagerAdapter(adapter);
     }
 
     @Override
@@ -159,32 +163,6 @@ public class NewsActivity extends BaseActivity
     @Override
     public void showErrorMsg(String message) {
         Snackbar.make(mFab, message, Snackbar.LENGTH_SHORT).show();
-    }
-
-    private class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
-
-        private final List<String> mTitles;
-
-        public NewsFragmentPagerAdapter(FragmentManager fm, List<String> titles) {
-            super(fm);
-            mTitles = titles;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mTitles.get(position);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mNewsFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mNewsFragmentList.size();
-        }
-
     }
 
     @Override

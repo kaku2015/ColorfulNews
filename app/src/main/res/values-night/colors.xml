@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="colorPrimary">#212121</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#FF4081</color>-->
+    <!--    <color name="colorPrimary">#212121</color>
+        <color name="colorPrimaryDark">#000000</color>
+        <color name="colorAccent">#FF4081</color>-->
 
     <color name="night_mask">#90000000</color>
     <!--56%black-->
-    <color name="container_background">#383838</color>
-    <color name="item_background">#2E3537</color>
+    <!--    <color name="container_background">#1D2124</color>
+        <color name="item_background">#1F2326</color>-->
+    <color name="container_background">#383F41</color>
+    <color name="item_background">#41494B</color>
     <color name="primary_text">#deffffff</color>
     <!--87%white-->
     <color name="secondary_text">#8affffff</color>
@@ -15,12 +17,15 @@
     <color name="tertiary_text">#8affffff</color>
     <!--54%white-->
 
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#a5FFFFFF</color>
-    <color name="background_color">#303030</color>
-    <color name="item_color">#404040</color>
-    <color name="fab_color">#ddffab00</color>
+    <color name="image_place_holder">#272B2F</color>
+    <!--87%black-->
 
-    <color name="textColorSecondary">#FAFAFA</color>
+    <!--    <color name="icons">#FFFFFF</color>
+        <color name="divider">#a5FFFFFF</color>
+        <color name="background_color">#303030</color>
+        <color name="item_color">#404040</color>
+        <color name="fab_color">#ddffab00</color>
+
+        <color name="textColorSecondary">#FAFAFA</color>-->
 
 </resources>

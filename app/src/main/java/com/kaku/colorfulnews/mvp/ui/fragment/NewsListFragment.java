@@ -77,6 +77,10 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initValues();
+    }
+
+    private void initValues() {
         if (getArguments() != null) {
             mNewsId = getArguments().getString(Constants.NEWS_ID);
             mNewsType = getArguments().getString(Constants.NEWS_TYPE);
@@ -88,6 +92,12 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
+        init(view);
+        checkNetworkState();
+        return view;
+    }
+
+    private void init(View view) {
         ButterKnife.bind(this, view);
 
         mNewsRV.setHasFixedSize(true);
@@ -98,17 +108,12 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
                 .newsListModule(new NewsListModule(this, mNewsType, mNewsId))
                 .build()
                 .inject(this);
-
         mPresenter = mNewsListPresenter;
         mPresenter.onCreate();
         mNewsRecyclerViewAdapter.setOnItemClickListener(this);
-
-        checkNetState();
-
-        return view;
     }
 
-    private void checkNetState() {
+    private void checkNetworkState() {
         if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
             //TODO: 刚启动app Snackbar不起作用，延迟显示也不好使，这是why？
             Toast.makeText(getActivity(), getActivity().getString(R.string.internet_error), Toast.LENGTH_SHORT).show();
@@ -154,18 +159,19 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
 
     @Override
     public void onDestroyView() {
-        mNewsListPresenter.onDestroy();
         super.onDestroyView();
+        mNewsListPresenter.onDestroy();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onItemClick(View view, int position) {
-        List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
-        goToNewsDetailActivity(view, position, newsSummaryList);
+        goToNewsDetailActivity(view, position);
     }
 
-    private void goToNewsDetailActivity(View view, int position, List<NewsSummary> newsSummaryList) {
+    private void goToNewsDetailActivity(View view, int position) {
+        List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
+
         Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
         intent.putExtra(Constants.NEWS_POST_ID, newsSummaryList.get(position).getPostid());
         intent.putExtra(Constants.NEWS_IMG_RES, newsSummaryList.get(position).getImgsrc());

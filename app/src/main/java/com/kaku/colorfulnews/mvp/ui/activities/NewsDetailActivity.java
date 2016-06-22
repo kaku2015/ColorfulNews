@@ -89,19 +89,17 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-        ButterKnife.bind(this);
         init();
-        setSupportActionBar(mToolbar);
     }
 
     private void init() {
         ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
 
         String postId = getIntent().getStringExtra(Constants.NEWS_POST_ID);
         DaggerNewsDetailComponent.builder()
                 .newsDetailModule(new NewsDetailModule(this, postId))
                 .build().Inject(this);
-
         mPresenter = mNewsDetailPresenter;
         mPresenter.onCreate();
     }
