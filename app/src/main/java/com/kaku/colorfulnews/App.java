@@ -168,6 +168,7 @@ public class App extends Application {
         return sAppContext;
     }
 
+    // Fixme
     private void setupAppComponent() {
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
