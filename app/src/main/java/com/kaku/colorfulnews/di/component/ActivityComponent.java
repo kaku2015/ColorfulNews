@@ -16,19 +16,19 @@
  */
 package com.kaku.colorfulnews.di.component;
 
-import com.kaku.colorfulnews.App;
-import com.kaku.colorfulnews.di.module.AppModule;
-import com.kaku.colorfulnews.di.scope.PerApp;
+import android.app.Activity;
+
+import com.kaku.colorfulnews.di.module.ActivityModule;
+import com.kaku.colorfulnews.di.scope.PerActivity;
 
 import dagger.Component;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/22
+ * @version 1.0 2016/6/23
  */
-@PerApp
-@Component(modules = AppModule.class)
-public interface AppComponent {
-    void inject(App app);
+@PerActivity
+@Component(dependencies = AppComponent.class, modules = ActivityModule.class)
+public interface ActivityComponent {
+    Activity activity();
 }
-

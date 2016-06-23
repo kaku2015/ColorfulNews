@@ -14,21 +14,30 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.di.component;
+package com.kaku.colorfulnews.di.module;
 
-import com.kaku.colorfulnews.App;
-import com.kaku.colorfulnews.di.module.AppModule;
-import com.kaku.colorfulnews.di.scope.PerApp;
+import android.app.Activity;
 
-import dagger.Component;
+import com.kaku.colorfulnews.di.scope.PerActivity;
+
+import dagger.Module;
+import dagger.Provides;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/22
+ * @version 1.0 2016/6/23
  */
-@PerApp
-@Component(modules = AppModule.class)
-public interface AppComponent {
-    void inject(App app);
-}
+@Module
+public class ActivityModule {
+    private Activity mActivity;
 
+    public ActivityModule(Activity activity) {
+        mActivity = activity;
+    }
+
+    @Provides
+    @PerActivity
+    public Activity ProvideActivity() {
+        return mActivity;
+    }
+}

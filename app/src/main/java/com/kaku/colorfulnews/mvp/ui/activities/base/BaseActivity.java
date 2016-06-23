@@ -28,6 +28,7 @@ import android.view.WindowManager;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.di.module.ActivityModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
 import com.kaku.colorfulnews.utils.LogUtil;
 import com.kaku.colorfulnews.utils.MyUtils;
@@ -47,6 +48,10 @@ public class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
     private View mNightView = null;
     private boolean mIsAddedView;
     protected T mPresenter;
+
+    protected ActivityModule getActivityModule() {
+        return new ActivityModule(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

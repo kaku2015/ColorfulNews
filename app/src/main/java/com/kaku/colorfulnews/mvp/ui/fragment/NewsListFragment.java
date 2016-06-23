@@ -39,14 +39,14 @@ import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.di.component.DaggerNewsListComponent;
-import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.di.module.NewsListModule;
+import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.presenter.NewsListPresenter;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsRecyclerViewAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.base.BaseFragment;
-import com.kaku.colorfulnews.utils.NetUtil;
 import com.kaku.colorfulnews.mvp.view.NewsListView;
+import com.kaku.colorfulnews.utils.NetUtil;
 
 import java.util.List;
 
@@ -69,6 +69,8 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
     @Inject
     NewsListPresenter mNewsListPresenter;
+/*    @Inject
+    NewsActivity mNewsActivity;*/
 
     private String mNewsId;
     private String mNewsType;

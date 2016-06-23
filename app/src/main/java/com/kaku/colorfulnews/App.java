@@ -45,7 +45,7 @@ import de.greenrobot.dao.query.QueryBuilder;
  */
 public class App extends Application {
 
-    private AppComponent mAppComponent;
+    private static AppComponent mAppComponent;
     private RefWatcher refWatcher;
 
     public static RefWatcher getRefWatcher(Context context) {
@@ -59,7 +59,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sAppContext = getApplicationContext();
+        sAppContext = this;
         initLeakCanary();
         initActivityLifecycleLogs();
         initStrictMode();
@@ -173,10 +173,10 @@ public class App extends Application {
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
-        mAppComponent.inject(this);
+//        mAppComponent.inject(this);
     }
 
-    public AppComponent getAppComponent() {
+    public static AppComponent getAppComponent() {
         return mAppComponent;
     }
 

@@ -18,7 +18,7 @@ package com.kaku.colorfulnews.di.module;
 
 import android.content.Context;
 
-import javax.inject.Singleton;
+import com.kaku.colorfulnews.di.scope.PerApp;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,7 +37,7 @@ public class AppModule {
     }
 
     @Provides
-    @Singleton
+    @PerApp
     public Context provideApplicationContext() {
         return mContext;
     }
