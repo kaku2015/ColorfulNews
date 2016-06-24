@@ -39,13 +39,11 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsDetail;
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.di.component.DaggerNewsDetailComponent;
-import com.kaku.colorfulnews.di.module.NewsDetailModule;
-import com.kaku.colorfulnews.mvp.presenter.NewsDetailPresenter;
+import com.kaku.colorfulnews.mvp.presenter.impl.NewsDetailPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
-import com.kaku.colorfulnews.utils.MyUtils;
-import com.kaku.colorfulnews.mvp.view.NewsDetailView;
 import com.kaku.colorfulnews.mvp.ui.widget.URLImageGetter;
+import com.kaku.colorfulnews.mvp.view.NewsDetailView;
+import com.kaku.colorfulnews.utils.MyUtils;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -82,35 +80,35 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     View mMaskView;
 
     @Inject
-    NewsDetailPresenter mNewsDetailPresenter;
+    NewsDetailPresenterImpl mNewsDetailPresenter;
+
     URLImageGetter mUrlImageGetter;
 
     @Override
-    public int setContentView() {
+    public int getLayoutId() {
         return R.layout.activity_news_detail;
     }
 
     @Override
     public void initInjector() {
+        mActivityComponent.inject(this);
+    }
 
+    @Override
+    public void initViews() {
+        ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
+
+        String postId = getIntent().getStringExtra(Constants.NEWS_POST_ID);
+        mNewsDetailPresenter.setPosId(postId);
+        mPresenter = mNewsDetailPresenter;
+        mPresenter.attachView(this);
+        mPresenter.onCreate();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        init();
-    }
-
-    private void init() {
-        ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
-
-        String postId = getIntent().getStringExtra(Constants.NEWS_POST_ID);
-        DaggerNewsDetailComponent.builder()
-                .newsDetailModule(new NewsDetailModule(this, postId))
-                .build().Inject(this);
-        mPresenter = mNewsDetailPresenter;
-        mPresenter.onCreate();
     }
 
     @SuppressWarnings("deprecation")
@@ -139,6 +137,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
         Glide.with(this).load(imgSrc).asBitmap()
                 .format(DecodeFormat.PREFER_ARGB_8888)
 //                .placeholder(R.mipmap.ic_loading)
+                .error(R.mipmap.ic_load_fail)
+                .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.mipmap.ic_load_fail)
                 .into(new SimpleTarget<Bitmap>() {

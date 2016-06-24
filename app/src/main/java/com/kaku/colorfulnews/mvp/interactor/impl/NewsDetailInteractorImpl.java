@@ -28,6 +28,8 @@ import com.socks.library.KLog;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,6 +41,10 @@ import rx.schedulers.Schedulers;
  * @version 1.0 2016/6/4
  */
 public class NewsDetailInteractorImpl implements NewsDetailInteractor<NewsDetail> {
+
+    @Inject
+    public NewsDetailInteractorImpl() {
+    }
 
     @Override
     public Subscription loadNewsDetail(final RequestCallBack<NewsDetail> callBack, final String postId) {

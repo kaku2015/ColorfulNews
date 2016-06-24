@@ -37,9 +37,8 @@ public class NewPresenterImpl extends BasePresenterImpl<NewsView, List<NewsChann
     private NewsInteractor<List<NewsChannelTable>> mNewsInteractor;
 
     @Inject
-    public NewPresenterImpl(NewsView newsView) {
-        mView = newsView;
-        mNewsInteractor = new NewsInteractorImpl();
+    public NewPresenterImpl(NewsInteractorImpl newsInteractor) {
+        mNewsInteractor = newsInteractor;
     }
 
     @Override

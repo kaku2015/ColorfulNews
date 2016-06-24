@@ -23,5 +23,5 @@ import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
  * @version 1.0 2016/6/5
  */
 public interface NewsDetailPresenter extends BasePresenter {
-
+    void setPosId(String postId);
 }

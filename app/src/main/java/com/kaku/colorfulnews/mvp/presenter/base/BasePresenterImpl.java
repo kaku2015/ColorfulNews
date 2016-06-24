@@ -16,6 +16,8 @@
  */
 package com.kaku.colorfulnews.mvp.presenter.base;
 
+import android.support.annotation.NonNull;
+
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.view.base.BaseView;
 
@@ -40,6 +42,12 @@ public class BasePresenterImpl<T extends BaseView, E> implements BasePresenter, 
             mSubscription.unsubscribe();
         }
         mView = null;
+    }
+
+    @Override
+    public void attachView(@NonNull BaseView view) {
+        // TODO?
+        mView = (T) view;
     }
 
     @Override

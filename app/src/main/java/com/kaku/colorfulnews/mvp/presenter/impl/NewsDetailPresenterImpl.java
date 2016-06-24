@@ -23,6 +23,8 @@ import com.kaku.colorfulnews.mvp.presenter.NewsDetailPresenter;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenterImpl;
 import com.kaku.colorfulnews.mvp.view.NewsDetailView;
 
+import javax.inject.Inject;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/6/5
@@ -32,10 +34,9 @@ public class NewsDetailPresenterImpl extends BasePresenterImpl<NewsDetailView, N
     private NewsDetailInteractor<NewsDetail> mNewsDetailInteractor;
     private String mPostId;
 
-    public NewsDetailPresenterImpl(NewsDetailView newsDetailView, String postId) {
-        mView = newsDetailView;
-        mPostId = postId;
-        mNewsDetailInteractor = new NewsDetailInteractorImpl();
+    @Inject
+    public NewsDetailPresenterImpl(NewsDetailInteractorImpl newsDetailInteractor) {
+        mNewsDetailInteractor = newsDetailInteractor;
     }
 
     @Override
@@ -49,5 +50,10 @@ public class NewsDetailPresenterImpl extends BasePresenterImpl<NewsDetailView, N
     public void success(NewsDetail data) {
         super.success(data);
         mView.setNewsDetail(data);
+    }
+
+    @Override
+    public void setPosId(String postId) {
+        mPostId = postId;
     }
 }

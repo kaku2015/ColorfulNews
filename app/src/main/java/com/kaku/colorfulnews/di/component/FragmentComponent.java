@@ -22,6 +22,7 @@ import android.content.Context;
 import com.kaku.colorfulnews.di.module.FragmentModule;
 import com.kaku.colorfulnews.di.scope.ContextLife;
 import com.kaku.colorfulnews.di.scope.PerFragment;
+import com.kaku.colorfulnews.mvp.ui.fragment.NewsListFragment;
 
 import dagger.Component;
 
@@ -40,5 +41,5 @@ public interface FragmentComponent {
 
     Activity getActivity();
 
-//    void inject(NewsListFragment newsListFragment);
+    void inject(NewsListFragment newsListFragment);
 }

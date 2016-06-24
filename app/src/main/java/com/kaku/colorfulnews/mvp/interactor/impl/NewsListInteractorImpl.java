@@ -30,6 +30,8 @@ import com.socks.library.KLog;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -45,6 +47,10 @@ import rx.schedulers.Schedulers;
 public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSummary>> {
 
 //    private boolean mIsNetError;
+
+    @Inject
+    public NewsListInteractorImpl() {
+    }
 
     @Override
     public Subscription loadNews(final RequestCallBack<List<NewsSummary>> listener, String type,

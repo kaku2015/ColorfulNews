@@ -26,6 +26,8 @@ import com.socks.library.KLog;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -37,6 +39,11 @@ import rx.schedulers.Schedulers;
  * @version 1.0 2016/6/2
  */
 public class NewsInteractorImpl implements NewsInteractor<List<NewsChannelTable>> {
+
+    @Inject
+    public NewsInteractorImpl() {
+    }
+
     @Override
     public Subscription lodeNewsChannels(final RequestCallBack<List<NewsChannelTable>> callback) {
         return Observable.create(new Observable.OnSubscribe<List<NewsChannelTable>>() {

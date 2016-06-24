@@ -19,6 +19,9 @@ package com.kaku.colorfulnews.mvp.ui.fragment.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.di.component.DaggerFragmentComponent;
@@ -33,10 +36,18 @@ import com.squareup.leakcanary.RefWatcher;
  */
 public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
 
+    public FragmentComponent getFragmentComponent() {
+        return mFragmentComponent;
+    }
+
     protected FragmentComponent mFragmentComponent;
     protected T mPresenter;
 
-    public abstract void initInjecor();
+    public abstract void initInjector();
+
+    public abstract void initViews(View view);
+
+    public abstract int getLayoutId();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +56,19 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
                 .applicationComponent(((App) getActivity().getApplication()).getApplicationComponent())
                 .fragmentModule(new FragmentModule(this))
                 .build();
-        initInjecor();
+        initInjector();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(getLayoutId(), container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViews(view);
     }
 
     @Override

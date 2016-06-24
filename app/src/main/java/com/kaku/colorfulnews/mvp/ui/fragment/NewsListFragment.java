@@ -18,6 +18,7 @@ package com.kaku.colorfulnews.mvp.ui.fragment;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,9 +29,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -39,10 +38,9 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.di.component.DaggerNewsListComponent;
-import com.kaku.colorfulnews.di.module.NewsListModule;
+import com.kaku.colorfulnews.di.scope.ContextLife;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
-import com.kaku.colorfulnews.mvp.presenter.NewsListPresenter;
+import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsRecyclerViewAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.base.BaseFragment;
@@ -69,23 +67,47 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     @Inject
     NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
     @Inject
-    NewsListPresenter mNewsListPresenter;
-/*    @Inject
-    NewsActivity mNewsActivity;*/
+    NewsListPresenterImpl mNewsListPresenter;
+
+    @Inject
+    @ContextLife("Activity")
+    Context mContext;
 
     private String mNewsId;
     private String mNewsType;
     private int mStartPage;
 
     @Override
-    public void initInjecor() {
+    public void initInjector() {
+        mFragmentComponent.inject(this);
+    }
 
+    @Override
+    public void initViews(View view) {
+        ButterKnife.bind(this, view);
+
+        mNewsRV.setHasFixedSize(true);
+        mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
+
+        mNewsRecyclerViewAdapter.setOnItemClickListener(this);
+
+        mNewsListPresenter.setNewsTypeAndId(mNewsType, mNewsId);
+        mPresenter = mNewsListPresenter;
+        mPresenter.attachView(this);
+        mPresenter.onCreate();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_news;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initValues();
+        checkNetworkState();
     }
 
     private void initValues() {
@@ -96,35 +118,10 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
         }
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news, container, false);
-        init(view);
-        checkNetworkState();
-        return view;
-    }
-
-    private void init(View view) {
-        ButterKnife.bind(this, view);
-
-        mNewsRV.setHasFixedSize(true);
-        mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.VERTICAL, false));
-
-        DaggerNewsListComponent.builder()
-                .newsListModule(new NewsListModule(this, mNewsType, mNewsId))
-                .build()
-                .inject(this);
-        mPresenter = mNewsListPresenter;
-        mPresenter.onCreate();
-        mNewsRecyclerViewAdapter.setOnItemClickListener(this);
-    }
-
     private void checkNetworkState() {
         if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
             //TODO: 刚启动app Snackbar不起作用，延迟显示也不好使，这是why？
-            Toast.makeText(getActivity(), getActivity().getString(R.string.internet_error), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getActivity().getString(R.string.internet_error), Toast.LENGTH_SHORT).show();
 /*            new Handler().postDelayed(new Runnable() {
                 public void run() {
                     Snackbar.make(mNewsRV, App.getAppContext().getString(R.string.internet_error), Snackbar.LENGTH_LONG);

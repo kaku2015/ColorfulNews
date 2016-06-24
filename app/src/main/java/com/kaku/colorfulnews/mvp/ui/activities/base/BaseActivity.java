@@ -46,16 +46,22 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      * Log tag ：BaseActivity
      */
     protected ActivityComponent mActivityComponent;
+
+    public ActivityComponent getActivityComponent() {
+        return mActivityComponent;
+    }
+
     private static final String LOG_TAG = "BaseActivity";
     private WindowManager mWindowManager = null;
     private View mNightView = null;
     private boolean mIsAddedView;
     protected T mPresenter;
 
-    public abstract int setContentView();
+    public abstract int getLayoutId();
 
     public abstract void initInjector();
 
+    public abstract void initViews();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +74,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 //        setStatusBarTranslucent();
         setNightOrDayMode();
 
-        int layout = setContentView();
-        setContentView(layout);
+        int layoutId = getLayoutId();
+        setContentView(layoutId);
         initInjector();
+        initViews();
     }
 
     private void setNightOrDayMode() {

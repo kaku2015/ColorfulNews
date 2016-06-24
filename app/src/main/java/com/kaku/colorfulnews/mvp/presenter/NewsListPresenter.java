@@ -23,5 +23,5 @@ import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
  * @version 1.0 2016/5/19
  */
 public interface NewsListPresenter extends BasePresenter {
-
+    void setNewsTypeAndId(String newsType, String newsId);
 }

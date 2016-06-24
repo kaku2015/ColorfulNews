@@ -26,6 +26,8 @@ import com.kaku.colorfulnews.mvp.view.NewsListView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
@@ -43,11 +45,9 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
      */
     private boolean misLoaded;
 
-    public NewsListPresenterImpl(NewsListView newsListView, String newsType, String newsId) {
-        mView = newsListView;
-        mNewsListInteractor = new NewsListInteractorImpl();
-        mNewsType = newsType;
-        mNewsId = newsId;
+    @Inject
+    public NewsListPresenterImpl(NewsListInteractorImpl newsListInteractor) {
+        mNewsListInteractor = newsListInteractor;
     }
 
     @Override
@@ -74,4 +74,9 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
 
     }
 
+    @Override
+    public void setNewsTypeAndId(String newsType, String newsId) {
+        mNewsType = newsType;
+        mNewsId = newsId;
+    }
 }

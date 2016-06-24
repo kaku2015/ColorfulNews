@@ -22,6 +22,8 @@ import android.content.Context;
 import com.kaku.colorfulnews.di.module.ActivityModule;
 import com.kaku.colorfulnews.di.scope.ContextLife;
 import com.kaku.colorfulnews.di.scope.PerActivity;
+import com.kaku.colorfulnews.mvp.ui.activities.NewsActivity;
+import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 
 import dagger.Component;
 
@@ -41,5 +43,7 @@ public interface ActivityComponent {
 
     Activity getActivity();
 
-//    void inject(NewsActivity newsActivity);
+    void inject(NewsActivity newsActivity);
+
+    void inject(NewsDetailActivity newsDetailActivity);
 }

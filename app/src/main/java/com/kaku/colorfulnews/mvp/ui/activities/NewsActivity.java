@@ -33,10 +33,8 @@ import android.view.MenuItem;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.di.component.DaggerNewsComponent;
-import com.kaku.colorfulnews.di.module.NewsModule;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
-import com.kaku.colorfulnews.mvp.presenter.NewsPresenter;
+import com.kaku.colorfulnews.mvp.presenter.impl.NewPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.PagerAdapter.NewsFragmentPagerAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.NewsListFragment;
@@ -69,27 +67,27 @@ public class NewsActivity extends BaseActivity
     DrawerLayout mDrawerLayout;
 
     @Inject
-    NewsPresenter mNewsPresenter;
+    NewPresenterImpl mNewsPresenter;
 
     private List<Fragment> mNewsFragmentList = new ArrayList<>();
 
     @Override
-    public int setContentView() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public int getLayoutId() {
         return R.layout.activity_news;
     }
 
     @Override
     public void initInjector() {
-
+        mActivityComponent.inject(this);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        init();
-    }
-
-    private void init() {
+    public void initViews() {
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         setStatusBarTranslucent();
@@ -100,10 +98,8 @@ public class NewsActivity extends BaseActivity
         toggle.syncState();
         mNavView.setNavigationItemSelectedListener(this);
 
-        DaggerNewsComponent.builder()
-                .newsModule(new NewsModule(this))
-                .build().inject(this);
         mPresenter = mNewsPresenter;
+        mPresenter.attachView(this);
         mPresenter.onCreate();
     }
 

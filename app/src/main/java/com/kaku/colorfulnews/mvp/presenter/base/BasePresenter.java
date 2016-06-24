@@ -16,6 +16,10 @@
  */
 package com.kaku.colorfulnews.mvp.presenter.base;
 
+import android.support.annotation.NonNull;
+
+import com.kaku.colorfulnews.mvp.view.base.BaseView;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
@@ -26,5 +30,8 @@ public interface BasePresenter {
 
     void onCreate();
 
+    void attachView(@NonNull BaseView view);
+
     void onDestroy();
+
 }
