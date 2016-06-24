@@ -16,30 +16,44 @@
  */
 package com.kaku.colorfulnews.di.module;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
-import com.kaku.colorfulnews.di.scope.PerApp;
+import com.kaku.colorfulnews.di.scope.ContextLife;
+import com.kaku.colorfulnews.di.scope.PerFragment;
 
 import dagger.Module;
 import dagger.Provides;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/21
+ * @version 1.0 2016/6/24
  */
-
 @Module
-public class AppModule {
-    private Context mContext;
+public class FragmentModule {
+    private Fragment mFragment;
 
-    public AppModule(Context appContext) {
-        mContext = appContext;
+    public FragmentModule(Fragment fragment) {
+        mFragment = fragment;
     }
 
     @Provides
-    @PerApp
-    public Context provideApplicationContext() {
-        return mContext;
+    @PerFragment
+    @ContextLife("Activity")
+    public Context provideActivityContext() {
+        return mFragment.getActivity();
     }
 
+    @Provides
+    @PerFragment
+    public Activity privideActivity() {
+        return mFragment.getActivity();
+    }
+
+    @Provides
+    @PerFragment
+    public Fragment provideFragment() {
+        return mFragment;
+    }
 }

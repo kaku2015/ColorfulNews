@@ -86,9 +86,18 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     URLImageGetter mUrlImageGetter;
 
     @Override
+    public int setContentView() {
+        return R.layout.activity_news_detail;
+    }
+
+    @Override
+    public void initInjector() {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_detail);
         init();
     }
 

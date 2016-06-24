@@ -74,9 +74,18 @@ public class NewsActivity extends BaseActivity
     private List<Fragment> mNewsFragmentList = new ArrayList<>();
 
     @Override
+    public int setContentView() {
+        return R.layout.activity_news;
+    }
+
+    @Override
+    public void initInjector() {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news);
         init();
     }
 

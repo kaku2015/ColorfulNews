@@ -16,9 +16,14 @@
  */
 package com.kaku.colorfulnews.mvp.ui.fragment.base;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.kaku.colorfulnews.App;
+import com.kaku.colorfulnews.di.component.DaggerFragmentComponent;
+import com.kaku.colorfulnews.di.component.FragmentComponent;
+import com.kaku.colorfulnews.di.module.FragmentModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -26,9 +31,22 @@ import com.squareup.leakcanary.RefWatcher;
  * @author 咖枯
  * @version 1.0 2016/5/20
  */
-public class BaseFragment<T extends BasePresenter> extends Fragment {
+public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
 
+    protected FragmentComponent mFragmentComponent;
     protected T mPresenter;
+
+    public abstract void initInjecor();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFragmentComponent = DaggerFragmentComponent.builder()
+                .applicationComponent(((App) getActivity().getApplication()).getApplicationComponent())
+                .fragmentModule(new FragmentModule(this))
+                .build();
+        initInjecor();
+    }
 
     @Override
     public void onDestroy() {

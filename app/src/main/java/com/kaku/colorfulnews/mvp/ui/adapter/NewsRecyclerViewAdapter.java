@@ -43,7 +43,6 @@ import butterknife.ButterKnife;
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.ViewHolder> {
 
     private List<NewsSummary> mNewsSummaryList;
-
     private OnItemClickListener mOnItemClickListener;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {

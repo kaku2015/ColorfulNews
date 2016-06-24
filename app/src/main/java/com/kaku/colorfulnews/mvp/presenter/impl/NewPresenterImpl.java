@@ -25,6 +25,8 @@ import com.kaku.colorfulnews.mvp.view.NewsView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/6/2
@@ -34,6 +36,7 @@ public class NewPresenterImpl extends BasePresenterImpl<NewsView, List<NewsChann
 
     private NewsInteractor<List<NewsChannelTable>> mNewsInteractor;
 
+    @Inject
     public NewPresenterImpl(NewsView newsView) {
         mView = newsView;
         mNewsInteractor = new NewsInteractorImpl();

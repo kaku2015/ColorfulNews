@@ -16,37 +16,33 @@
  */
 package com.kaku.colorfulnews.di.module;
 
-import android.app.Activity;
 import android.content.Context;
 
+import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.di.scope.ContextLife;
-import com.kaku.colorfulnews.di.scope.PerActivity;
+import com.kaku.colorfulnews.di.scope.PerApp;
 
 import dagger.Module;
 import dagger.Provides;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/23
+ * @version 1.0 2016/6/21
  */
+
 @Module
-public class ActivityModule {
-    private Activity mActivity;
+public class ApplicationModule {
+    private App mApplication;
 
-    public ActivityModule(Activity activity) {
-        mActivity = activity;
+    public ApplicationModule(App application) {
+        mApplication = application;
     }
 
     @Provides
-    @PerActivity
-    @ContextLife("Activity")
-    public Context ProvideActivityContext() {
-        return mActivity;
+    @PerApp
+    @ContextLife("Application")
+    public Context provideApplicationContext() {
+        return mApplication.getApplicationContext();
     }
 
-    @Provides
-    @PerActivity
-    public Activity ProvideActivity() {
-        return mActivity;
-    }
 }

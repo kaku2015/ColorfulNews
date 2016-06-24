@@ -21,6 +21,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -75,6 +76,11 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     private String mNewsId;
     private String mNewsType;
     private int mStartPage;
+
+    @Override
+    public void initInjecor() {
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -172,14 +178,22 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     }
 
     private void goToNewsDetailActivity(View view, int position) {
+        Intent intent = setIntent(position);
+        startActivity(view, intent);
+    }
+
+    @NonNull
+    private Intent setIntent(int position) {
         List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
 
         Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
         intent.putExtra(Constants.NEWS_POST_ID, newsSummaryList.get(position).getPostid());
         intent.putExtra(Constants.NEWS_IMG_RES, newsSummaryList.get(position).getImgsrc());
+        return intent;
+    }
 
+    private void startActivity(View view, Intent intent) {
         ImageView newsSummaryPhotoIv = (ImageView) view.findViewById(R.id.news_summary_photo_iv);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(getActivity(), newsSummaryPhotoIv, Constants.TRANSITION_ANIMATION_NEWS_PHOTOS);

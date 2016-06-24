@@ -14,32 +14,20 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.di.component;
+package com.kaku.colorfulnews.di.scope;
 
-import android.app.Activity;
-import android.content.Context;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import com.kaku.colorfulnews.di.module.ActivityModule;
-import com.kaku.colorfulnews.di.scope.ContextLife;
-import com.kaku.colorfulnews.di.scope.PerActivity;
-
-import dagger.Component;
+import javax.inject.Scope;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/23
+ * @version 1.0 2016/6/24
  */
-@PerActivity
-@Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
-public interface ActivityComponent {
-
-    @ContextLife("Activity")
-    Context getActivityContext();
-
-    @ContextLife("Application")
-    Context getApplicationContext();
-
-    Activity getActivity();
-
-//    void inject(NewsActivity newsActivity);
+@Scope
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PerService {
 }

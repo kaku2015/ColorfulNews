@@ -28,6 +28,8 @@ import android.view.WindowManager;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.di.component.ActivityComponent;
+import com.kaku.colorfulnews.di.component.DaggerActivityComponent;
 import com.kaku.colorfulnews.di.module.ActivityModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
 import com.kaku.colorfulnews.utils.LogUtil;
@@ -39,27 +41,36 @@ import com.squareup.leakcanary.RefWatcher;
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
+public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
     /**
      * Log tag ：BaseActivity
      */
+    protected ActivityComponent mActivityComponent;
     private static final String LOG_TAG = "BaseActivity";
     private WindowManager mWindowManager = null;
     private View mNightView = null;
     private boolean mIsAddedView;
     protected T mPresenter;
 
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
-    }
+    public abstract int setContentView();
+
+    public abstract void initInjector();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LogUtil.i(LOG_TAG, getClass().getSimpleName());
+        mActivityComponent = DaggerActivityComponent.builder()
+                .applicationComponent(((App) getApplication()).getApplicationComponent())
+                .activityModule(new ActivityModule(this))
+                .build();
 //        setStatusBarTranslucent();
-
         setNightOrDayMode();
+
+        int layout = setContentView();
+        setContentView(layout);
+        initInjector();
     }
 
     private void setNightOrDayMode() {
@@ -135,6 +146,10 @@ public class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
             mPresenter.onDestroy();
         }
 
+        removeNightModeMask();
+    }
+
+    private void removeNightModeMask() {
         if (mIsAddedView) {
             // 移除夜间模式蒙板
             mWindowManager.removeViewImmediate(mNightView);

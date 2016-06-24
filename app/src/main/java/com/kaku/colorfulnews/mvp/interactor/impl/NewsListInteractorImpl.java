@@ -22,8 +22,8 @@ import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.ApiConstants;
 import com.kaku.colorfulnews.common.HostType;
 import com.kaku.colorfulnews.domain.RetrofitManager;
-import com.kaku.colorfulnews.mvp.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.listener.RequestCallBack;
+import com.kaku.colorfulnews.mvp.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.socks.library.KLog;
 
@@ -35,6 +35,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -74,13 +75,13 @@ public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSumma
                         return newsSummary;
                     }
                 })
-                .toList()
-/*                .toSortedList(new Func2<NewsSummary, NewsSummary, Integer>() {
+//                .toList()
+                .toSortedList(new Func2<NewsSummary, NewsSummary, Integer>() {
                     @Override
                     public Integer call(NewsSummary newsSummary, NewsSummary newsSummary2) {
                         return newsSummary2.getPtime().compareTo(newsSummary.getPtime());
                     }
-                })*/
+                })
                 .subscribe(new Subscriber<List<NewsSummary>>() {
                     @Override
                     public void onCompleted() {

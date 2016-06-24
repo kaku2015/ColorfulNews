@@ -25,9 +25,9 @@ import android.os.StrictMode;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.di.component.AppComponent;
-import com.kaku.colorfulnews.di.component.DaggerAppComponent;
-import com.kaku.colorfulnews.di.module.AppModule;
+import com.kaku.colorfulnews.di.component.ApplicationComponent;
+import com.kaku.colorfulnews.di.component.DaggerApplicationComponent;
+import com.kaku.colorfulnews.di.module.ApplicationModule;
 import com.kaku.colorfulnews.greendao.DaoMaster;
 import com.kaku.colorfulnews.greendao.DaoSession;
 import com.kaku.colorfulnews.greendao.NewsChannelTableDao;
@@ -45,7 +45,7 @@ import de.greenrobot.dao.query.QueryBuilder;
  */
 public class App extends Application {
 
-    private static AppComponent mAppComponent;
+    private  ApplicationComponent mApplicationComponent;
     private RefWatcher refWatcher;
 
     public static RefWatcher getRefWatcher(Context context) {
@@ -67,7 +67,7 @@ public class App extends Application {
         KLog.init(BuildConfig.LOG_DEBUG);
         // 官方推荐将获取 DaoMaster 对象的方法放到 Application 层，这样将避免多次创建生成 Session 对象
         setupDatabase();
-        setupAppComponent();
+        initApplicationComponent();
 
     }
 
@@ -169,15 +169,14 @@ public class App extends Application {
     }
 
     // Fixme
-    private void setupAppComponent() {
-        mAppComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
+    private void initApplicationComponent() {
+        mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
                 .build();
-//        mAppComponent.inject(this);
     }
 
-    public static AppComponent getAppComponent() {
-        return mAppComponent;
+    public ApplicationComponent getApplicationComponent() {
+        return mApplicationComponent;
     }
 
     public static NewsChannelTableDao getNewsChannelTableDao() {

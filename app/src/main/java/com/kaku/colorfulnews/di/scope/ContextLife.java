@@ -14,21 +14,22 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.di.component;
+package com.kaku.colorfulnews.di.scope;
 
-import com.kaku.colorfulnews.App;
-import com.kaku.colorfulnews.di.module.AppModule;
-import com.kaku.colorfulnews.di.scope.PerApp;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import dagger.Component;
+import javax.inject.Qualifier;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/22
+ * @version 1.0 2016/6/24
  */
-@PerApp
-@Component(modules = AppModule.class)
-public interface AppComponent {
-    void inject(App app);
-}
+@Qualifier
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ContextLife {
+    String value() default "Application";
 
+}

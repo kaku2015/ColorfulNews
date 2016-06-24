@@ -14,39 +14,31 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.di.module;
+package com.kaku.colorfulnews.di.component;
 
 import android.app.Activity;
 import android.content.Context;
 
+import com.kaku.colorfulnews.di.module.FragmentModule;
 import com.kaku.colorfulnews.di.scope.ContextLife;
-import com.kaku.colorfulnews.di.scope.PerActivity;
+import com.kaku.colorfulnews.di.scope.PerFragment;
 
-import dagger.Module;
-import dagger.Provides;
+import dagger.Component;
 
 /**
  * @author 咖枯
  * @version 1.0 2016/6/23
  */
-@Module
-public class ActivityModule {
-    private Activity mActivity;
-
-    public ActivityModule(Activity activity) {
-        mActivity = activity;
-    }
-
-    @Provides
-    @PerActivity
+@PerFragment
+@Component(dependencies = ApplicationComponent.class, modules = FragmentModule.class)
+public interface FragmentComponent {
     @ContextLife("Activity")
-    public Context ProvideActivityContext() {
-        return mActivity;
-    }
+    Context getActivityContext();
 
-    @Provides
-    @PerActivity
-    public Activity ProvideActivity() {
-        return mActivity;
-    }
+    @ContextLife("Application")
+    Context getApplicationContext();
+
+    Activity getActivity();
+
+//    void inject(NewsListFragment newsListFragment);
 }
