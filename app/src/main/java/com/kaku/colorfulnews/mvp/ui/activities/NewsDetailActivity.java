@@ -16,7 +16,6 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -33,8 +32,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsDetail;
@@ -44,6 +41,7 @@ import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.widget.URLImageGetter;
 import com.kaku.colorfulnews.mvp.view.NewsDetailView;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.kaku.colorfulnews.utils.NetUtil;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -51,7 +49,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author 咖枯
@@ -96,7 +93,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     @Override
     public void initViews() {
-        ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
 
         String postId = getIntent().getStringExtra(Constants.NEWS_POST_ID);
@@ -109,6 +105,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NetUtil.checkNetworkState(getString(R.string.internet_error));
     }
 
     @SuppressWarnings("deprecation")
@@ -129,25 +126,22 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     private void setToolBarLayout(String newsTitle) {
         mToolbarLayout.setTitle(newsTitle);
-        mToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.white));
         mToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.primary_text_white));
     }
 
     private void setNewsDetailPhotoIv(String imgSrc) {
         Glide.with(this).load(imgSrc).asBitmap()
                 .format(DecodeFormat.PREFER_ARGB_8888)
-//                .placeholder(R.mipmap.ic_loading)
-                .error(R.mipmap.ic_load_fail)
-                .fitCenter()
+                .error(R.drawable.ic_load_fail)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.mipmap.ic_load_fail)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(mNewsDetailPhotoIv)/*(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         mNewsDetailPhotoIv.setImageBitmap(resource);
                         mMaskView.setVisibility(View.VISIBLE);
                     }
-                });
+                })*/;
     }
 
     private void setNewsDetailBodyTv(NewsDetail newsDetail, String newsBody) {
@@ -188,7 +182,9 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     @Override
     public void showErrorMsg(String message) {
         mProgressBar.setVisibility(View.GONE);
-        Snackbar.make(mAppBar, message, Snackbar.LENGTH_LONG).show();
+        if (NetUtil.isNetworkAvailable(App.getAppContext())) {
+            Snackbar.make(mAppBar, message, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override

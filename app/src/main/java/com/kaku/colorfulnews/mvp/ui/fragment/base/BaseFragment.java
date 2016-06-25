@@ -30,6 +30,8 @@ import com.kaku.colorfulnews.di.module.FragmentModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
 import com.squareup.leakcanary.RefWatcher;
 
+import butterknife.ButterKnife;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/5/20
@@ -62,13 +64,10 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(getLayoutId(), container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(getLayoutId(), container, false);
+        ButterKnife.bind(this, view);
         initViews(view);
+        return view;
     }
 
     @Override

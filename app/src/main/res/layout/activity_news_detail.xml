@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="@dimen/material_component_button_text_left_and_right_padding"
+            app:expandedTitleMarginEnd="@dimen/text_margin"
             app:expandedTitleMarginStart="@dimen/material_component_button_text_left_and_right_padding"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -46,7 +46,6 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/mask_news_detail_photo"
                 android:fitsSystemWindows="true"
-                android:visibility="gone"
                 tools:visibility="visible"
                 />
 

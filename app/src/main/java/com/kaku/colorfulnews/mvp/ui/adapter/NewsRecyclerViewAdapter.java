@@ -98,7 +98,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 .format(DecodeFormat.PREFER_ARGB_8888)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                .placeholder(R.mipmap.ic_loading)
-                .error(R.mipmap.ic_load_fail)
+                .error(R.drawable.ic_load_fail)
                 .into(holder.mNewsSummaryPhotoIv);
 
 

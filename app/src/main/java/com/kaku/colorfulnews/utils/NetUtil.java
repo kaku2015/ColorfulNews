@@ -19,6 +19,9 @@ package com.kaku.colorfulnews.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
+
+import com.kaku.colorfulnews.App;
 
 /**
  * @author 咖枯
@@ -47,6 +50,13 @@ public class NetUtil {
             }
         }
         return false;
+    }
+
+    public static void checkNetworkState(String msg) {
+        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
+            //TODO: 刚启动app Snackbar不起作用，延迟显示也不好使，这是why？
+            Toast.makeText(App.getAppContext(), msg, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

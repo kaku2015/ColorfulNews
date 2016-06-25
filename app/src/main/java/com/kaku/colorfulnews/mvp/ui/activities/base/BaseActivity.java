@@ -37,6 +37,8 @@ import com.kaku.colorfulnews.utils.MyUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.squareup.leakcanary.RefWatcher;
 
+import butterknife.ButterKnife;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/5/19
@@ -77,6 +79,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         int layoutId = getLayoutId();
         setContentView(layoutId);
         initInjector();
+        ButterKnife.bind(this);
         initViews();
     }
 

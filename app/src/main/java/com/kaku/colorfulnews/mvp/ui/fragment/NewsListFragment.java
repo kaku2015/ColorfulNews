@@ -17,8 +17,8 @@
 package com.kaku.colorfulnews.mvp.ui.fragment;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,13 +32,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.di.scope.ContextLife;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
@@ -52,7 +50,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author 咖枯
@@ -68,10 +65,8 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
     @Inject
     NewsListPresenterImpl mNewsListPresenter;
-
     @Inject
-    @ContextLife("Activity")
-    Context mContext;
+    Activity mActivity;
 
     private String mNewsId;
     private String mNewsType;
@@ -84,10 +79,8 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
 
     @Override
     public void initViews(View view) {
-        ButterKnife.bind(this, view);
-
         mNewsRV.setHasFixedSize(true);
-        mNewsRV.setLayoutManager(new LinearLayoutManager(getActivity(),
+        mNewsRV.setLayoutManager(new LinearLayoutManager(mActivity,
                 LinearLayoutManager.VERTICAL, false));
 
         mNewsRecyclerViewAdapter.setOnItemClickListener(this);
@@ -107,7 +100,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initValues();
-        checkNetworkState();
+        NetUtil.checkNetworkState(mActivity.getString(R.string.internet_error));
     }
 
     private void initValues() {
@@ -115,18 +108,6 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
             mNewsId = getArguments().getString(Constants.NEWS_ID);
             mNewsType = getArguments().getString(Constants.NEWS_TYPE);
             mStartPage = getArguments().getInt(Constants.CHANNEL_POSITION);
-        }
-    }
-
-    private void checkNetworkState() {
-        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
-            //TODO: 刚启动app Snackbar不起作用，延迟显示也不好使，这是why？
-            Toast.makeText(mContext, getActivity().getString(R.string.internet_error), Toast.LENGTH_SHORT).show();
-/*            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    Snackbar.make(mNewsRV, App.getAppContext().getString(R.string.internet_error), Snackbar.LENGTH_LONG);
-                }
-            }, 1000);*/
         }
     }
 
@@ -183,7 +164,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     private Intent setIntent(int position) {
         List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
 
-        Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+        Intent intent = new Intent(mActivity,NewsDetailActivity.class);
         intent.putExtra(Constants.NEWS_POST_ID, newsSummaryList.get(position).getPostid());
         intent.putExtra(Constants.NEWS_IMG_RES, newsSummaryList.get(position).getImgsrc());
         return intent;
@@ -193,7 +174,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
         ImageView newsSummaryPhotoIv = (ImageView) view.findViewById(R.id.news_summary_photo_iv);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(getActivity(), newsSummaryPhotoIv, Constants.TRANSITION_ANIMATION_NEWS_PHOTOS);
+                    .makeSceneTransitionAnimation(mActivity, newsSummaryPhotoIv, Constants.TRANSITION_ANIMATION_NEWS_PHOTOS);
             startActivity(intent, options.toBundle());
         } else {
 /*            ActivityOptionsCompat.makeCustomAnimation(this,
@@ -207,7 +188,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
             //让新的Activity从一个小的范围扩大到全屏
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeScaleUpAnimation(view, view.getWidth() / 2, view.getHeight() / 2, 0, 0);
-            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+            ActivityCompat.startActivity(mActivity, intent, options.toBundle());
         }
     }
 }

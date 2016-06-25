@@ -47,7 +47,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class NewsActivity extends BaseActivity
@@ -88,7 +87,6 @@ public class NewsActivity extends BaseActivity
 
     @Override
     public void initViews() {
-        ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         setStatusBarTranslucent();
 
