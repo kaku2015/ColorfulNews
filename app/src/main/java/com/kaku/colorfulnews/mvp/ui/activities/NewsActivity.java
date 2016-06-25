@@ -87,8 +87,10 @@ public class NewsActivity extends BaseActivity
 
     @Override
     public void initViews() {
-        setSupportActionBar(mToolbar);
         setStatusBarTranslucent();
+
+        mToolbar.setTitle("新闻");
+        setSupportActionBar(mToolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

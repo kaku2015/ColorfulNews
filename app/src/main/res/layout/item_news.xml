@@ -25,9 +25,9 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_centerVertical="true"
-            android:layout_margin="8dp"
-            android:transitionName="@string/transition_photos"
+            android:layout_margin="@dimen/item_margin"
             android:scaleType="centerCrop"
+            android:transitionName="@string/transition_photos"
             tools:src="@mipmap/ic_launcher"
             tools:targetApi="lollipop"/>
 
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/news_summary_photo_iv"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="@dimen/item_margin"
             android:layout_toRightOf="@+id/news_summary_photo_iv"
             android:lines="2"
             android:textColor="@color/primary_text"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/news_summary_title_tv"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="@dimen/item_margin"
             android:layout_marginTop="2dp"
             android:layout_toRightOf="@+id/news_summary_photo_iv"
             android:ellipsize="end"
@@ -65,10 +65,10 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/news_summary_Digest_tv"
             android:layout_marginBottom="4dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="@dimen/item_margin"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/tertiary_text"
-            android:textSize="12sp"
+            android:textSize="@dimen/micro"
             tools:text="05-28 20:09"/>
 
     </RelativeLayout>

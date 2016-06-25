@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="@mipmap/ic_action_previous_item"
+                app:navigationIcon="@drawable/ic_arrow_back"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 />
 

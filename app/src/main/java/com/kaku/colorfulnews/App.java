@@ -31,7 +31,6 @@ import com.kaku.colorfulnews.di.module.ApplicationModule;
 import com.kaku.colorfulnews.greendao.DaoMaster;
 import com.kaku.colorfulnews.greendao.DaoSession;
 import com.kaku.colorfulnews.greendao.NewsChannelTableDao;
-import com.kaku.colorfulnews.utils.LogUtil;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.socks.library.KLog;
 import com.squareup.leakcanary.LeakCanary;
@@ -90,37 +89,37 @@ public class App extends Application {
         this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                LogUtil.v("=========", activity + "  onActivityCreated");
+                KLog.v("=========", activity + "  onActivityCreated");
             }
 
             @Override
             public void onActivityStarted(Activity activity) {
-                LogUtil.v("=========", activity + "  onActivityStarted");
+                KLog.v("=========", activity + "  onActivityStarted");
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
-                LogUtil.v("=========", activity + "  onActivityResumed");
+                KLog.v("=========", activity + "  onActivityResumed");
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-                LogUtil.v("=========", activity + "  onActivityPaused");
+                KLog.v("=========", activity + "  onActivityPaused");
             }
 
             @Override
             public void onActivityStopped(Activity activity) {
-                LogUtil.v("=========", activity + "  onActivityStopped");
+                KLog.v("=========", activity + "  onActivityStopped");
             }
 
             @Override
             public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                LogUtil.v("=========", activity + "  onActivitySaveInstanceState");
+                KLog.v("=========", activity + "  onActivitySaveInstanceState");
             }
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-                LogUtil.v("=========", activity + "  onActivityDestroyed");
+                KLog.v("=========", activity + "  onActivityDestroyed");
             }
         });
     }

@@ -32,9 +32,9 @@ import com.kaku.colorfulnews.di.component.ActivityComponent;
 import com.kaku.colorfulnews.di.component.DaggerActivityComponent;
 import com.kaku.colorfulnews.di.module.ActivityModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
-import com.kaku.colorfulnews.utils.LogUtil;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.socks.library.KLog;
 import com.squareup.leakcanary.RefWatcher;
 
 import butterknife.ButterKnife;
@@ -68,7 +68,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtil.i(LOG_TAG, getClass().getSimpleName());
+        KLog.i(LOG_TAG, getClass().getSimpleName());
         mActivityComponent = DaggerActivityComponent.builder()
                 .applicationComponent(((App) getApplication()).getApplicationComponent())
                 .activityModule(new ActivityModule(this))
