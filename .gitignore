@@ -38,4 +38,4 @@ proguard/
 .DS_Store
 
 # Custom
-#*.png
+*.hprof
