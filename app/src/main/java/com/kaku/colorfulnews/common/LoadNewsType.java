@@ -14,18 +14,25 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.mvp.presenter;
+package com.kaku.colorfulnews.common;
 
-import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/19
+ * @version 1.0 2016/6/26
  */
-public interface NewsListPresenter extends BasePresenter {
-    void setNewsTypeAndId(String newsType, String newsId);
+public class LoadNewsType {
+    public static final int TYPE_REFRESH_SUCCESS = 1;
+    public static final int TYPE_REFRESH_ERROR = 2;
+    public static final int TYPE_LOAD_MORE_SUCCESS = 3;
+    public static final int TYPE_LOAD_MORE_ERROR = 4;
 
-    void refreshData();
-
-    void loadMore();
+    @IntDef({TYPE_REFRESH_SUCCESS, TYPE_REFRESH_ERROR, TYPE_LOAD_MORE_SUCCESS, TYPE_LOAD_MORE_ERROR})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface checker {
+    }
 }

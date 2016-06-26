@@ -17,6 +17,7 @@
 package com.kaku.colorfulnews.mvp.presenter.impl;
 
 import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.mvp.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.mvp.interactor.impl.NewsListInteractorImpl;
 import com.kaku.colorfulnews.listener.RequestCallBack;
@@ -39,11 +40,8 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
     private String mNewsType;
     private String mNewsId;
     private int mStartPage;
-
-    /**
-     * 新闻页面首次加载完毕
-     */
-    private boolean misLoaded;
+    private boolean misFirstLoad;
+    private boolean mIsRefresh = true;
 
     @Inject
     public NewsListPresenterImpl(NewsListInteractorImpl newsListInteractor) {
@@ -53,22 +51,36 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
     @Override
     public void onCreate() {
         if (mView != null) {
-            mSubscription = mNewsListInteractor.loadNews(this, mNewsType, mNewsId, mStartPage);
+            loadNewsData();
         }
     }
 
     @Override
     public void beforeRequest() {
-        if (!misLoaded) {
+        if (!misFirstLoad) {
             mView.showProgress();
         }
     }
 
     @Override
-    public void success(List<NewsSummary> items) {
-        misLoaded = true;
+    public void onError(String errorMsg) {
+        super.onError(errorMsg);
         if (mView != null) {
-            mView.setNewsList(items);
+            int loadType = mIsRefresh ? LoadNewsType.TYPE_REFRESH_ERROR : LoadNewsType.TYPE_LOAD_MORE_ERROR;
+            mView.setNewsList(null, loadType);
+        }
+    }
+
+    @Override
+    public void success(List<NewsSummary> items) {
+        misFirstLoad = true;
+        if (items != null) {
+            mStartPage += 20;
+        }
+
+        int loadType = mIsRefresh ? LoadNewsType.TYPE_REFRESH_SUCCESS : LoadNewsType.TYPE_LOAD_MORE_SUCCESS;
+        if (mView != null) {
+            mView.setNewsList(items, loadType);
             mView.hideProgress();
         }
 
@@ -78,5 +90,22 @@ public class NewsListPresenterImpl extends BasePresenterImpl<NewsListView, List<
     public void setNewsTypeAndId(String newsType, String newsId) {
         mNewsType = newsType;
         mNewsId = newsId;
+    }
+
+    @Override
+    public void refreshData() {
+        mStartPage = 0;
+        mIsRefresh = true;
+        loadNewsData();
+    }
+
+    @Override
+    public void loadMore() {
+        mIsRefresh = false;
+        loadNewsData();
+    }
+
+    private void loadNewsData() {
+        mSubscription = mNewsListInteractor.loadNews(this, mNewsType, mNewsId, mStartPage);
     }
 }

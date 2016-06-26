@@ -27,6 +27,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +40,7 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.bean.NewsSummary;
 import com.kaku.colorfulnews.common.Constants;
+import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
@@ -52,11 +55,15 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static android.support.v7.widget.RecyclerView.LayoutManager;
+import static android.support.v7.widget.RecyclerView.OnScrollListener;
+
 /**
  * @author 咖枯
  * @version 1.0 2016/5/18
  */
-public class NewsListFragment extends BaseFragment implements NewsListView, OnItemClickListener {
+public class NewsListFragment extends BaseFragment implements NewsListView, OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.news_rv)
     RecyclerView mNewsRV;
     @BindView(R.id.progress_bar)
@@ -68,10 +75,14 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     NewsListPresenterImpl mNewsListPresenter;
     @Inject
     Activity mActivity;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private String mNewsId;
     private String mNewsType;
     private int mStartPage;
+
+    private boolean mIsAllLoaded;
 
     @Override
     public void initInjector() {
@@ -80,16 +91,50 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
 
     @Override
     public void initViews(View view) {
-        mNewsRV.setHasFixedSize(true);
-        mNewsRV.setLayoutManager(new LinearLayoutManager(mActivity,
-                LinearLayoutManager.VERTICAL, false));
+        initSwipeRefreshLayout();
+        initRecyclerView();
+        initPresenter();
+    }
 
-        mNewsRecyclerViewAdapter.setOnItemClickListener(this);
+    private void initSwipeRefreshLayout() {
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(mActivity, R.color.colorPrimary));
+    }
 
+    private void initPresenter() {
         mNewsListPresenter.setNewsTypeAndId(mNewsType, mNewsId);
         mPresenter = mNewsListPresenter;
         mPresenter.attachView(this);
         mPresenter.onCreate();
+    }
+
+    private void initRecyclerView() {
+        mNewsRV.setHasFixedSize(true);
+        mNewsRV.setLayoutManager(new LinearLayoutManager(mActivity,
+                LinearLayoutManager.VERTICAL, false));
+        mNewsRV.setItemAnimator(new DefaultItemAnimator());
+        mNewsRV.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LayoutManager layoutManager = recyclerView.getLayoutManager();
+
+                int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager)
+                        .findLastVisibleItemPosition();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+
+                if (!mIsAllLoaded && visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE
+                        && lastVisibleItemPosition >= totalItemCount - 1) {
+                    mNewsListPresenter.loadMore();
+                    mNewsRecyclerViewAdapter.showFooter();
+//                    mNewsRV.scrollToPosition(mNewsRecyclerViewAdapter.getItemCount() - 1);
+                }
+            }
+
+        });
+
+        mNewsRecyclerViewAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -126,14 +171,36 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     @Override
     public void hideProgress() {
         mProgressBar.setVisibility(View.GONE);
-
     }
 
     @Override
-    public void setNewsList(List<NewsSummary> newsSummary) {
-        mNewsRecyclerViewAdapter.setItems(newsSummary);
-        mNewsRV.setAdapter(mNewsRecyclerViewAdapter);
-        mNewsRV.setItemAnimator(new DefaultItemAnimator());
+    public void setNewsList(List<NewsSummary> newsSummary, @LoadNewsType.checker int loadType) {
+        switch (loadType) {
+            case LoadNewsType.TYPE_REFRESH_SUCCESS:
+                mSwipeRefreshLayout.setRefreshing(false);
+                mNewsRecyclerViewAdapter.setItems(newsSummary);
+                if (mNewsRV.getAdapter() == null) {
+                    mNewsRV.setAdapter(mNewsRecyclerViewAdapter);
+                } else {
+                    mNewsRecyclerViewAdapter.notifyDataSetChanged();
+                }
+                break;
+            case LoadNewsType.TYPE_REFRESH_ERROR:
+                mSwipeRefreshLayout.setRefreshing(false);
+                break;
+            case LoadNewsType.TYPE_LOAD_MORE_SUCCESS:
+                mNewsRecyclerViewAdapter.hideFooter();
+                if (newsSummary == null || newsSummary.size() == 0) {
+                    mIsAllLoaded = true;
+                    Snackbar.make(mNewsRV, getString(R.string.no_more), Snackbar.LENGTH_SHORT).show();
+                } else {
+                    mNewsRecyclerViewAdapter.addMore(newsSummary);
+                }
+                break;
+            case LoadNewsType.TYPE_LOAD_MORE_ERROR:
+                mNewsRecyclerViewAdapter.hideFooter();
+                break;
+        }
     }
 
     @Override
@@ -166,7 +233,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     private Intent setIntent(int position) {
         List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
 
-        Intent intent = new Intent(mActivity,NewsDetailActivity.class);
+        Intent intent = new Intent(mActivity, NewsDetailActivity.class);
         intent.putExtra(Constants.NEWS_POST_ID, newsSummaryList.get(position).getPostid());
         intent.putExtra(Constants.NEWS_IMG_RES, newsSummaryList.get(position).getImgsrc());
         return intent;
@@ -192,5 +259,10 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
                     .makeScaleUpAnimation(view, view.getWidth() / 2, view.getHeight() / 2, 0, 0);
             ActivityCompat.startActivity(mActivity, intent, options.toBundle());
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        mNewsListPresenter.refreshData();
     }
 }

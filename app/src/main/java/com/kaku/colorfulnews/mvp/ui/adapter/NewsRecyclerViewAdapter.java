@@ -44,8 +44,11 @@ import butterknife.ButterKnife;
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.ViewHolder> {
+public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public static final int TYPE_ITEM = 0;
+    public static final int TYPE_FOOTER = 1;
+    private boolean mIsShowFooter;
     private List<NewsSummary> mNewsSummaryList;
     private OnItemClickListener mOnItemClickListener;
     private int mLastPosition = -1;
@@ -63,18 +66,25 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     }
 
     public void setItems(List<NewsSummary> items) {
-        this.mNewsSummaryList = items;
+        mNewsSummaryList = items;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false);
-        final ViewHolder holder = new ViewHolder(view);
-        setItemOnClick(holder);
-        return holder;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+        if (viewType == TYPE_FOOTER) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_footer, parent, false);
+            return new FooterViewHolder(view);
+        } else if (viewType == TYPE_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false);
+            final ItemViewHolder itemViewHolder = new ItemViewHolder(view);
+            setItemOnClick(itemViewHolder);
+            return itemViewHolder;
+        }
+        throw new RuntimeException("there is no type that matches the type " +
+                viewType + " + make sure your using types correctly");
     }
 
-    private void setItemOnClick(final ViewHolder holder) {
+    private void setItemOnClick(final RecyclerView.ViewHolder holder) {
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,33 +96,44 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public int getItemViewType(int position) {
+        if (mIsShowFooter && (getItemCount() - 1) == position) {
+            return TYPE_FOOTER;
+        } else {
+            return TYPE_ITEM;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         setItemValues(holder, position);
         setItemAppearAnimation(holder, position);
     }
 
-    private void setItemValues(ViewHolder holder, int position) {
-        String title = mNewsSummaryList.get(position).getLtitle();
-        if (title == null) {
-            title = mNewsSummaryList.get(position).getTitle();
+    private void setItemValues(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ItemViewHolder) {
+            String title = mNewsSummaryList.get(position).getLtitle();
+            if (title == null) {
+                title = mNewsSummaryList.get(position).getTitle();
+            }
+            String ptime = mNewsSummaryList.get(position).getPtime();
+            String digest = mNewsSummaryList.get(position).getDigest();
+            String imgSrc = mNewsSummaryList.get(position).getImgsrc();
+
+            ((ItemViewHolder) holder).mNewsSummaryTitleTv.setText(title);
+            ((ItemViewHolder) holder).mNewsSummaryPtimeTv.setText(ptime);
+            ((ItemViewHolder) holder).mNewsSummaryDigestTv.setText(digest);
+
+            Glide.with(App.getAppContext()).load(imgSrc).asBitmap() // gif格式有时会导致整体图片不显示，貌似有冲突
+                    .format(DecodeFormat.PREFER_ARGB_8888)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.color.image_place_holder)
+                    .error(R.drawable.ic_load_fail)
+                    .into(((ItemViewHolder) holder).mNewsSummaryPhotoIv);
         }
-        String ptime = mNewsSummaryList.get(position).getPtime();
-        String digest = mNewsSummaryList.get(position).getDigest();
-        String imgSrc = mNewsSummaryList.get(position).getImgsrc();
-
-        holder.mNewsSummaryTitleTv.setText(title);
-        holder.mNewsSummaryPtimeTv.setText(ptime);
-        holder.mNewsSummaryDigestTv.setText(digest);
-
-        Glide.with(App.getAppContext()).load(imgSrc).asBitmap() // gif格式有时会导致整体图片不显示，貌似有冲突
-                .format(DecodeFormat.PREFER_ARGB_8888)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .placeholder(R.mipmap.ic_loading)
-                .error(R.drawable.ic_load_fail)
-                .into(holder.mNewsSummaryPhotoIv);
     }
 
-    private void setItemAppearAnimation(ViewHolder holder, int position) {
+    private void setItemAppearAnimation(RecyclerView.ViewHolder holder, int position) {
         if (position > mLastPosition) {
             Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.item_bottom_in);
             holder.itemView.startAnimation(animation);
@@ -121,7 +142,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     }
 
     @Override
-    public void onViewDetachedFromWindow(ViewHolder holder) {
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         if (holder.itemView.getAnimation() != null && holder.itemView
                 .getAnimation().hasStarted()) {
@@ -131,10 +152,30 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     @Override
     public int getItemCount() {
-        return mNewsSummaryList.size();
+        int itemSize = mNewsSummaryList.size();
+        if (mIsShowFooter) {
+            itemSize += 1;
+        }
+        return itemSize;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public void addMore(List<NewsSummary> data) {
+        int startPosition = mNewsSummaryList.size();
+        mNewsSummaryList.addAll(data);
+        notifyItemRangeInserted(startPosition, mNewsSummaryList.size());
+    }
+
+    public void showFooter() {
+        mIsShowFooter = true;
+        notifyItemInserted(getItemCount());
+    }
+
+    public void hideFooter() {
+        mIsShowFooter = false;
+        notifyItemRemoved(getItemCount());
+    }
+
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.news_summary_photo_iv)
         ImageView mNewsSummaryPhotoIv;
         @BindView(R.id.news_summary_title_tv)
@@ -144,9 +185,18 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         @BindView(R.id.news_summary_ptime_tv)
         TextView mNewsSummaryPtimeTv;
 
-        public ViewHolder(View view) {
+        public ItemViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
     }
+
+    class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        public FooterViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+
 }

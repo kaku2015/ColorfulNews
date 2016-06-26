@@ -7,10 +7,12 @@
     <string name="action_settings">Settings</string>
 
     <!-- 新闻 -->
-    <string name="load_error">加载失败(m´・ω・｀)m</string>
-    <string name="db_error">数据库出错了(つд⊂)</string>
-    <string name="internet_error">网络异常,请检查网络设置|･ω･｀)</string>
+    <string name="load_error">加载失败</string>
+    <string name="db_error">数据库出错了</string>
+    <string name="internet_error">网络异常,请检查网络设置</string>
     <string name="news_from">%1$s %2$s</string>
+    <string name="loading">加载中…</string>
+    <string name="no_more">没有更多了</string>
 
     <!-- 共享过度动画 -->
     <string name="transition_photos">transition_animation_news_photos</string>
