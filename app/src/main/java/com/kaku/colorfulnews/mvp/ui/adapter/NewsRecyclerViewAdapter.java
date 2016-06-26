@@ -20,6 +20,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +48,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     private List<NewsSummary> mNewsSummaryList;
     private OnItemClickListener mOnItemClickListener;
+    private int mLastPosition = -1;
 
     @Inject
     public NewsRecyclerViewAdapter() {
@@ -65,10 +68,13 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-        View view =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false);
         final ViewHolder holder = new ViewHolder(view);
+        setItemOnClick(holder);
+        return holder;
+    }
 
+    private void setItemOnClick(final ViewHolder holder) {
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,11 +83,15 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
                 }
             });
         }
-        return holder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        setItemValues(holder, position);
+        setItemAppearAnimation(holder, position);
+    }
+
+    private void setItemValues(ViewHolder holder, int position) {
         String title = mNewsSummaryList.get(position).getLtitle();
         if (title == null) {
             title = mNewsSummaryList.get(position).getTitle();
@@ -100,8 +110,23 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 //                .placeholder(R.mipmap.ic_loading)
                 .error(R.drawable.ic_load_fail)
                 .into(holder.mNewsSummaryPhotoIv);
+    }
 
+    private void setItemAppearAnimation(ViewHolder holder, int position) {
+        if (position > mLastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.item_bottom_in);
+            holder.itemView.startAnimation(animation);
+            mLastPosition = position;
+        }
+    }
 
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder.itemView.getAnimation() != null && holder.itemView
+                .getAnimation().hasStarted()) {
+            holder.itemView.clearAnimation();
+        }
     }
 
     @Override
