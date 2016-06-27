@@ -132,6 +132,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     private void setNewsDetailPhotoIv(String imgSrc) {
         Glide.with(this).load(imgSrc).asBitmap()
+                .placeholder(R.drawable.ic_load_fail)
                 .format(DecodeFormat.PREFER_ARGB_8888)
                 .error(R.drawable.ic_load_fail)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

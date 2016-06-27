@@ -41,7 +41,6 @@ public class BasePresenterImpl<T extends BaseView, E> implements BasePresenter, 
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
         }
-        mView = null;
     }
 
     @Override

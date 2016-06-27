@@ -128,7 +128,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
                         && lastVisibleItemPosition >= totalItemCount - 1) {
                     mNewsListPresenter.loadMore();
                     mNewsRecyclerViewAdapter.showFooter();
-//                    mNewsRV.scrollToPosition(mNewsRecyclerViewAdapter.getItemCount() - 1);
+                    mNewsRV.scrollToPosition(mNewsRecyclerViewAdapter.getItemCount() - 1);
                 }
             }
 

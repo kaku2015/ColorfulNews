@@ -45,6 +45,8 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
     protected FragmentComponent mFragmentComponent;
     protected T mPresenter;
 
+    private View mFragmentView;
+
     public abstract void initInjector();
 
     public abstract void initViews(View view);
@@ -64,10 +66,12 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutId(), container, false);
-        ButterKnife.bind(this, view);
-        initViews(view);
-        return view;
+        if (mFragmentView == null) {
+            mFragmentView = inflater.inflate(getLayoutId(), container, false);
+            ButterKnife.bind(this, mFragmentView);
+            initViews(mFragmentView);
+        }
+        return mFragmentView;
     }
 
     @Override
