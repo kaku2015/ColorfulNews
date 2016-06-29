@@ -21,8 +21,8 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="@dimen/text_margin"
-            app:expandedTitleMarginStart="@dimen/material_component_button_text_left_and_right_padding"
+            app:expandedTitleMarginEnd="@dimen/title_margin"
+            app:expandedTitleMarginStart="@dimen/title_margin"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <!--app:expandedTitleGravity="bottom"-->
@@ -36,9 +36,8 @@
                 android:transitionName="@string/transition_photos"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"
-                tools:src="@mipmap/ic_launcher"
+                tools:src="@drawable/ic_loading"
                 tools:targetApi="lollipop"/>
-            <!--android:transitionName="photos"-->
 
             <View
                 android:id="@+id/mask_view"
