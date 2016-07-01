@@ -65,6 +65,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     public abstract void initViews();
 
+    public abstract void initSupportActionBar();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +82,9 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         setContentView(layoutId);
         initInjector();
         ButterKnife.bind(this);
+        initSupportActionBar();
         initViews();
+        mPresenter.onCreate();
     }
 
     private void setNightOrDayMode() {

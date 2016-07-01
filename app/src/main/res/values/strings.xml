@@ -7,15 +7,22 @@
     <string name="action_settings">Settings</string>
 
     <!-- 新闻 -->
+    <string name="news">新闻</string>
     <string name="load_error">加载失败</string>
     <string name="db_error">数据库出错了</string>
     <string name="internet_error">网络异常,请检查网络设置</string>
     <string name="news_from">%1$s %2$s</string>
     <string name="loading">加载中…</string>
-    <string name="no_more">没有更多了</string>
+    <string name="no_more">没有更多了</string>dian
 
     <!-- 共享过度动画 -->
     <string name="transition_photos">transition_animation_news_photos</string>
+
+    <!-- 新闻频道 -->
+    <string name="channel_explain">点击可增删/长按并拖拽可排序</string>
+    <string name="my_channel">我的频道</string>
+    <string name="more_channel">更多频道</string>
+    <string name="channel_manage">频道管理</string>
 
 
 </resources>

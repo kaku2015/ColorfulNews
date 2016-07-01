@@ -93,13 +93,15 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     @Override
     public void initViews() {
-        setSupportActionBar(mToolbar);
-
         String postId = getIntent().getStringExtra(Constants.NEWS_POST_ID);
         mNewsDetailPresenter.setPosId(postId);
         mPresenter = mNewsDetailPresenter;
         mPresenter.attachView(this);
-        mPresenter.onCreate();
+    }
+
+    @Override
+    public void initSupportActionBar() {
+        setSupportActionBar(mToolbar);
     }
 
     @Override

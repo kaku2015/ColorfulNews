@@ -20,9 +20,8 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.db.NewsChannelTableManager;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
-import com.kaku.colorfulnews.mvp.interactor.NewsInteractor;
 import com.kaku.colorfulnews.listener.RequestCallBack;
-import com.socks.library.KLog;
+import com.kaku.colorfulnews.mvp.interactor.NewsInteractor;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class NewsInteractorImpl implements NewsInteractor<List<NewsChannelTable>
             @Override
             public void call(Subscriber<? super List<NewsChannelTable>> subscriber) {
                 NewsChannelTableManager.initDB();
-                subscriber.onNext(NewsChannelTableManager.loadNewsChannels());
+                subscriber.onNext(NewsChannelTableManager.loadNewsChannelsMine());
                 subscriber.onCompleted();
             }
         })
@@ -65,8 +64,6 @@ public class NewsInteractorImpl implements NewsInteractor<List<NewsChannelTable>
 
                     @Override
                     public void onError(Throwable e) {
-                        // FIXME: getLocalizedMessage()??
-                        KLog.e(e.getLocalizedMessage() + "\n" + e.toString());
                         callback.onError(App.getAppContext().getString(R.string.db_error));
                     }
 

@@ -54,10 +54,17 @@ public class NewsChannelTableManager {
         }
     }
 
-    public static List<NewsChannelTable> loadNewsChannels() {
-        Query<NewsChannelTable> build = App.getNewsChannelTableDao().queryBuilder()
+    public static List<NewsChannelTable> loadNewsChannelsMine() {
+        Query<NewsChannelTable> newsChannelTableQuery = App.getNewsChannelTableDao().queryBuilder()
                 .where(NewsChannelTableDao.Properties.NewsChannelSelect.eq(true))
                 .orderAsc(NewsChannelTableDao.Properties.NewsChannelIndex).build();
-        return build.list();
+        return newsChannelTableQuery.list();
+    }
+
+    public static List<NewsChannelTable> loadNewsChannelsMore() {
+        Query<NewsChannelTable> newsChannelTableQuery = App.getNewsChannelTableDao().queryBuilder()
+                .where(NewsChannelTableDao.Properties.NewsChannelSelect.eq(false))
+                .orderAsc(NewsChannelTableDao.Properties.NewsChannelIndex).build();
+        return newsChannelTableQuery.list();
     }
 }

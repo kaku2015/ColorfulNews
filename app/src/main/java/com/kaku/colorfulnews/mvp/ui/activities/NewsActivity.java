@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -49,6 +50,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * @author 咖枯
+ * @version 1.0 2016/6
+ */
 public class NewsActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, NewsView {
 
@@ -71,11 +76,6 @@ public class NewsActivity extends BaseActivity
     private List<Fragment> mNewsFragmentList = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public int getLayoutId() {
         return R.layout.activity_news;
     }
@@ -89,9 +89,6 @@ public class NewsActivity extends BaseActivity
     public void initViews() {
         setStatusBarTranslucent();
 
-        mToolbar.setTitle("新闻");
-        setSupportActionBar(mToolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
@@ -100,7 +97,11 @@ public class NewsActivity extends BaseActivity
 
         mPresenter = mNewsPresenter;
         mPresenter.attachView(this);
-        mPresenter.onCreate();
+    }
+
+    @Override
+    public void initSupportActionBar() {
+        setSupportActionBar(mToolbar);
     }
 
     @OnClick(R.id.fab)
@@ -195,7 +196,8 @@ public class NewsActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, NewsChannelActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
