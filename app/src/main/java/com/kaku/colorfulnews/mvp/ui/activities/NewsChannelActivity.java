@@ -22,12 +22,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsChannelPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsChannelAdapter;
+import com.kaku.colorfulnews.mvp.ui.widget.ItemDragHelperCallback;
 import com.kaku.colorfulnews.mvp.view.NewsChannelView;
 
 import java.util.List;
@@ -79,16 +81,29 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     }
 
     private void initRecyclerViewMineAndMore(List<NewsChannelTable> newsChannelsMine, List<NewsChannelTable> newsChannelsMore) {
-        initRecyclerView(mNewsChannelMineRv, newsChannelsMine);
-        initRecyclerView(mNewsChannelMoreRv, newsChannelsMore);
+        initRecyclerView(mNewsChannelMineRv, newsChannelsMine, true);
+        initRecyclerView(mNewsChannelMoreRv, newsChannelsMore, false);
     }
 
-    private void initRecyclerView(RecyclerView recyclerView, List<NewsChannelTable> newsChannels) {
+    private void initRecyclerView(RecyclerView recyclerView, List<NewsChannelTable> newsChannels
+            , boolean isUseItemDragHelper) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4, LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        NewsChannelAdapter newsChannelMineAdapter = new NewsChannelAdapter(newsChannels);
-        recyclerView.setAdapter(newsChannelMineAdapter);
+        NewsChannelAdapter newsChannelAdapter = new NewsChannelAdapter(newsChannels);
+        recyclerView.setAdapter(newsChannelAdapter);
+
+        initItemDragHelper(isUseItemDragHelper, newsChannelAdapter);
+    }
+
+    private void initItemDragHelper(boolean isUseItemDragHelper, NewsChannelAdapter newsChannelAdapter) {
+        if (isUseItemDragHelper) {
+            ItemDragHelperCallback itemDragHelperCallback = new ItemDragHelperCallback(newsChannelAdapter);
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemDragHelperCallback);
+            itemTouchHelper.attachToRecyclerView(mNewsChannelMineRv);
+
+            newsChannelAdapter.setItemDragHelperCallback(itemDragHelperCallback);
+        }
     }
 
     @Override

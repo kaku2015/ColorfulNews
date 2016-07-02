@@ -12,10 +12,15 @@
     </style>
 
     <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
         <!--<item name="android:windowBackground">@android:color/transparent</item>-->
         <!--<item name="android:windowIsTranslucent">true</item>-->
+        <item name="android:screenOrientation">portrait</item>
+        <item name="android:launchMode">singleTop</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar2">
+<!--        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>-->
         <item name="android:screenOrientation">portrait</item>
         <item name="android:launchMode">singleTop</item>
     </style>
