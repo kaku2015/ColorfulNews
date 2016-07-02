@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.db;
+package com.kaku.colorfulnews.repository.db;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;

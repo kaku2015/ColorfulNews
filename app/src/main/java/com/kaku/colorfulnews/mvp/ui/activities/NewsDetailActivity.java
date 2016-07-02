@@ -34,7 +34,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.bean.NewsDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsDetailPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;

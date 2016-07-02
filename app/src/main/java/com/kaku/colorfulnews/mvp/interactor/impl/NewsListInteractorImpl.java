@@ -18,10 +18,10 @@ package com.kaku.colorfulnews.mvp.interactor.impl;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.common.ApiConstants;
 import com.kaku.colorfulnews.common.HostType;
-import com.kaku.colorfulnews.domain.RetrofitManager;
+import com.kaku.colorfulnews.repository.network.RetrofitManager;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.utils.MyUtils;

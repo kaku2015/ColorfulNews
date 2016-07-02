@@ -18,9 +18,9 @@ package com.kaku.colorfulnews.mvp.interactor.impl;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.bean.NewsDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.common.HostType;
-import com.kaku.colorfulnews.domain.RetrofitManager;
+import com.kaku.colorfulnews.repository.network.RetrofitManager;
 import com.kaku.colorfulnews.mvp.interactor.NewsDetailInteractor;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.socks.library.KLog;
@@ -55,17 +55,7 @@ public class NewsDetailInteractorImpl implements NewsDetailInteractor<NewsDetail
                     @Override
                     public NewsDetail call(Map<String, NewsDetail> map) {
                         NewsDetail newsDetail = map.get(postId);
-                        List<NewsDetail.ImgBean> imgSrcs = newsDetail.getImg();
-                        if (imgSrcs != null && imgSrcs.size() >= 2 && App.isHavePhoto()) {
-                            String newsBody = newsDetail.getBody();
-                            for (int i = 1; i < imgSrcs.size(); i++) {
-                                String oldChars = "<!--IMG#" + i + "-->";
-                                String newChars = "<img src=\"" + imgSrcs.get(i).getSrc() + "\" />";
-                                newsBody = newsBody.replace(oldChars, newChars);
-
-                            }
-                            newsDetail.setBody(newsBody);
-                        }
+                        changeNewsDetail(newsDetail);
                         return newsDetail;
                     }
                 })
@@ -87,5 +77,33 @@ public class NewsDetailInteractorImpl implements NewsDetailInteractor<NewsDetail
                         callBack.success(newsDetail);
                     }
                 });
+    }
+
+    private void changeNewsDetail(NewsDetail newsDetail) {
+        List<NewsDetail.ImgBean> imgSrcs = newsDetail.getImg();
+        if (isChange(imgSrcs)) {
+            String newsBody = newsDetail.getBody();
+            newsBody = changeNewsBody(imgSrcs, newsBody);
+            newsDetail.setBody(newsBody);
+        }
+    }
+
+    private boolean isChange(List<NewsDetail.ImgBean> imgSrcs) {
+        return imgSrcs != null && imgSrcs.size() >= 2 && App.isHavePhoto();
+    }
+
+    private String changeNewsBody(List<NewsDetail.ImgBean> imgSrcs, String newsBody) {
+        for (int i = 0; i < imgSrcs.size(); i++) {
+            String oldChars = "<!--IMG#" + i + "-->";
+            String newChars;
+            if (i == 0) {
+                newChars = "";
+            } else {
+                newChars = "<img src=\"" + imgSrcs.get(i).getSrc() + "\" />";
+            }
+            newsBody = newsBody.replace(oldChars, newChars);
+
+        }
+        return newsBody;
     }
 }

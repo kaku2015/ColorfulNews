@@ -38,7 +38,7 @@ import android.widget.ProgressBar;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.listener.OnItemClickListener;

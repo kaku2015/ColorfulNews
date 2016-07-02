@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.HostType;
-import com.kaku.colorfulnews.domain.RetrofitManager;
+import com.kaku.colorfulnews.repository.network.RetrofitManager;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.socks.library.KLog;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.bean;
+package com.kaku.colorfulnews.mvp.entity;
 
 import java.util.List;
 

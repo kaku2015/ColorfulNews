@@ -17,6 +17,7 @@
         <!--<item name="android:windowBackground">@android:color/transparent</item>-->
         <!--<item name="android:windowIsTranslucent">true</item>-->
         <item name="android:screenOrientation">portrait</item>
+        <item name="android:launchMode">singleTop</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>

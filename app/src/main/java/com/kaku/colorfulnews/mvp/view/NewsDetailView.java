@@ -16,7 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.view;
 
-import com.kaku.colorfulnews.bean.NewsDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.mvp.view.base.BaseView;
 
 /**

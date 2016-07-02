@@ -14,14 +14,14 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.domain;
+package com.kaku.colorfulnews.repository.network;
 
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.kaku.colorfulnews.App;
-import com.kaku.colorfulnews.bean.NewsDetail;
-import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.common.ApiConstants;
 import com.kaku.colorfulnews.common.HostType;
 import com.kaku.colorfulnews.utils.NetUtil;

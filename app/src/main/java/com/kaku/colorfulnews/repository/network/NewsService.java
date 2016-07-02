@@ -14,10 +14,10 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.domain;
+package com.kaku.colorfulnews.repository.network;
 
-import com.kaku.colorfulnews.bean.NewsDetail;
-import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 
 import java.util.List;
 import java.util.Map;

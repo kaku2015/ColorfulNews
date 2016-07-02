@@ -16,7 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.presenter.impl;
 
-import com.kaku.colorfulnews.bean.NewsDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.mvp.interactor.NewsDetailInteractor;
 import com.kaku.colorfulnews.mvp.interactor.impl.NewsDetailInteractorImpl;
 import com.kaku.colorfulnews.mvp.presenter.NewsDetailPresenter;

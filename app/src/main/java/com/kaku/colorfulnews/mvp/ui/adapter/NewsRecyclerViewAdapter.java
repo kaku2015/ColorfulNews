@@ -30,7 +30,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.bean.NewsSummary;
+import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 
 import java.util.List;

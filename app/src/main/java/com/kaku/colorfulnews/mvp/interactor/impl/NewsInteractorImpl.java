@@ -18,7 +18,7 @@ package com.kaku.colorfulnews.mvp.interactor.impl;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.db.NewsChannelTableManager;
+import com.kaku.colorfulnews.repository.db.NewsChannelTableManager;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.interactor.NewsInteractor;
