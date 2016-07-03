@@ -53,4 +53,9 @@ public class NewsChannelPresenterImpl extends BasePresenterImpl<NewsChannelView,
         super.success(data);
         mView.initRecyclerViews(data.get(Constants.NEWS_CHANNEL_MINE), data.get(Constants.NEWS_CHANNEL_MORE));
     }
+
+    @Override
+    public void onItemSwap(int fromPosition, int toPosition) {
+            mNewsChannelInteractor.swapDb(fromPosition,toPosition);
+    }
 }

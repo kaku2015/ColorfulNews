@@ -23,4 +23,5 @@ import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
  * @version 1.0 2016/6/30
  */
 public interface NewsChannelPresenter extends BasePresenter {
+    void onItemSwap(int fromPosition, int toPosition);
 }

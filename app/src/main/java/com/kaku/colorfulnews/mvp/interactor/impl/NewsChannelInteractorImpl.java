@@ -19,10 +19,11 @@ package com.kaku.colorfulnews.mvp.interactor.impl;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
-import com.kaku.colorfulnews.repository.db.NewsChannelTableManager;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.interactor.NewsChannelInteractor;
+import com.kaku.colorfulnews.repository.db.NewsChannelTableManager;
+import com.socks.library.KLog;
 
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +75,69 @@ public class NewsChannelInteractorImpl implements NewsChannelInteractor<Map<Inte
                         callback.success(newsChannelListMap);
                     }
                 });
+    }
+
+    @Override
+    public void swapDb(final int fromPosition, final int toPosition) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (NewsChannelInteractorImpl.this) {
+                    KLog.d("fromPosition: " + fromPosition + "； toPosition: " + toPosition);
+                    NewsChannelTable fromNewsChannel = NewsChannelTableManager.loadNewsChannel(fromPosition);
+                    NewsChannelTable toNewsChannel = NewsChannelTableManager.loadNewsChannel(toPosition);
+
+                    if (isAdjacent(fromPosition, toPosition)) {
+                        swapAdjacentIndexAndUpdate(fromNewsChannel, toNewsChannel);
+                    } else if (fromPosition - toPosition > 0) {
+                        increaseOrReduceIndexAndUpdate(toPosition, fromPosition - 1, true);
+                        changeFromChannelIndexAndUpdate(fromNewsChannel);
+                    } else if (fromPosition - toPosition < 0) {
+                        increaseOrReduceIndexAndUpdate(fromPosition + 1, toPosition, false);
+                        changeFromChannelIndexAndUpdate(fromNewsChannel);
+                    }
+                }
+
+            }
+
+            private boolean isAdjacent(int fromChannelIndex, int toChannelIndex) {
+                return Math.abs(fromChannelIndex - toChannelIndex) == 1;
+            }
+
+            private void swapAdjacentIndexAndUpdate(NewsChannelTable fromNewsChannel,
+                                                    NewsChannelTable toNewsChannel) {
+                fromNewsChannel.setNewsChannelIndex(toPosition);
+                toNewsChannel.setNewsChannelIndex(fromPosition);
+
+                NewsChannelTableManager.update(fromNewsChannel);
+                NewsChannelTableManager.update(toNewsChannel);
+            }
+
+            private void increaseOrReduceIndexAndUpdate(int fromChannelIndex, int toChannelIndex, boolean isIncrease) {
+                List<NewsChannelTable> newsChannels = NewsChannelTableManager
+                        .LoadNewsChannelsWithin(fromChannelIndex, toChannelIndex);
+                for (NewsChannelTable newsChannel : newsChannels) {
+                    increaseOrReduceIndex(isIncrease, newsChannel);
+                    NewsChannelTableManager.update(newsChannel);
+                }
+            }
+
+            private void increaseOrReduceIndex(boolean isIncrease, NewsChannelTable newsChannel) {
+                int targetIndex;
+                if (isIncrease) {
+                    targetIndex = newsChannel.getNewsChannelIndex() + 1;
+                } else {
+                    targetIndex = newsChannel.getNewsChannelIndex() - 1;
+                }
+                newsChannel.setNewsChannelIndex(targetIndex);
+            }
+
+            private void changeFromChannelIndexAndUpdate(NewsChannelTable fromNewsChannel) {
+                fromNewsChannel.setNewsChannelIndex(toPosition);
+                NewsChannelTableManager.update(fromNewsChannel);
+            }
+
+        }).start();
     }
 
     private Map<Integer, List<NewsChannelTable>> getNewsChannelData() {

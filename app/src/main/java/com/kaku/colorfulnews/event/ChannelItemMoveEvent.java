@@ -14,18 +14,27 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.mvp.interactor;
-
-import com.kaku.colorfulnews.listener.RequestCallBack;
-
-import rx.Subscription;
+package com.kaku.colorfulnews.event;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/30
+ * @version 1.0 2016/7/2
  */
-public interface NewsChannelInteractor<T> {
-    Subscription lodeNewsChannels(RequestCallBack<T> callback);
+public class ChannelItemMoveEvent {
+    private int fromPosition;
+    private int toPosition;
 
-    void swapDb(int fromPosition,int toPosition);
+    public int getFromPosition() {
+        return fromPosition;
+    }
+
+    public int getToPosition() {
+        return toPosition;
+    }
+
+    public ChannelItemMoveEvent(int fromPosition, int toPosition) {
+        this.fromPosition = fromPosition;
+        this.toPosition = toPosition;
+
+    }
 }

@@ -34,7 +34,7 @@ public class ItemDragHelperCallback extends ItemTouchHelper.Callback {
     }
 
     public interface OnItemMoveListener {
-        boolean onItemMoved(int fromPosition, int toPosition);
+        boolean onItemMove(int fromPosition, int toPosition);
     }
 
     public ItemDragHelperCallback(OnItemMoveListener onItemMoveListener) {
@@ -72,11 +72,17 @@ public class ItemDragHelperCallback extends ItemTouchHelper.Callback {
 
         int fromPosition = viewHolder.getAdapterPosition();
         int toPosition = target.getAdapterPosition();
-        return mOnItemMoveListener.onItemMoved(fromPosition, toPosition);
+        return mOnItemMoveListener.onItemMove(fromPosition, toPosition);
     }
 
     private boolean isDifferentItemViewType(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         return viewHolder.getItemViewType() != target.getItemViewType();
+    }
+
+    @Override
+    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        super.clearView(recyclerView, viewHolder);
+
     }
 
     @Override

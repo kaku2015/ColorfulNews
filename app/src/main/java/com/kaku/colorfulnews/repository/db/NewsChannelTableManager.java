@@ -47,7 +47,7 @@ public class NewsChannelTableManager {
                     .getStringArray(R.array.news_channel_id));
             for (int i = 0; i < channelName.size(); i++) {
                 NewsChannelTable entity = new NewsChannelTable(channelName.get(i), channelId.get(i)
-                        , ApiConstants.getType(channelId.get(i)), i <= 2, i, i == 0);
+                        , ApiConstants.getType(channelId.get(i)), i <= 10, i, i == 0);
                 dao.insert(entity);
             }
             MyUtils.getSharedPreferences().edit().putBoolean(Constants.INIT_DB, true).apply();
@@ -66,5 +66,22 @@ public class NewsChannelTableManager {
                 .where(NewsChannelTableDao.Properties.NewsChannelSelect.eq(false))
                 .orderAsc(NewsChannelTableDao.Properties.NewsChannelIndex).build();
         return newsChannelTableQuery.list();
+    }
+
+    public static NewsChannelTable loadNewsChannel(int position) {
+        return App.getNewsChannelTableDao().queryBuilder()
+                .where(NewsChannelTableDao.Properties.NewsChannelIndex.eq(position)).build().unique();
+    }
+
+    public static void update(NewsChannelTable newsChannelTable) {
+        App.getNewsChannelTableDao().update(newsChannelTable);
+    }
+
+    public static List<NewsChannelTable> LoadNewsChannelsWithin(int from, int to) {
+        Query<NewsChannelTable> newsChannelTableQuery = App.getNewsChannelTableDao().queryBuilder()
+                .where(NewsChannelTableDao.Properties.NewsChannelIndex
+                        .between(from, to)).build();
+        return newsChannelTableQuery.list();
+
     }
 }

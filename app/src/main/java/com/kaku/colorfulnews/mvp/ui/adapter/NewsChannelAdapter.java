@@ -26,8 +26,10 @@ import android.widget.TextView;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.event.ChannelItemMoveEvent;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.mvp.ui.widget.ItemDragHelperCallback;
+import com.kaku.colorfulnews.utils.RxBus;
 
 import java.util.Collections;
 import java.util.List;
@@ -109,12 +111,13 @@ public class NewsChannelAdapter extends RecyclerView.Adapter<NewsChannelAdapter.
     }
 
     @Override
-    public boolean onItemMoved(int fromPosition, int toPosition) {
+    public boolean onItemMove(int fromPosition, int toPosition) {
         if (isChannelFixed(fromPosition, toPosition)) {
             return false;
         }
         Collections.swap(mNewsChannelTableList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
+        RxBus.getInstance().post(new ChannelItemMoveEvent(fromPosition, toPosition));
         return true;
     }
 

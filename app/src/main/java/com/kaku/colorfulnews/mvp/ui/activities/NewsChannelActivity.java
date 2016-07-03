@@ -25,18 +25,22 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.event.ChannelItemMoveEvent;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsChannelPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsChannelAdapter;
 import com.kaku.colorfulnews.mvp.ui.widget.ItemDragHelperCallback;
 import com.kaku.colorfulnews.mvp.view.NewsChannelView;
+import com.kaku.colorfulnews.utils.RxBus;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * @author 咖枯
@@ -53,6 +57,24 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
 
     @Inject
     NewsChannelPresenterImpl mNewsChannelPresenter;
+
+    private Subscription mSubscription = RxBus.getInstance().toObservable(ChannelItemMoveEvent.class)
+            .subscribe(new Action1<ChannelItemMoveEvent>() {
+                @Override
+                public void call(ChannelItemMoveEvent channelItemMoveEvent) {
+                    int fromPosition = channelItemMoveEvent.getFromPosition();
+                    int toPosition = channelItemMoveEvent.getToPosition();
+                    mNewsChannelPresenter.onItemSwap(fromPosition, toPosition);
+                }
+            });
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
+    }
 
     @Override
     public int getLayoutId() {
