@@ -14,17 +14,26 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.mvp.presenter;
+package com.kaku.colorfulnews.utils;
 
-import com.kaku.colorfulnews.greendao.NewsChannelTable;
-import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
+import android.os.SystemClock;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/6/30
+ * @version 1.0 2016/7/4
  */
-public interface NewsChannelPresenter extends BasePresenter {
-    void onItemSwap(int fromPosition, int toPosition);
+public class ClickUtil {
 
-    void onItemAddOrRemove(NewsChannelTable newsChannel, boolean isChannelMine);
+    private static long mLastClickTime = 0;
+    private static final int SPACE_TIME = 500;
+
+    public static boolean isFastDoubleClick() {
+        long time = SystemClock.elapsedRealtime();
+        if (time - mLastClickTime <= SPACE_TIME) {
+            return true;
+        } else {
+            mLastClickTime = time;
+            return false;
+        }
+    }
 }

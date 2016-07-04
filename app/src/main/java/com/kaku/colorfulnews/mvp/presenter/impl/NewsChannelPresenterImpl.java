@@ -58,4 +58,9 @@ public class NewsChannelPresenterImpl extends BasePresenterImpl<NewsChannelView,
     public void onItemSwap(int fromPosition, int toPosition) {
             mNewsChannelInteractor.swapDb(fromPosition,toPosition);
     }
+
+    @Override
+    public void onItemAddOrRemove(NewsChannelTable newsChannel, boolean isChannelMine) {
+            mNewsChannelInteractor.updateDb(newsChannel,isChannelMine);
+    }
 }

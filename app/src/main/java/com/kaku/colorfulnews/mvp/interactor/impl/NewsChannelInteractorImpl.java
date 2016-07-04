@@ -28,6 +28,8 @@ import com.socks.library.KLog;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -41,6 +43,8 @@ import rx.schedulers.Schedulers;
  * @version 1.0 2016/6/30
  */
 public class NewsChannelInteractorImpl implements NewsChannelInteractor<Map<Integer, List<NewsChannelTable>>> {
+
+    private ExecutorService mSingleThreadPool;
 
     @Inject
     public NewsChannelInteractorImpl() {
@@ -77,27 +81,42 @@ public class NewsChannelInteractorImpl implements NewsChannelInteractor<Map<Inte
                 });
     }
 
+    private Map<Integer, List<NewsChannelTable>> getNewsChannelData() {
+        Map<Integer, List<NewsChannelTable>> newsChannelListMap = new HashMap<>();
+        List<NewsChannelTable> channelTableListMine = NewsChannelTableManager.loadNewsChannelsMine();
+        List<NewsChannelTable> channelTableListMore = NewsChannelTableManager.loadNewsChannelsMore();
+        newsChannelListMap.put(Constants.NEWS_CHANNEL_MINE, channelTableListMine);
+        newsChannelListMap.put(Constants.NEWS_CHANNEL_MORE, channelTableListMore);
+        return newsChannelListMap;
+    }
+
     @Override
     public void swapDb(final int fromPosition, final int toPosition) {
-        new Thread(new Runnable() {
+        createThreadPool();
+        mSingleThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                synchronized (NewsChannelInteractorImpl.this) {
-                    KLog.d("fromPosition: " + fromPosition + "； toPosition: " + toPosition);
-                    NewsChannelTable fromNewsChannel = NewsChannelTableManager.loadNewsChannel(fromPosition);
-                    NewsChannelTable toNewsChannel = NewsChannelTableManager.loadNewsChannel(toPosition);
+                KLog.d(Thread.currentThread().getName());
+                KLog.d("fromPosition: " + fromPosition + "； toPosition: " + toPosition);
 
-                    if (isAdjacent(fromPosition, toPosition)) {
-                        swapAdjacentIndexAndUpdate(fromNewsChannel, toNewsChannel);
-                    } else if (fromPosition - toPosition > 0) {
-                        increaseOrReduceIndexAndUpdate(toPosition, fromPosition - 1, true);
-                        changeFromChannelIndexAndUpdate(fromNewsChannel);
-                    } else if (fromPosition - toPosition < 0) {
-                        increaseOrReduceIndexAndUpdate(fromPosition + 1, toPosition, false);
-                        changeFromChannelIndexAndUpdate(fromNewsChannel);
-                    }
+                NewsChannelTable fromNewsChannel = NewsChannelTableManager.loadNewsChannel(fromPosition);
+                NewsChannelTable toNewsChannel = NewsChannelTableManager.loadNewsChannel(toPosition);
+
+                if (isAdjacent(fromPosition, toPosition)) {
+                    swapAdjacentIndexAndUpdate(fromNewsChannel, toNewsChannel);
+                } else if (fromPosition - toPosition > 0) {
+                    List<NewsChannelTable> newsChannels = NewsChannelTableManager
+                            .loadNewsChannelsWithin(toPosition, fromPosition - 1);
+
+                    increaseOrReduceIndexAndUpdate(newsChannels, true);
+                    changeFromChannelIndexAndUpdate(fromNewsChannel, toPosition);
+                } else if (fromPosition - toPosition < 0) {
+                    List<NewsChannelTable> newsChannels = NewsChannelTableManager
+                            .loadNewsChannelsWithin(fromPosition + 1, toPosition);
+
+                    increaseOrReduceIndexAndUpdate(newsChannels, false);
+                    changeFromChannelIndexAndUpdate(fromNewsChannel, toPosition);
                 }
-
             }
 
             private boolean isAdjacent(int fromChannelIndex, int toChannelIndex) {
@@ -112,40 +131,66 @@ public class NewsChannelInteractorImpl implements NewsChannelInteractor<Map<Inte
                 NewsChannelTableManager.update(fromNewsChannel);
                 NewsChannelTableManager.update(toNewsChannel);
             }
-
-            private void increaseOrReduceIndexAndUpdate(int fromChannelIndex, int toChannelIndex, boolean isIncrease) {
-                List<NewsChannelTable> newsChannels = NewsChannelTableManager
-                        .LoadNewsChannelsWithin(fromChannelIndex, toChannelIndex);
-                for (NewsChannelTable newsChannel : newsChannels) {
-                    increaseOrReduceIndex(isIncrease, newsChannel);
-                    NewsChannelTableManager.update(newsChannel);
-                }
-            }
-
-            private void increaseOrReduceIndex(boolean isIncrease, NewsChannelTable newsChannel) {
-                int targetIndex;
-                if (isIncrease) {
-                    targetIndex = newsChannel.getNewsChannelIndex() + 1;
-                } else {
-                    targetIndex = newsChannel.getNewsChannelIndex() - 1;
-                }
-                newsChannel.setNewsChannelIndex(targetIndex);
-            }
-
-            private void changeFromChannelIndexAndUpdate(NewsChannelTable fromNewsChannel) {
-                fromNewsChannel.setNewsChannelIndex(toPosition);
-                NewsChannelTableManager.update(fromNewsChannel);
-            }
-
-        }).start();
+        });
     }
 
-    private Map<Integer, List<NewsChannelTable>> getNewsChannelData() {
-        Map<Integer, List<NewsChannelTable>> newsChannelListMap = new HashMap<>();
-        List<NewsChannelTable> channelTableListMine = NewsChannelTableManager.loadNewsChannelsMine();
-        List<NewsChannelTable> channelTableListMore = NewsChannelTableManager.loadNewsChannelsMore();
-        newsChannelListMap.put(Constants.NEWS_CHANNEL_MINE, channelTableListMine);
-        newsChannelListMap.put(Constants.NEWS_CHANNEL_MORE, channelTableListMore);
-        return newsChannelListMap;
+    private void increaseOrReduceIndexAndUpdate(List<NewsChannelTable> newsChannels, boolean isIncrease) {
+        for (NewsChannelTable newsChannel : newsChannels) {
+            increaseOrReduceIndex(isIncrease, newsChannel);
+            NewsChannelTableManager.update(newsChannel);
+        }
+    }
+
+    private void increaseOrReduceIndex(boolean isIncrease, NewsChannelTable newsChannel) {
+        int targetIndex;
+        if (isIncrease) {
+            targetIndex = newsChannel.getNewsChannelIndex() + 1;
+        } else {
+            targetIndex = newsChannel.getNewsChannelIndex() - 1;
+        }
+        newsChannel.setNewsChannelIndex(targetIndex);
+    }
+
+    private void changeFromChannelIndexAndUpdate(NewsChannelTable fromNewsChannel, int toPosition) {
+        fromNewsChannel.setNewsChannelIndex(toPosition);
+        NewsChannelTableManager.update(fromNewsChannel);
+    }
+
+    @Override
+    public void updateDb(final NewsChannelTable newsChannel, final boolean isChannelMine) {
+        createThreadPool();
+        mSingleThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                KLog.d(Thread.currentThread().getName());
+
+                int channelIndex = newsChannel.getNewsChannelIndex();
+                if (isChannelMine) {
+                    List<NewsChannelTable> newsChannels = NewsChannelTableManager.loadNewsChannelsIndexGt(channelIndex);
+                    increaseOrReduceIndexAndUpdate(newsChannels, false);
+
+                    int targetIndex = NewsChannelTableManager.getAllSize();
+                    ChangeIsSelectAndIndex(targetIndex, false);
+                } else {
+                    List<NewsChannelTable> newsChannels = NewsChannelTableManager.loadNewsChannelsIndexLtAndIsUnselect(channelIndex);
+                    increaseOrReduceIndexAndUpdate(newsChannels, true);
+
+                    int targetIndex = NewsChannelTableManager.getNewsChannelSelectSize();
+                    ChangeIsSelectAndIndex(targetIndex, true);
+                }
+
+            }
+
+            private void ChangeIsSelectAndIndex(int targetIndex, boolean isSelect) {
+                newsChannel.setNewsChannelSelect(isSelect);
+                changeFromChannelIndexAndUpdate(newsChannel, targetIndex);
+            }
+        });
+    }
+
+    private void createThreadPool() {
+        if (mSingleThreadPool == null) {
+            mSingleThreadPool = Executors.newSingleThreadExecutor();
+        }
     }
 }

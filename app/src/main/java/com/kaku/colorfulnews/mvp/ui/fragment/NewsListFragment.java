@@ -44,7 +44,7 @@ import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
-import com.kaku.colorfulnews.mvp.ui.adapter.NewsRecyclerViewAdapter;
+import com.kaku.colorfulnews.mvp.ui.adapter.NewsListAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.base.BaseFragment;
 import com.kaku.colorfulnews.mvp.view.NewsListView;
 import com.kaku.colorfulnews.utils.NetUtil;
@@ -70,7 +70,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
     ProgressBar mProgressBar;
 
     @Inject
-    NewsRecyclerViewAdapter mNewsRecyclerViewAdapter;
+    NewsListAdapter mNewsListAdapter;
     @Inject
     NewsListPresenterImpl mNewsListPresenter;
     @Inject
@@ -80,7 +80,6 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
 
     private String mNewsId;
     private String mNewsType;
-    private int mStartPage;
 
     private boolean mIsAllLoaded;
 
@@ -127,14 +126,14 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
                 if (!mIsAllLoaded && visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE
                         && lastVisibleItemPosition >= totalItemCount - 1) {
                     mNewsListPresenter.loadMore();
-                    mNewsRecyclerViewAdapter.showFooter();
-                    mNewsRV.scrollToPosition(mNewsRecyclerViewAdapter.getItemCount() - 1);
+                    mNewsListAdapter.showFooter();
+                    mNewsRV.scrollToPosition(mNewsListAdapter.getItemCount() - 1);
                 }
             }
 
         });
 
-        mNewsRecyclerViewAdapter.setOnItemClickListener(this);
+        mNewsListAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -153,7 +152,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
         if (getArguments() != null) {
             mNewsId = getArguments().getString(Constants.NEWS_ID);
             mNewsType = getArguments().getString(Constants.NEWS_TYPE);
-            mStartPage = getArguments().getInt(Constants.CHANNEL_POSITION);
+//            int startPage = getArguments().getInt(Constants.CHANNEL_POSITION);
         }
     }
 
@@ -178,27 +177,27 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
         switch (loadType) {
             case LoadNewsType.TYPE_REFRESH_SUCCESS:
                 mSwipeRefreshLayout.setRefreshing(false);
-                mNewsRecyclerViewAdapter.setItems(newsSummary);
+                mNewsListAdapter.setItems(newsSummary);
                 if (mNewsRV.getAdapter() == null) {
-                    mNewsRV.setAdapter(mNewsRecyclerViewAdapter);
+                    mNewsRV.setAdapter(mNewsListAdapter);
                 } else {
-                    mNewsRecyclerViewAdapter.notifyDataSetChanged();
+                    mNewsListAdapter.notifyDataSetChanged();
                 }
                 break;
             case LoadNewsType.TYPE_REFRESH_ERROR:
                 mSwipeRefreshLayout.setRefreshing(false);
                 break;
             case LoadNewsType.TYPE_LOAD_MORE_SUCCESS:
-                mNewsRecyclerViewAdapter.hideFooter();
+                mNewsListAdapter.hideFooter();
                 if (newsSummary == null || newsSummary.size() == 0) {
                     mIsAllLoaded = true;
                     Snackbar.make(mNewsRV, getString(R.string.no_more), Snackbar.LENGTH_SHORT).show();
                 } else {
-                    mNewsRecyclerViewAdapter.addMore(newsSummary);
+                    mNewsListAdapter.addMore(newsSummary);
                 }
                 break;
             case LoadNewsType.TYPE_LOAD_MORE_ERROR:
-                mNewsRecyclerViewAdapter.hideFooter();
+                mNewsListAdapter.hideFooter();
                 break;
         }
     }
@@ -231,7 +230,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
 
     @NonNull
     private Intent setIntent(int position) {
-        List<NewsSummary> newsSummaryList = mNewsRecyclerViewAdapter.getNewsSummaryList();
+        List<NewsSummary> newsSummaryList = mNewsListAdapter.getNewsSummaryList();
 
         Intent intent = new Intent(mActivity, NewsDetailActivity.class);
         intent.putExtra(Constants.NEWS_POST_ID, newsSummaryList.get(position).getPostid());

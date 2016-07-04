@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int TYPE_ITEM = 0;
     public static final int TYPE_FOOTER = 1;
@@ -54,7 +54,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int mLastPosition = -1;
 
     @Inject
-    public NewsRecyclerViewAdapter() {
+    public NewsListAdapter() {
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {

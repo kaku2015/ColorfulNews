@@ -148,11 +148,11 @@ public class NewsActivity extends BaseActivity
     }
 
     private void setViewPager(List<String> channelNames) {
-        mTabs.setTabMode(TabLayout.MODE_FIXED);
         NewsFragmentPagerAdapter adapter = new NewsFragmentPagerAdapter(
                 getSupportFragmentManager(), channelNames, mNewsFragmentList);
         mViewPager.setAdapter(adapter);
         mTabs.setupWithViewPager(mViewPager);
+        MyUtils.dynamicSetTabLayoutMode(mTabs);
 //        mTabs.setTabsFromPagerAdapter(adapter);
     }
 

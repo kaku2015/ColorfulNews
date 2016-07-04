@@ -23,10 +23,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.event.ChannelItemMoveEvent;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
+import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsChannelPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsChannelAdapter;
@@ -58,7 +60,10 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     @Inject
     NewsChannelPresenterImpl mNewsChannelPresenter;
 
-    private Subscription mSubscription = RxBus.getInstance().toObservable(ChannelItemMoveEvent.class)
+    private NewsChannelAdapter mNewsChannelAdapterMine;
+    private NewsChannelAdapter mNewsChannelAdapterMore;
+
+    private Subscription mSubscriptionOnItemMove = RxBus.getInstance().toObservable(ChannelItemMoveEvent.class)
             .subscribe(new Action1<ChannelItemMoveEvent>() {
                 @Override
                 public void call(ChannelItemMoveEvent channelItemMoveEvent) {
@@ -71,8 +76,8 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
+        if (!mSubscriptionOnItemMove.isUnsubscribed()) {
+            mSubscriptionOnItemMove.unsubscribe();
         }
     }
 
@@ -108,24 +113,62 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     }
 
     private void initRecyclerView(RecyclerView recyclerView, List<NewsChannelTable> newsChannels
-            , boolean isUseItemDragHelper) {
-        recyclerView.setHasFixedSize(true);
+            , final boolean isChannelMine) {
+        // !!!加上这句将不能动态增加列表大小。。。
+//        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4, LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        NewsChannelAdapter newsChannelAdapter = new NewsChannelAdapter(newsChannels);
-        recyclerView.setAdapter(newsChannelAdapter);
 
-        initItemDragHelper(isUseItemDragHelper, newsChannelAdapter);
+        if (isChannelMine) {
+            mNewsChannelAdapterMine = new NewsChannelAdapter(newsChannels);
+            recyclerView.setAdapter(mNewsChannelAdapterMine);
+            setChannelMineOnItemClick();
+
+            initItemDragHelper();
+        } else {
+            mNewsChannelAdapterMore = new NewsChannelAdapter(newsChannels);
+            recyclerView.setAdapter(mNewsChannelAdapterMore);
+            setChannelMoreOnItemClick();
+        }
+
     }
 
-    private void initItemDragHelper(boolean isUseItemDragHelper, NewsChannelAdapter newsChannelAdapter) {
-        if (isUseItemDragHelper) {
-            ItemDragHelperCallback itemDragHelperCallback = new ItemDragHelperCallback(newsChannelAdapter);
-            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemDragHelperCallback);
-            itemTouchHelper.attachToRecyclerView(mNewsChannelMineRv);
+    private void setChannelMineOnItemClick() {
+        mNewsChannelAdapterMine.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                NewsChannelTable newsChannel = mNewsChannelAdapterMine.getData().get(position);
+                boolean isNewsChannelFixed = newsChannel.getNewsChannelFixed();
+                if (!isNewsChannelFixed) {
+                    mNewsChannelAdapterMore.add(mNewsChannelAdapterMore.getItemCount(), newsChannel);
+                    mNewsChannelAdapterMine.delete(position);
 
-            newsChannelAdapter.setItemDragHelperCallback(itemDragHelperCallback);
-        }
+                    mNewsChannelPresenter.onItemAddOrRemove(newsChannel, true);
+                }
+            }
+        });
+    }
+
+    private void setChannelMoreOnItemClick() {
+        mNewsChannelAdapterMore.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                NewsChannelTable newsChannel = mNewsChannelAdapterMore.getData().get(position);
+                mNewsChannelAdapterMine.add(mNewsChannelAdapterMine.getItemCount(), newsChannel);
+                mNewsChannelAdapterMore.delete(position);
+
+                mNewsChannelPresenter.onItemAddOrRemove(newsChannel, false);
+
+            }
+        });
+    }
+
+    private void initItemDragHelper() {
+        ItemDragHelperCallback itemDragHelperCallback = new ItemDragHelperCallback(mNewsChannelAdapterMine);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemDragHelperCallback);
+        itemTouchHelper.attachToRecyclerView(mNewsChannelMineRv);
+
+        mNewsChannelAdapterMine.setItemDragHelperCallback(itemDragHelperCallback);
     }
 
     @Override

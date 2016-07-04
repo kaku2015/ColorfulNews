@@ -47,7 +47,7 @@ public class NewsChannelTableManager {
                     .getStringArray(R.array.news_channel_id));
             for (int i = 0; i < channelName.size(); i++) {
                 NewsChannelTable entity = new NewsChannelTable(channelName.get(i), channelId.get(i)
-                        , ApiConstants.getType(channelId.get(i)), i <= 10, i, i == 0);
+                        , ApiConstants.getType(channelId.get(i)), i <= 5, i, i == 0);
                 dao.insert(entity);
             }
             MyUtils.getSharedPreferences().edit().putBoolean(Constants.INIT_DB, true).apply();
@@ -77,11 +77,34 @@ public class NewsChannelTableManager {
         App.getNewsChannelTableDao().update(newsChannelTable);
     }
 
-    public static List<NewsChannelTable> LoadNewsChannelsWithin(int from, int to) {
+    public static List<NewsChannelTable> loadNewsChannelsWithin(int from, int to) {
         Query<NewsChannelTable> newsChannelTableQuery = App.getNewsChannelTableDao().queryBuilder()
                 .where(NewsChannelTableDao.Properties.NewsChannelIndex
                         .between(from, to)).build();
         return newsChannelTableQuery.list();
+    }
 
+    public static List<NewsChannelTable> loadNewsChannelsIndexGt(int channelIndex) {
+        Query<NewsChannelTable> newsChannelTableQuery = App.getNewsChannelTableDao().queryBuilder()
+                .where(NewsChannelTableDao.Properties.NewsChannelIndex
+                        .gt(channelIndex)).build();
+        return newsChannelTableQuery.list();
+    }
+
+    public static List<NewsChannelTable> loadNewsChannelsIndexLtAndIsUnselect(int channelIndex) {
+        Query<NewsChannelTable> newsChannelTableQuery = App.getNewsChannelTableDao().queryBuilder()
+                .where(NewsChannelTableDao.Properties.NewsChannelIndex.lt(channelIndex),
+                        NewsChannelTableDao.Properties.NewsChannelSelect.eq(false)).build();
+        return newsChannelTableQuery.list();
+    }
+
+    public static int getAllSize() {
+        return App.getNewsChannelTableDao().loadAll().size();
+    }
+
+    public static int getNewsChannelSelectSize() {
+        return (int) App.getNewsChannelTableDao().queryBuilder()
+                .where(NewsChannelTableDao.Properties.NewsChannelSelect.eq(true))
+                .buildCount().count();
     }
 }
