@@ -63,7 +63,7 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     private NewsChannelAdapter mNewsChannelAdapterMine;
     private NewsChannelAdapter mNewsChannelAdapterMore;
 
-    private Subscription mSubscriptionOnItemMove = RxBus.getInstance().toObservable(ChannelItemMoveEvent.class)
+    private Subscription mOnItemMoveSubscription = RxBus.getInstance().toObservable(ChannelItemMoveEvent.class)
             .subscribe(new Action1<ChannelItemMoveEvent>() {
                 @Override
                 public void call(ChannelItemMoveEvent channelItemMoveEvent) {
@@ -76,8 +76,8 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mSubscriptionOnItemMove.isUnsubscribed()) {
-            mSubscriptionOnItemMove.unsubscribe();
+        if (!mOnItemMoveSubscription.isUnsubscribed()) {
+            mOnItemMoveSubscription.unsubscribe();
         }
     }
 

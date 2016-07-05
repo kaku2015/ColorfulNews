@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 咖枯 <kaku201313@163.com | 3772304@qq.com>
+ * Copyright (c) 2016 咖枯 <kaku201313@163.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,11 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.mvp.presenter;
-
-import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
+package com.kaku.colorfulnews.event;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/5/19
+ * @version 1.0 2016/7/5
  */
-public interface NewsPresenter extends BasePresenter {
-    void onChannelDbChanged();
+public class ChannelChangeEvent {
 }

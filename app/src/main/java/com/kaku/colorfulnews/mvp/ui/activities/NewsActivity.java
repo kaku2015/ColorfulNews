@@ -34,6 +34,7 @@ import android.view.MenuItem;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
+import com.kaku.colorfulnews.event.ChannelChangeEvent;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
@@ -41,6 +42,7 @@ import com.kaku.colorfulnews.mvp.ui.adapter.PagerAdapter.NewsFragmentPagerAdapte
 import com.kaku.colorfulnews.mvp.ui.fragment.NewsListFragment;
 import com.kaku.colorfulnews.mvp.view.NewsView;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.kaku.colorfulnews.utils.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * @author 咖枯
@@ -56,6 +60,8 @@ import butterknife.OnClick;
  */
 public class NewsActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, NewsView {
+    private String mCurrentViewPagerName;
+    private List<String> mChannelNames;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -74,6 +80,22 @@ public class NewsActivity extends BaseActivity
     NewPresenterImpl mNewsPresenter;
 
     private List<Fragment> mNewsFragmentList = new ArrayList<>();
+
+    private Subscription mChannelChangeSubscription = RxBus.getInstance().toObservable(ChannelChangeEvent.class)
+            .subscribe(new Action1<ChannelChangeEvent>() {
+                @Override
+                public void call(ChannelChangeEvent channelChangeEvent) {
+                    mNewsPresenter.onChannelDbChanged();
+                }
+            });
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!mChannelChangeSubscription.isUnsubscribed()) {
+            mChannelChangeSubscription.unsubscribe();
+        }
+    }
 
     @Override
     public int getLayoutId() {
@@ -130,6 +152,7 @@ public class NewsActivity extends BaseActivity
     }
 
     private void setNewsList(List<NewsChannelTable> newsChannels, List<String> channelNames) {
+        mNewsFragmentList.clear();
         for (NewsChannelTable newsChannel : newsChannels) {
             NewsListFragment newsListFragment = createListFragments(newsChannel);
             mNewsFragmentList.add(newsListFragment);
@@ -154,6 +177,42 @@ public class NewsActivity extends BaseActivity
         mTabs.setupWithViewPager(mViewPager);
         MyUtils.dynamicSetTabLayoutMode(mTabs);
 //        mTabs.setTabsFromPagerAdapter(adapter);
+        setPageChangeListener();
+
+        mChannelNames = channelNames;
+        int currentViewPagerPosition = getCurrentViewPagerPosition();
+        mViewPager.setCurrentItem(currentViewPagerPosition, false);
+    }
+
+    private int getCurrentViewPagerPosition() {
+        int position = 0;
+        if (mCurrentViewPagerName != null) {
+            for (int i = 0; i < mChannelNames.size(); i++) {
+                if (mCurrentViewPagerName.equals(mChannelNames.get(i))) {
+                    position = i;
+                }
+            }
+        }
+        return position;
+    }
+
+    private void setPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mCurrentViewPagerName = mChannelNames.get(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override

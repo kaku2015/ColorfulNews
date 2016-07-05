@@ -44,6 +44,10 @@ public class NewPresenterImpl extends BasePresenterImpl<NewsView, List<NewsChann
     @Override
     public void onCreate() {
         super.onCreate();
+        loadNewsChannels();
+    }
+
+    private void loadNewsChannels() {
         mSubscription = mNewsInteractor.lodeNewsChannels(this);
     }
 
@@ -51,5 +55,10 @@ public class NewPresenterImpl extends BasePresenterImpl<NewsView, List<NewsChann
     public void success(List<NewsChannelTable> data) {
         super.success(data);
         mView.initViewPager(data);
+    }
+
+    @Override
+    public void onChannelDbChanged() {
+        loadNewsChannels();
     }
 }

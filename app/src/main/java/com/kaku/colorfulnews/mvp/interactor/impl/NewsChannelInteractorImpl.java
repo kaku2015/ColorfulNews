@@ -82,12 +82,12 @@ public class NewsChannelInteractorImpl implements NewsChannelInteractor<Map<Inte
     }
 
     private Map<Integer, List<NewsChannelTable>> getNewsChannelData() {
-        Map<Integer, List<NewsChannelTable>> newsChannelListMap = new HashMap<>();
-        List<NewsChannelTable> channelTableListMine = NewsChannelTableManager.loadNewsChannelsMine();
-        List<NewsChannelTable> channelTableListMore = NewsChannelTableManager.loadNewsChannelsMore();
-        newsChannelListMap.put(Constants.NEWS_CHANNEL_MINE, channelTableListMine);
-        newsChannelListMap.put(Constants.NEWS_CHANNEL_MORE, channelTableListMore);
-        return newsChannelListMap;
+        Map<Integer, List<NewsChannelTable>> map = new HashMap<>();
+        List<NewsChannelTable> channelListMine = NewsChannelTableManager.loadNewsChannelsMine();
+        List<NewsChannelTable> channelListMore = NewsChannelTableManager.loadNewsChannelsMore();
+        map.put(Constants.NEWS_CHANNEL_MINE, channelListMine);
+        map.put(Constants.NEWS_CHANNEL_MORE, channelListMore);
+        return map;
     }
 
     @Override
