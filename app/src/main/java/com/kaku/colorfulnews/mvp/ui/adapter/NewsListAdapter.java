@@ -17,12 +17,14 @@
 package com.kaku.colorfulnews.mvp.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,7 +33,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.mvp.entity.NewsSummary;
-import com.kaku.colorfulnews.listener.OnItemClickListener;
+import com.kaku.colorfulnews.utils.DimenUtil;
 
 import java.util.List;
 
@@ -48,17 +50,22 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static final int TYPE_ITEM = 0;
     public static final int TYPE_FOOTER = 1;
+    public static final int TYPE_PHOTO_ITEM = 2;
     private boolean mIsShowFooter;
     private List<NewsSummary> mNewsSummaryList;
-    private OnItemClickListener mOnItemClickListener;
+    private OnNewsListItemClickListener mOnNewsListItemClickListener;
     private int mLastPosition = -1;
+
+    public interface OnNewsListItemClickListener {
+        void onItemClick(View view, int position, boolean isPhoto);
+    }
 
     @Inject
     public NewsListAdapter() {
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+    public void setOnNewsListItemClickListener(OnNewsListItemClickListener onNewsListItemClickListener) {
+        mOnNewsListItemClickListener = onNewsListItemClickListener;
     }
 
     public List<NewsSummary> getNewsSummaryList() {
@@ -71,25 +78,37 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-        if (viewType == TYPE_FOOTER) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_footer, parent, false);
-            return new FooterViewHolder(view);
-        } else if (viewType == TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news, parent, false);
-            final ItemViewHolder itemViewHolder = new ItemViewHolder(view);
-            setItemOnClick(itemViewHolder);
-            return itemViewHolder;
+        View view;
+        switch (viewType) {
+            case TYPE_FOOTER:
+                view = getView(parent, R.layout.item_news_footer);
+                return new FooterViewHolder(view);
+            case TYPE_ITEM:
+                view = getView(parent, R.layout.item_news);
+                final ItemViewHolder itemViewHolder = new ItemViewHolder(view);
+                setItemOnClickEvent(itemViewHolder, false);
+                return itemViewHolder;
+            case TYPE_PHOTO_ITEM:
+                view = getView(parent, R.layout.item_news_photo);
+                final PhotoViewHolder photoItemViewHolder = new PhotoViewHolder(view);
+                setItemOnClickEvent(photoItemViewHolder, true);
+                return photoItemViewHolder;
+            default:
+                throw new RuntimeException("there is no type that matches the type " +
+                        viewType + " + make sure your using types correctly");
         }
-        throw new RuntimeException("there is no type that matches the type " +
-                viewType + " + make sure your using types correctly");
     }
 
-    private void setItemOnClick(final RecyclerView.ViewHolder holder) {
-        if (mOnItemClickListener != null) {
+    private View getView(ViewGroup parent, int layoutId) {
+        return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+    }
+
+    private void setItemOnClickEvent(final RecyclerView.ViewHolder holder, final boolean isPhoto) {
+        if (mOnNewsListItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(holder.itemView, holder.getLayoutPosition());
+                    mOnNewsListItemClickListener.onItemClick(holder.itemView, holder.getLayoutPosition(), isPhoto);
                 }
             });
         }
@@ -97,40 +116,158 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if (mIsShowFooter && (getItemCount() - 1) == position) {
+        if (mIsShowFooter && isFooterPosition(position)) {
             return TYPE_FOOTER;
-        } else {
+        } else if (!TextUtils.isEmpty(mNewsSummaryList.get(position).getDigest())) {
             return TYPE_ITEM;
+        } else {
+            return TYPE_PHOTO_ITEM;
         }
+    }
+
+    private boolean isFooterPosition(int position) {
+        return (getItemCount() - 1) == position;
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        setItemValues(holder, position);
+        setValues(holder, position);
         setItemAppearAnimation(holder, position);
     }
 
-    private void setItemValues(RecyclerView.ViewHolder holder, int position) {
+    private void setValues(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            String title = mNewsSummaryList.get(position).getLtitle();
-            if (title == null) {
-                title = mNewsSummaryList.get(position).getTitle();
-            }
-            String ptime = mNewsSummaryList.get(position).getPtime();
-            String digest = mNewsSummaryList.get(position).getDigest();
-            String imgSrc = mNewsSummaryList.get(position).getImgsrc();
+            setItemValues((ItemViewHolder) holder, position);
+        } else if (holder instanceof PhotoViewHolder)
+            setPhotoItemValues((PhotoViewHolder) holder, position);
+    }
 
-            ((ItemViewHolder) holder).mNewsSummaryTitleTv.setText(title);
-            ((ItemViewHolder) holder).mNewsSummaryPtimeTv.setText(ptime);
-            ((ItemViewHolder) holder).mNewsSummaryDigestTv.setText(digest);
-
-            Glide.with(App.getAppContext()).load(imgSrc).asBitmap() // gif格式有时会导致整体图片不显示，貌似有冲突
-                    .format(DecodeFormat.PREFER_ARGB_8888)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.color.image_place_holder)
-                    .error(R.drawable.ic_load_fail)
-                    .into(((ItemViewHolder) holder).mNewsSummaryPhotoIv);
+    private void setItemValues(ItemViewHolder holder, int position) {
+        NewsSummary newsSummary = mNewsSummaryList.get(position);
+        String title = newsSummary.getLtitle();
+        if (title == null) {
+            title = newsSummary.getTitle();
         }
+        String ptime = newsSummary.getPtime();
+        String digest = newsSummary.getDigest();
+        String imgSrc = newsSummary.getImgsrc();
+
+        holder.mNewsSummaryTitleTv.setText(title);
+        holder.mNewsSummaryPtimeTv.setText(ptime);
+        holder.mNewsSummaryDigestTv.setText(digest);
+
+        Glide.with(App.getAppContext()).load(imgSrc).asBitmap() // gif格式有时会导致整体图片不显示，貌似有冲突
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.color.image_place_holder)
+                .error(R.drawable.ic_load_fail)
+                .into(holder.mNewsSummaryPhotoIv);
+    }
+
+    private void setPhotoItemValues(PhotoViewHolder holder, int position) {
+        NewsSummary newsSummary = mNewsSummaryList.get(position);
+        setTextView(holder, newsSummary);
+        setImageView(holder, newsSummary);
+    }
+
+    private void setTextView(PhotoViewHolder holder, NewsSummary newsSummary) {
+        String title = newsSummary.getTitle();
+        String ptime = newsSummary.getPtime();
+
+        holder.mNewsSummaryTitleTv.setText(title);
+        holder.mNewsSummaryPtimeTv.setText(ptime);
+    }
+
+    private void setImageView(PhotoViewHolder holder, NewsSummary newsSummary) {
+        int PhotoThreeHeight = (int) DimenUtil.dp2px(90);
+        int PhotoTwoHeight = (int) DimenUtil.dp2px(120);
+        int PhotoOneHeight = (int) DimenUtil.dp2px(150);
+
+        String imgSrcLeft = null;
+        String imgSrcMiddle = null;
+        String imgSrcRight = null;
+
+        ViewGroup.LayoutParams layoutParams = holder.mNewsSummaryPhotoIvGroup.getLayoutParams();
+
+        if (newsSummary.getAds() != null) {
+            List<NewsSummary.AdsBean> adsBeanList = newsSummary.getAds();
+            int size = adsBeanList.size();
+            if (size >= 3) {
+                imgSrcLeft = adsBeanList.get(0).getImgsrc();
+                imgSrcMiddle = adsBeanList.get(1).getImgsrc();
+                imgSrcRight = adsBeanList.get(2).getImgsrc();
+
+                layoutParams.height = PhotoThreeHeight;
+            } else if (size >= 2) {
+                imgSrcLeft = adsBeanList.get(0).getImgsrc();
+                imgSrcMiddle = adsBeanList.get(1).getImgsrc();
+
+                layoutParams.height = PhotoTwoHeight;
+            } else if (size >= 1) {
+                imgSrcLeft = adsBeanList.get(0).getImgsrc();
+
+                layoutParams.height = PhotoOneHeight;
+            }
+        } else if (newsSummary.getImgextra() != null) {
+            int size = newsSummary.getImgextra().size();
+            if (size >= 3) {
+                imgSrcLeft = newsSummary.getImgextra().get(0).getImgsrc();
+                imgSrcMiddle = newsSummary.getImgextra().get(1).getImgsrc();
+                imgSrcRight = newsSummary.getImgextra().get(2).getImgsrc();
+
+                layoutParams.height = PhotoThreeHeight;
+            } else if (size >= 2) {
+                imgSrcLeft = newsSummary.getImgextra().get(0).getImgsrc();
+                imgSrcMiddle = newsSummary.getImgextra().get(1).getImgsrc();
+
+                layoutParams.height = PhotoTwoHeight;
+            } else if (size >= 1) {
+                imgSrcLeft = newsSummary.getImgextra().get(0).getImgsrc();
+
+                layoutParams.height = PhotoOneHeight;
+            }
+        } else {
+            imgSrcLeft = newsSummary.getImgsrc();
+
+            layoutParams.height = PhotoOneHeight;
+        }
+
+        setPhotoImageView(holder, imgSrcLeft, imgSrcMiddle, imgSrcRight);
+        holder.mNewsSummaryPhotoIvGroup.setLayoutParams(layoutParams);
+    }
+
+    private void setPhotoImageView(PhotoViewHolder holder, String imgSrcLeft, String imgSrcMiddle, String imgSrcRight) {
+        if (imgSrcLeft != null) {
+            showAndSetPhoto(holder.mNewsSummaryPhotoIvLeft, imgSrcLeft);
+        } else {
+            hidePhoto(holder.mNewsSummaryPhotoIvLeft);
+        }
+
+        if (imgSrcMiddle != null) {
+            showAndSetPhoto(holder.mNewsSummaryPhotoIvMiddle, imgSrcMiddle);
+        } else {
+            hidePhoto(holder.mNewsSummaryPhotoIvMiddle);
+        }
+
+        if (imgSrcRight != null) {
+            showAndSetPhoto(holder.mNewsSummaryPhotoIvRight, imgSrcRight);
+        } else {
+            hidePhoto(holder.mNewsSummaryPhotoIvRight);
+        }
+    }
+
+    private void showAndSetPhoto(ImageView imageView, String imgSrc) {
+        imageView.setVisibility(View.VISIBLE);
+        Glide.with(App.getAppContext()).load(imgSrc).asBitmap()
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.color.image_place_holder)
+                .error(R.drawable.ic_load_fail)
+                .into(imageView);
+    }
+
+    private void hidePhoto(ImageView imageView) {
+        imageView.setVisibility(View.GONE);
     }
 
     private void setItemAppearAnimation(RecyclerView.ViewHolder holder, int position) {
@@ -144,10 +281,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (holder.itemView.getAnimation() != null && holder.itemView
-                .getAnimation().hasStarted()) {
+        if (isShowingAnimation(holder)) {
             holder.itemView.clearAnimation();
         }
+    }
+
+    private boolean isShowingAnimation(RecyclerView.ViewHolder holder) {
+        return holder.itemView.getAnimation() != null && holder.itemView
+                .getAnimation().hasStarted();
     }
 
     @Override
@@ -180,7 +321,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ImageView mNewsSummaryPhotoIv;
         @BindView(R.id.news_summary_title_tv)
         TextView mNewsSummaryTitleTv;
-        @BindView(R.id.news_summary_Digest_tv)
+        @BindView(R.id.news_summary_digest_tv)
         TextView mNewsSummaryDigestTv;
         @BindView(R.id.news_summary_ptime_tv)
         TextView mNewsSummaryPtimeTv;
@@ -198,5 +339,23 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    class PhotoViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.news_summary_title_tv)
+        TextView mNewsSummaryTitleTv;
+        @BindView(R.id.news_summary_photo_iv_group)
+        LinearLayout mNewsSummaryPhotoIvGroup;
+        @BindView(R.id.news_summary_photo_iv_left)
+        ImageView mNewsSummaryPhotoIvLeft;
+        @BindView(R.id.news_summary_photo_iv_middle)
+        ImageView mNewsSummaryPhotoIvMiddle;
+        @BindView(R.id.news_summary_photo_iv_right)
+        ImageView mNewsSummaryPhotoIvRight;
+        @BindView(R.id.news_summary_ptime_tv)
+        TextView mNewsSummaryPtimeTv;
 
+        public PhotoViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
 }

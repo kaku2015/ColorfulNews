@@ -31,6 +31,7 @@ import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.ui.widget.ItemDragHelperCallback;
 import com.kaku.colorfulnews.utils.ClickUtil;
+import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.utils.RxBus;
 
 import java.util.Collections;
@@ -118,8 +119,18 @@ public class NewsChannelAdapter extends RecyclerView.Adapter<NewsChannelAdapter.
 
         if (newsChannel.getNewsChannelIndex() == 0) {
             holder.mNewsChannelTv.setTextColor(ContextCompat
-                    .getColor(App.getAppContext(), R.color.alpha_40_black));
+                    .getColor(App.getAppContext(), getColorId()));
         }
+    }
+
+    private int getColorId() {
+        int colorId;
+        if (MyUtils.isNightMode()) {
+            colorId = R.color.alpha_40_white;
+        } else {
+            colorId = R.color.alpha_40_black;
+        }
+        return colorId;
     }
 
     @Override

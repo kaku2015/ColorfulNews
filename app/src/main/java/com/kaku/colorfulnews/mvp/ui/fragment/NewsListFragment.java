@@ -38,10 +38,9 @@ import android.widget.ProgressBar;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.LoadNewsType;
-import com.kaku.colorfulnews.listener.OnItemClickListener;
+import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsListAdapter;
@@ -62,7 +61,7 @@ import static android.support.v7.widget.RecyclerView.OnScrollListener;
  * @author 咖枯
  * @version 1.0 2016/5/18
  */
-public class NewsListFragment extends BaseFragment implements NewsListView, OnItemClickListener,
+public class NewsListFragment extends BaseFragment implements NewsListView, NewsListAdapter.OnNewsListItemClickListener,
         SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.news_rv)
     RecyclerView mNewsRV;
@@ -133,7 +132,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
 
         });
 
-        mNewsListAdapter.setOnItemClickListener(this);
+        mNewsListAdapter.setOnNewsListItemClickListener(this);
     }
 
     @Override
@@ -219,8 +218,12 @@ public class NewsListFragment extends BaseFragment implements NewsListView, OnIt
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void onItemClick(View view, int position) {
-        goToNewsDetailActivity(view, position);
+    public void onItemClick(View view, int position, boolean isPhoto) {
+        if (isPhoto) {
+            // TODO
+        } else {
+            goToNewsDetailActivity(view, position);
+        }
     }
 
     private void goToNewsDetailActivity(View view, int position) {

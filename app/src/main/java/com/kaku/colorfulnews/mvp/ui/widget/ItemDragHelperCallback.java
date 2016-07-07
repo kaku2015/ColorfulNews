@@ -66,13 +66,9 @@ public class ItemDragHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        if (isDifferentItemViewType(viewHolder, target)) {
-            return false;
-        }
+        return !isDifferentItemViewType(viewHolder, target) &&
+                mOnItemMoveListener.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
 
-        int fromPosition = viewHolder.getAdapterPosition();
-        int toPosition = target.getAdapterPosition();
-        return mOnItemMoveListener.onItemMove(fromPosition, toPosition);
     }
 
     private boolean isDifferentItemViewType(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {

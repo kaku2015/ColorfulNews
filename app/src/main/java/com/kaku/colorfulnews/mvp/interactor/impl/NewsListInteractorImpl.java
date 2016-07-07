@@ -81,6 +81,7 @@ public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSumma
                     }
                 })
 //                .toList()
+                .distinct()
                 .toSortedList(new Func2<NewsSummary, NewsSummary, Integer>() {
                     @Override
                     public Integer call(NewsSummary newsSummary, NewsSummary newsSummary2) {
