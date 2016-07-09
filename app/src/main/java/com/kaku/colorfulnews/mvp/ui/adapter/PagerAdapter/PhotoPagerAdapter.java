@@ -18,7 +18,7 @@ package com.kaku.colorfulnews.mvp.ui.adapter.PagerAdapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.kaku.colorfulnews.mvp.ui.fragment.PhotoDetailFragment;
 
@@ -28,7 +28,7 @@ import java.util.List;
  * @author 咖枯
  * @version 1.0 2016/7/8
  */
-public class PhotoPagerAdapter extends FragmentPagerAdapter {
+public class PhotoPagerAdapter extends FragmentStatePagerAdapter {
     private List<PhotoDetailFragment> mFragmentList;
 
     public PhotoPagerAdapter(FragmentManager fm, List<PhotoDetailFragment> fragmentList) {

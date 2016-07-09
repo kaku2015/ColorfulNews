@@ -16,25 +16,32 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
+import com.kaku.colorfulnews.event.PhotoDetailOnClickEvent;
 import com.kaku.colorfulnews.mvp.entity.PhotoDetail;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.PagerAdapter.PhotoPagerAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.PhotoDetailFragment;
 import com.kaku.colorfulnews.mvp.ui.widget.PhotoViewPager;
+import com.kaku.colorfulnews.utils.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * @author 咖枯
@@ -53,6 +60,55 @@ public class PhotoDetailActivity extends BaseActivity {
 
     private List<PhotoDetailFragment> mPhotoDetailFragmentList = new ArrayList<>();
     private PhotoDetail mPhotoDetail;
+
+    private Subscription mSubscription = RxBus.getInstance().toObservable(PhotoDetailOnClickEvent.class)
+            .subscribe(new Action1<PhotoDetailOnClickEvent>() {
+                @Override
+                public void call(PhotoDetailOnClickEvent photoDetailOnClickEvent) {
+                    if (mPhotoDetailTitleTv.getVisibility() == View.VISIBLE) {
+                        startAnimation(View.GONE, 0.9f, 0.5f);
+                    } else {
+                        mPhotoDetailTitleTv.setVisibility(View.VISIBLE);
+                        startAnimation(View.VISIBLE, 0.5f, 0.9f);
+                    }
+                }
+            });
+
+    private void startAnimation(final int endState, float startValue, float endValue) {
+        ObjectAnimator animator = ObjectAnimator
+                .ofFloat(mPhotoDetailTitleTv, "alpha", startValue, endValue)
+                .setDuration(200);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mPhotoDetailTitleTv.setVisibility(endState);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
+    }
 
     @Override
     public int getLayoutId() {
