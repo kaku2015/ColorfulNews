@@ -163,16 +163,20 @@ public class URLImageGetter implements Html.ImageGetter {
     @NonNull
     private Drawable createPicPlaceholder() {
         Drawable drawable;
-        // Fixme:动态不能自动换肤
+        int color = getColor();
+        drawable = new ColorDrawable(App.getAppContext().getResources().getColor(color));
+        drawable.setBounds(0, 0, mPicWidth, mPicWidth / 3);
+        return drawable;
+    }
+
+    private int getColor() {
         int color;
         if (!MyUtils.isNightMode()) {
             color = R.color.image_place_holder;
         } else {
             color = R.color.image_place_holder_night;
         }
-        drawable = new ColorDrawable(App.getAppContext().getResources().getColor(color));
-        drawable.setBounds(0, 0, mPicWidth, mPicWidth / 3);
-        return drawable;
+        return color;
     }
 
 }

@@ -84,7 +84,9 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         ButterKnife.bind(this);
         initSupportActionBar();
         initViews();
-        mPresenter.onCreate();
+        if (mPresenter != null) {
+            mPresenter.onCreate();
+        }
     }
 
     private void setNightOrDayMode() {

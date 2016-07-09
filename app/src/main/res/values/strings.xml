@@ -14,6 +14,9 @@
     <string name="news_from">%1$s %2$s</string>
     <string name="loading">加载中…</string>
     <string name="no_more">没有更多了</string>dian
+    <string name="photos">图集：%1$s</string>dian
+    <string name="photo_detail_title">%1$d/%2$d　%3$s</string>dian
+    <string name="photo_news">图片新闻</string>dian
 
     <!-- 共享过度动画 -->
     <string name="transition_photos">transition_animation_news_photos</string>
@@ -23,6 +26,5 @@
     <string name="my_channel">我的频道</string>
     <string name="more_channel">更多频道</string>
     <string name="channel_manage">频道管理</string>
-
 
 </resources>

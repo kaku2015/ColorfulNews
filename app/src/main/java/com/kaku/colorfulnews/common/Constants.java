@@ -38,4 +38,7 @@ public class Constants {
 
     public static final int NEWS_CHANNEL_MINE = 0;
     public static final int NEWS_CHANNEL_MORE = 1;
+
+    public static final String PHOTO_DETAIL = "photo_detail";
+    public static final String PHOTO_DETAIL_IMGSRC = "photo_detail_imgsrc";
 }

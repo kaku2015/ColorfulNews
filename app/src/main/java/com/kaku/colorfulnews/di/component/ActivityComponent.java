@@ -25,6 +25,7 @@ import com.kaku.colorfulnews.di.scope.PerActivity;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsActivity;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsChannelActivity;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
+import com.kaku.colorfulnews.mvp.ui.activities.PhotoDetailActivity;
 
 import dagger.Component;
 
@@ -49,4 +50,6 @@ public interface ActivityComponent {
     void inject(NewsDetailActivity newsDetailActivity);
 
     void inject(NewsChannelActivity newsChannelActivity);
+
+    void inject(PhotoDetailActivity photoDetailActivity);
 }

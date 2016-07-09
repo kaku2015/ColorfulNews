@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context="com.kaku.colorfulnews.mvp.ui.activities.PhotoDetailActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/action_bar"
+        android:fitsSystemWindows="false"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="@string/photo_news"/>
+
+    <com.kaku.colorfulnews.mvp.ui.widget.PhotoViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/black"/>
+
+    <TextView
+        android:id="@+id/photo_detail_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dp"
+        android:padding="@dimen/item_margin"
+        android:textColor="@color/primary_text_white"
+        android:textSize="@dimen/medium"
+        tools:text="1/5  武汉奢华别墅区被洪水围困成孤岛"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>
+
