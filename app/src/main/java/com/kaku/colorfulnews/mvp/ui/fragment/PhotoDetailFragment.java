@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -17,8 +18,14 @@ import com.kaku.colorfulnews.mvp.ui.fragment.base.BaseFragment;
 import com.kaku.colorfulnews.utils.RxBus;
 import com.socks.library.KLog;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -26,6 +33,8 @@ public class PhotoDetailFragment extends BaseFragment {
 
     @BindView(R.id.photo_view)
     PhotoView mPhotoView;
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
 
     private String mImgSrc;
 
@@ -52,17 +61,30 @@ public class PhotoDetailFragment extends BaseFragment {
 
     @Override
     public void initViews(View view) {
-        Glide.with(App.getAppContext()).load(mImgSrc).asBitmap()
-                .format(DecodeFormat.PREFER_ARGB_8888)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.color.image_place_holder)
-                .error(R.drawable.ic_load_fail)
-                .into(mPhotoView);
-
-        setPhotoClickEvent();
+        mProgressBar.setVisibility(View.VISIBLE);
+        initPhotoView();
+        setPhotoViewClickEvent();
     }
 
-    private void setPhotoClickEvent() {
+    private void initPhotoView() {
+        Observable.timer(100, TimeUnit.MILLISECONDS) // 直接使用glide加载的话，activity切换动画时背景短暂为默认背景色
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        mProgressBar.setVisibility(View.GONE);
+                        Glide.with(App.getAppContext()).load(mImgSrc).asBitmap()
+                                .format(DecodeFormat.PREFER_ARGB_8888)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .error(R.drawable.ic_load_fail)
+                                .into(mPhotoView);
+
+                    }
+                });
+    }
+
+    private void setPhotoViewClickEvent() {
         mPhotoView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
             public void onPhotoTap(View view, float v, float v1) {

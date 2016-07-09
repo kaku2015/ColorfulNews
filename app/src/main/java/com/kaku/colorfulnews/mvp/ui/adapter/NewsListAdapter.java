@@ -108,7 +108,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnNewsListItemClickListener.onItemClick(holder.itemView, holder.getLayoutPosition(), isPhoto);
+                    mOnNewsListItemClickListener.onItemClick(v, holder.getLayoutPosition(), isPhoto);
                 }
             });
         }

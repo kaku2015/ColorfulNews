@@ -34,13 +34,5 @@
         android:textSize="@dimen/medium"
         tools:text="1/5  武汉奢华别墅区被洪水围困成孤岛"/>
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
-
 </RelativeLayout>
 

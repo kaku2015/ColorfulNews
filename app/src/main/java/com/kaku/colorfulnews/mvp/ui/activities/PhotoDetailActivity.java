@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kaku.colorfulnews.R;
@@ -55,8 +54,6 @@ public class PhotoDetailActivity extends BaseActivity {
     PhotoViewPager mViewpager;
     @BindView(R.id.photo_detail_title_tv)
     TextView mPhotoDetailTitleTv;
-    @BindView(R.id.progress_bar)
-    ProgressBar mProgressBar;
 
     private List<PhotoDetailFragment> mPhotoDetailFragmentList = new ArrayList<>();
     private PhotoDetail mPhotoDetail;
