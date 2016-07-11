@@ -163,20 +163,10 @@ public class URLImageGetter implements Html.ImageGetter {
     @NonNull
     private Drawable createPicPlaceholder() {
         Drawable drawable;
-        int color = getColor();
+        int color = MyUtils.getColor(R.color.image_place_holder,R.color.image_place_holder_night);
         drawable = new ColorDrawable(App.getAppContext().getResources().getColor(color));
         drawable.setBounds(0, 0, mPicWidth, mPicWidth / 3);
         return drawable;
-    }
-
-    private int getColor() {
-        int color;
-        if (!MyUtils.isNightMode()) {
-            color = R.color.image_place_holder;
-        } else {
-            color = R.color.image_place_holder_night;
-        }
-        return color;
     }
 
 }

@@ -75,7 +75,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                 .applicationComponent(((App) getApplication()).getApplicationComponent())
                 .activityModule(new ActivityModule(this))
                 .build();
-//        setStatusBarTranslucent();
+        setStatusBarTranslucent();
         setNightOrDayMode();
 
         int layoutId = getLayoutId();
@@ -102,7 +102,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     // TODO:适配4.4
     protected void setStatusBarTranslucent() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);

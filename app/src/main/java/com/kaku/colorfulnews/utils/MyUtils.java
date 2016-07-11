@@ -106,4 +106,14 @@ public class MyUtils {
     public static int getScreenWith() {
         return App.getAppContext().getResources().getDisplayMetrics().widthPixels;
     }
+
+    public static int getColor(int nightColor, int dayColor) {
+        int color;
+        if (!MyUtils.isNightMode()) {
+            color = nightColor;
+        } else {
+            color = dayColor;
+        }
+        return color;
+    }
 }
