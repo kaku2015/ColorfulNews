@@ -38,8 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import rx.Subscription;
 import rx.functions.Action1;
 
 /**
@@ -58,18 +56,23 @@ public class PhotoDetailActivity extends BaseActivity {
     private List<PhotoDetailFragment> mPhotoDetailFragmentList = new ArrayList<>();
     private PhotoDetail mPhotoDetail;
 
-    private Subscription mSubscription = RxBus.getInstance().toObservable(PhotoDetailOnClickEvent.class)
-            .subscribe(new Action1<PhotoDetailOnClickEvent>() {
-                @Override
-                public void call(PhotoDetailOnClickEvent photoDetailOnClickEvent) {
-                    if (mPhotoDetailTitleTv.getVisibility() == View.VISIBLE) {
-                        startAnimation(View.GONE, 0.9f, 0.5f);
-                    } else {
-                        mPhotoDetailTitleTv.setVisibility(View.VISIBLE);
-                        startAnimation(View.VISIBLE, 0.5f, 0.9f);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSubscription = RxBus.getInstance().toObservable(PhotoDetailOnClickEvent.class)
+                .subscribe(new Action1<PhotoDetailOnClickEvent>() {
+                    @Override
+                    public void call(PhotoDetailOnClickEvent photoDetailOnClickEvent) {
+                        if (mPhotoDetailTitleTv.getVisibility() == View.VISIBLE) {
+                            startAnimation(View.GONE, 0.9f, 0.5f);
+                        } else {
+                            mPhotoDetailTitleTv.setVisibility(View.VISIBLE);
+                            startAnimation(View.VISIBLE, 0.5f, 0.9f);
+                        }
                     }
-                }
-            });
+                });
+    }
 
     private void startAnimation(final int endState, float startValue, float endValue) {
         ObjectAnimator animator = ObjectAnimator
@@ -97,14 +100,6 @@ public class PhotoDetailActivity extends BaseActivity {
             }
         });
         animator.start();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (!mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
-        }
     }
 
     @Override
@@ -176,9 +171,4 @@ public class PhotoDetailActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
-    }
 }

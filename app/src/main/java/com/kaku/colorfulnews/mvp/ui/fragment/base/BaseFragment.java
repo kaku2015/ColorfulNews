@@ -28,9 +28,11 @@ import com.kaku.colorfulnews.di.component.DaggerFragmentComponent;
 import com.kaku.colorfulnews.di.component.FragmentComponent;
 import com.kaku.colorfulnews.di.module.FragmentModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
+import com.kaku.colorfulnews.utils.MyUtils;
 import com.squareup.leakcanary.RefWatcher;
 
 import butterknife.ButterKnife;
+import rx.Subscription;
 
 /**
  * @author 咖枯
@@ -52,6 +54,8 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
     public abstract void initViews(View view);
 
     public abstract int getLayoutId();
+
+    protected Subscription mSubscription;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,5 +87,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment {
         if (mPresenter != null) {
             mPresenter.onDestroy();
         }
+
+        MyUtils.cancelSubscription(mSubscription);
     }
 }

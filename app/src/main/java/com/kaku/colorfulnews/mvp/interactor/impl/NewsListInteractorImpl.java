@@ -16,14 +16,12 @@
  */
 package com.kaku.colorfulnews.mvp.interactor.impl;
 
-import com.kaku.colorfulnews.App;
-import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.common.ApiConstants;
 import com.kaku.colorfulnews.common.HostType;
-import com.kaku.colorfulnews.repository.network.RetrofitManager;
 import com.kaku.colorfulnews.listener.RequestCallBack;
+import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.mvp.interactor.NewsListInteractor;
+import com.kaku.colorfulnews.repository.network.RetrofitManager;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.socks.library.KLog;
 
@@ -101,7 +99,7 @@ public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSumma
                         KLog.e(e.toString());
 //                        checkNetState(listener);
 //                        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
-                        listener.onError(App.getAppContext().getString(R.string.load_error));
+                        listener.onError(MyUtils.analyzeNetworkError(e));
 //                        }
                     }
 

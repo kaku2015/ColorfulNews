@@ -17,12 +17,12 @@
 package com.kaku.colorfulnews.mvp.interactor.impl;
 
 import com.kaku.colorfulnews.App;
-import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.common.HostType;
-import com.kaku.colorfulnews.repository.network.RetrofitManager;
-import com.kaku.colorfulnews.mvp.interactor.NewsDetailInteractor;
 import com.kaku.colorfulnews.listener.RequestCallBack;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
+import com.kaku.colorfulnews.mvp.interactor.NewsDetailInteractor;
+import com.kaku.colorfulnews.repository.network.RetrofitManager;
+import com.kaku.colorfulnews.utils.MyUtils;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -69,7 +69,7 @@ public class NewsDetailInteractorImpl implements NewsDetailInteractor<NewsDetail
                     @Override
                     public void onError(Throwable e) {
                         KLog.e(e.toString());
-                        callBack.onError(App.getAppContext().getString(R.string.load_error));
+                        callBack.onError(MyUtils.analyzeNetworkError(e));
                     }
 
                     @Override

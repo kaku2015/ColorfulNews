@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -67,13 +67,22 @@ public class PhotoDetailFragment extends BaseFragment {
     }
 
     private void initPhotoView() {
-        Observable.timer(100, TimeUnit.MILLISECONDS) // 直接使用glide加载的话，activity切换动画时背景短暂为默认背景色
+        mSubscription = Observable.timer(100, TimeUnit.MILLISECONDS) // 直接使用glide加载的话，activity切换动画时背景短暂为默认背景色
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
+                .subscribe(new Subscriber<Long>() {
                     @Override
-                    public void call(Long aLong) {
+                    public void onCompleted() {
                         mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
                         Glide.with(App.getAppContext()).load(mImgSrc).asBitmap()
                                 .format(DecodeFormat.PREFER_ARGB_8888)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)

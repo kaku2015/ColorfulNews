@@ -34,8 +34,8 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
-import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.common.Constants;
+import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsDetailPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.widget.URLImageGetter;
@@ -45,10 +45,16 @@ import com.kaku.colorfulnews.utils.NetUtil;
 import com.socks.library.KLog;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -79,7 +85,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     @Inject
     NewsDetailPresenterImpl mNewsDetailPresenter;
 
-    URLImageGetter mUrlImageGetter;
+    private URLImageGetter mUrlImageGetter;
+    private Subscription mBodySubscription;
 
     @Override
     public int getLayoutId() {
@@ -147,17 +154,41 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
                 })*/;
     }
 
-    private void setNewsDetailBodyTv(NewsDetail newsDetail, String newsBody) {
-        if (mNewsDetailBodyTv != null) {
-            int imgTotal = newsDetail.getImg().size();
-            if (App.isHavePhoto() && imgTotal >= 2) {
-///               mNewsDetailBodyTv.setMovementMethod(LinkMovementMethod.getInstance());//加这句才能让里面的超链接生效,实测经常卡机崩溃
-                mUrlImageGetter = new URLImageGetter(mNewsDetailBodyTv, newsBody, imgTotal);
-                mNewsDetailBodyTv.setText(Html.fromHtml(newsBody, mUrlImageGetter, null));
-            } else {
-                mNewsDetailBodyTv.setText(Html.fromHtml(newsBody));
-            }
+    private void setNewsDetailBodyTv(final NewsDetail newsDetail, final String newsBody) {
+        mSubscription = Observable.timer(500, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        setBody(newsDetail, newsBody);
+                    }
+                });
+    }
+
+    private void setBody(NewsDetail newsDetail, String newsBody) {
+        int imgTotal = newsDetail.getImg().size();
+        if (isShowBody(newsBody, imgTotal)) {
+//              mNewsDetailBodyTv.setMovementMethod(LinkMovementMethod.getInstance());//加这句才能让里面的超链接生效,实测经常卡机崩溃
+            mUrlImageGetter = new URLImageGetter(mNewsDetailBodyTv, newsBody, imgTotal);
+            mNewsDetailBodyTv.setText(Html.fromHtml(newsBody, mUrlImageGetter, null));
+        } else {
+            mNewsDetailBodyTv.setText(Html.fromHtml(newsBody));
         }
+    }
+
+    private boolean isShowBody(String newsBody, int imgTotal) {
+        return App.isHavePhoto() && imgTotal >= 2 && newsBody != null;
     }
 
     private String getImgSrcs(NewsDetail newsDetail) {
@@ -178,7 +209,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     @Override
     public void hideProgress() {
-        mProgressBar.setVisibility(View.GONE);
+//        mProgressBar.setVisibility(View.GONE);
 
     }
 

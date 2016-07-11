@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,7 +42,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import rx.Subscription;
 import rx.functions.Action1;
 
 /**
@@ -63,22 +63,18 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     private NewsChannelAdapter mNewsChannelAdapterMine;
     private NewsChannelAdapter mNewsChannelAdapterMore;
 
-    private Subscription mOnItemMoveSubscription = RxBus.getInstance().toObservable(ChannelItemMoveEvent.class)
-            .subscribe(new Action1<ChannelItemMoveEvent>() {
-                @Override
-                public void call(ChannelItemMoveEvent channelItemMoveEvent) {
-                    int fromPosition = channelItemMoveEvent.getFromPosition();
-                    int toPosition = channelItemMoveEvent.getToPosition();
-                    mNewsChannelPresenter.onItemSwap(fromPosition, toPosition);
-                }
-            });
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (!mOnItemMoveSubscription.isUnsubscribed()) {
-            mOnItemMoveSubscription.unsubscribe();
-        }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSubscription = RxBus.getInstance().toObservable(ChannelItemMoveEvent.class)
+                .subscribe(new Action1<ChannelItemMoveEvent>() {
+                    @Override
+                    public void call(ChannelItemMoveEvent channelItemMoveEvent) {
+                        int fromPosition = channelItemMoveEvent.getFromPosition();
+                        int toPosition = channelItemMoveEvent.getToPosition();
+                        mNewsChannelPresenter.onItemSwap(fromPosition, toPosition);
+                    }
+                });
     }
 
     @Override

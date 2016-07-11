@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.view.base.BaseView;
+import com.kaku.colorfulnews.utils.MyUtils;
 
 import rx.Subscription;
 
@@ -38,9 +39,7 @@ public class BasePresenterImpl<T extends BaseView, E> implements BasePresenter, 
 
     @Override
     public void onDestroy() {
-        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
-        }
+        MyUtils.cancelSubscription(mSubscription);
     }
 
     @Override

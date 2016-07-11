@@ -23,6 +23,7 @@ import android.support.design.widget.TabLayout;
 import android.view.View;
 
 import com.kaku.colorfulnews.App;
+import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.socks.library.KLog;
 
@@ -30,6 +31,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import retrofit2.adapter.rxjava.HttpException;
+import rx.Subscription;
 
 /**
  * @author 咖枯
@@ -115,5 +119,22 @@ public class MyUtils {
             color = dayColor;
         }
         return color;
+    }
+
+    public static String analyzeNetworkError(Throwable e) {
+        String errMsg = App.getAppContext().getString(R.string.load_error);
+        if (e instanceof HttpException) {
+            int state = ((HttpException) e).code();
+            if (state == 403) {
+                errMsg = App.getAppContext().getString(R.string.retry_after);
+            }
+        }
+        return errMsg;
+    }
+
+    public static void cancelSubscription(Subscription subscription) {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 }

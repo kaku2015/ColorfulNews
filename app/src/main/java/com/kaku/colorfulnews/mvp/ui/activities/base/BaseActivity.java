@@ -38,6 +38,7 @@ import com.socks.library.KLog;
 import com.squareup.leakcanary.RefWatcher;
 
 import butterknife.ButterKnife;
+import rx.Subscription;
 
 /**
  * @author 咖枯
@@ -66,6 +67,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     public abstract void initViews();
 
     public abstract void initSupportActionBar();
+
+    protected Subscription mSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +166,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
 
         removeNightModeMask();
+
+        MyUtils.cancelSubscription(mSubscription);
     }
 
     private void removeNightModeMask() {
