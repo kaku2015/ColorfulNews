@@ -51,7 +51,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscription;
 import rx.functions.Action1;
 
 /**
@@ -81,21 +80,18 @@ public class NewsActivity extends BaseActivity
 
     private List<Fragment> mNewsFragmentList = new ArrayList<>();
 
-    private Subscription mChannelChangeSubscription = RxBus.getInstance().toObservable(ChannelChangeEvent.class)
-            .subscribe(new Action1<ChannelChangeEvent>() {
-                @Override
-                public void call(ChannelChangeEvent channelChangeEvent) {
-                    mNewsPresenter.onChannelDbChanged();
-                }
-            });
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (!mChannelChangeSubscription.isUnsubscribed()) {
-            mChannelChangeSubscription.unsubscribe();
-        }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSubscription = RxBus.getInstance().toObservable(ChannelChangeEvent.class)
+                .subscribe(new Action1<ChannelChangeEvent>() {
+                    @Override
+                    public void call(ChannelChangeEvent channelChangeEvent) {
+                        mNewsPresenter.onChannelDbChanged();
+                    }
+                });
     }
+
 
     @Override
     public int getLayoutId() {
