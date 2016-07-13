@@ -200,7 +200,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 layoutParams.height = PhotoThreeHeight;
 
                 holder.mNewsSummaryTitleTv.setText(App.getAppContext()
-                        .getString(R.string.photos, adsBeanList.get(0).getTitle()));
+                        .getString(R.string.photo_collections, adsBeanList.get(0).getTitle()));
             } else if (size >= 2) {
                 imgSrcLeft = adsBeanList.get(0).getImgsrc();
                 imgSrcMiddle = adsBeanList.get(1).getImgsrc();

@@ -25,12 +25,15 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
@@ -115,6 +118,40 @@ public class NewsActivity extends BaseActivity
 
         mPresenter = mNewsPresenter;
         mPresenter.attachView(this);
+
+        initNightModeSwitch();
+    }
+
+    private void initNightModeSwitch() {
+        MenuItem menuNightMode = mNavView.getMenu().findItem(R.id.nav_night_mode);
+        SwitchCompat dayNightSwitch = (SwitchCompat) MenuItemCompat
+                .getActionView(menuNightMode);
+        setCheckedState(dayNightSwitch);
+        setCheckedEvent(dayNightSwitch);
+    }
+
+    private void setCheckedState(SwitchCompat dayNightSwitch) {
+        if (MyUtils.isNightMode()) {
+            dayNightSwitch.setChecked(true);
+        } else {
+            dayNightSwitch.setChecked(false);
+        }
+    }
+
+    private void setCheckedEvent(SwitchCompat dayNightSwitch) {
+        dayNightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    changeToNight();
+                    MyUtils.saveTheme(true);
+                } else {
+                    changeToDay();
+                    MyUtils.saveTheme(false);
+                }
+                recreate();
+            }
+        });
     }
 
     @Override
@@ -124,19 +161,8 @@ public class NewsActivity extends BaseActivity
 
     @OnClick(R.id.fab)
     public void onClick() {
-        changeToDayOrNightMode();
-        recreate();
     }
 
-    private void changeToDayOrNightMode() {
-        if (MyUtils.isNightMode()) {
-            changeToDay();
-            MyUtils.saveTheme(false);
-        } else {
-            changeToNight();
-            MyUtils.saveTheme(true);
-        }
-    }
 
     @Override
     public void initViewPager(List<NewsChannelTable> newsChannels) {
@@ -264,17 +290,15 @@ public class NewsActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_news) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_photo) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_video) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_about) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.no_photo) {
+        } else if (id == R.id.nav_night_mode) {
             // Fixme
             SharedPreferences sharedPreferences = MyUtils.getSharedPreferences();
             boolean isShowNewsPhoto = sharedPreferences.getBoolean(Constants.SHOW_NEWS_PHOTO, true);
