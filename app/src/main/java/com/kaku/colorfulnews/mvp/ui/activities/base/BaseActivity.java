@@ -32,6 +32,7 @@ import com.kaku.colorfulnews.di.component.ActivityComponent;
 import com.kaku.colorfulnews.di.component.DaggerActivityComponent;
 import com.kaku.colorfulnews.di.module.ActivityModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
+import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.socks.library.KLog;
@@ -105,7 +106,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     // TODO:适配4.4
     protected void setStatusBarTranslucent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !(this instanceof NewsDetailActivity)) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
@@ -166,8 +167,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
 
         removeNightModeMask();
-
         MyUtils.cancelSubscription(mSubscription);
+        MyUtils.fixInputMethodManagerLeak(this);
     }
 
     private void removeNightModeMask() {
