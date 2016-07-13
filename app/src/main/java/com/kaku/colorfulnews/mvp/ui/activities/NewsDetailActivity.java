@@ -17,6 +17,7 @@
 package com.kaku.colorfulnews.mvp.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -26,6 +27,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -230,6 +233,37 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
         if (NetUtil.isNetworkAvailable(App.getAppContext())) {
             Snackbar.make(mAppBar, message, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.news_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (R.id.action_web_browse == item.getItemId()) {
+            openWeb();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openWeb() {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        if (canBrowse(intent)) {
+            Uri uri = Uri.parse(mShareLink);
+            intent.setData(uri);
+            startActivity(intent);
+        }
+    }
+
+    private boolean canBrowse(Intent intent) {
+        return intent.resolveActivity(getPackageManager()) != null && mShareLink != null;
     }
 
     @Override
