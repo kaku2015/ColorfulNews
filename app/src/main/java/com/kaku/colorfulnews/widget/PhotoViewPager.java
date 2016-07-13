@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.mvp.ui.widget;
+package com.kaku.colorfulnews.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

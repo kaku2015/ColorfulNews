@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ColorfulNews</string>
+    <string name="app_name">多彩资讯</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -22,11 +22,13 @@
     <string name="internet_error">网络异常,请检查网络设置</string>
     <string name="news_from">%1$s %2$s</string>
     <string name="loading">加载中…</string>
-    <string name="no_more">没有更多了</string>dian
-    <string name="photo_collections">图集：%1$s</string>dian
-    <string name="photo_detail_title">%1$d/%2$d　%3$s</string>dian
-    <string name="photo_news">图片新闻</string>dian
-    <string name="retry_after">请稍后重试</string>dian
+    <string name="no_more">没有更多了</string>
+    <string name="photo_collections">图集：%1$s</string>
+    <string name="photo_detail_title">%1$d/%2$d　%3$s</string>
+    <string name="photo_news">图片新闻</string>
+    <string name="retry_after">请稍后重试</string>
+    <string name="share">分享</string>
+    <string name="share_contents">来自「多彩资讯」的分享：%1$s %2$s</string>
 
     <!-- 共享过度动画 -->
     <string name="transition_photos">transition_animation_news_photos</string>

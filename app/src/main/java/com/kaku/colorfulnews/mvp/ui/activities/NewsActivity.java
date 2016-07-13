@@ -38,6 +38,7 @@ import android.widget.CompoundButton;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.event.ChannelChangeEvent;
+import com.kaku.colorfulnews.event.ScrollToTopEvent;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
@@ -161,6 +162,7 @@ public class NewsActivity extends BaseActivity
 
     @OnClick(R.id.fab)
     public void onClick() {
+        RxBus.getInstance().post(new ScrollToTopEvent());
     }
 
 

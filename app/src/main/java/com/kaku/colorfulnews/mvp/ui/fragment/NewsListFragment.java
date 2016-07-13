@@ -27,7 +27,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +39,7 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.LoadNewsType;
+import com.kaku.colorfulnews.event.ScrollToTopEvent;
 import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.mvp.entity.PhotoDetail;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
@@ -49,6 +49,7 @@ import com.kaku.colorfulnews.mvp.ui.adapter.NewsListAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.base.BaseFragment;
 import com.kaku.colorfulnews.mvp.view.NewsListView;
 import com.kaku.colorfulnews.utils.NetUtil;
+import com.kaku.colorfulnews.utils.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.functions.Action1;
 
 import static android.support.v7.widget.RecyclerView.LayoutManager;
 import static android.support.v7.widget.RecyclerView.OnScrollListener;
@@ -95,11 +97,13 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
         initSwipeRefreshLayout();
         initRecyclerView();
         initPresenter();
+        registerScrollToTopEvent();
     }
 
     private void initSwipeRefreshLayout() {
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(mActivity, R.color.colorPrimary));
+        mSwipeRefreshLayout.setColorSchemeColors(getActivity().getResources().getIntArray(R.array.gplus_colors)
+        );
     }
 
     private void initPresenter() {
@@ -107,6 +111,16 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
         mPresenter = mNewsListPresenter;
         mPresenter.attachView(this);
         mPresenter.onCreate();
+    }
+
+    private void registerScrollToTopEvent() {
+        RxBus.getInstance().toObservable(ScrollToTopEvent.class)
+                .subscribe(new Action1<ScrollToTopEvent>() {
+                    @Override
+                    public void call(ScrollToTopEvent scrollToTopEvent) {
+                        mNewsRV.getLayoutManager().scrollToPosition(0);
+                    }
+                });
     }
 
     private void initRecyclerView() {

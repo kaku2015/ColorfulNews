@@ -18,7 +18,7 @@
         app:navigationIcon="@drawable/ic_arrow_back"
         app:title="@string/photo_news"/>
 
-    <com.kaku.colorfulnews.mvp.ui.widget.PhotoViewPager
+    <com.kaku.colorfulnews.widget.PhotoViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

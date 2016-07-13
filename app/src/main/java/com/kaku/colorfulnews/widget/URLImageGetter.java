@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.mvp.ui.widget;
+package com.kaku.colorfulnews.widget;
 
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;

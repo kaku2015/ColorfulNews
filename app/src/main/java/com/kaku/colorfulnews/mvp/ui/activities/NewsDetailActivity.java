@@ -16,7 +16,9 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -32,16 +34,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsDetailPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
-import com.kaku.colorfulnews.mvp.ui.widget.URLImageGetter;
 import com.kaku.colorfulnews.mvp.view.NewsDetailView;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.utils.NetUtil;
+import com.kaku.colorfulnews.widget.URLImageGetter;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -50,6 +54,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -87,6 +92,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     private URLImageGetter mUrlImageGetter;
     private Subscription mBodySubscription;
+    private String mNewsTitle;
+    private String mShareLink;
 
     @Override
     public int getLayoutId() {
@@ -120,13 +127,15 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     @SuppressWarnings("deprecation")
     @Override
     public void setNewsDetail(NewsDetail newsDetail) {
-        String newsTitle = newsDetail.getTitle();
+        mShareLink = newsDetail.getShareLink();
+        mNewsTitle = newsDetail.getTitle();
         String newsSource = newsDetail.getSource();
         String newsTime = MyUtils.formatDate(newsDetail.getPtime());
         String newsBody = newsDetail.getBody();
         String NewsImgSrc = getImgSrcs(newsDetail);
 
-        setToolBarLayout(newsTitle);
+
+        setToolBarLayout(mNewsTitle);
 //        mNewsDetailTitleTv.setText(newsTitle);
         mNewsDetailFromTv.setText(getString(R.string.news_from, newsSource, newsTime));
         setNewsDetailPhotoIv(NewsImgSrc);
@@ -162,6 +171,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
                     @Override
                     public void onCompleted() {
                         mProgressBar.setVisibility(View.GONE);
+                        mFab.setVisibility(View.VISIBLE);
+                        YoYo.with(Techniques.RollIn).playOn(mFab);
                     }
 
                     @Override
@@ -238,5 +249,26 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
         } catch (Exception e) {
             KLog.e("取消UrlImageGetter Subscription 出现异常： " + e.toString());
         }
+    }
+
+    @OnClick(R.id.fab)
+    public void onClick() {
+        share();
+    }
+
+    private void share() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share));
+        intent.putExtra(Intent.EXTRA_TEXT, getShareContents());
+        startActivity(Intent.createChooser(intent, getTitle()));
+    }
+
+    @NonNull
+    private String getShareContents() {
+        if (mShareLink == null) {
+            mShareLink = "";
+        }
+        return getString(R.string.share_contents, mNewsTitle, mShareLink);
     }
 }

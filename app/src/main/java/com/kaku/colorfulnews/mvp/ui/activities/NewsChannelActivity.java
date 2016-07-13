@@ -33,7 +33,7 @@ import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsChannelPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsChannelAdapter;
-import com.kaku.colorfulnews.mvp.ui.widget.ItemDragHelperCallback;
+import com.kaku.colorfulnews.widget.ItemDragHelperCallback;
 import com.kaku.colorfulnews.mvp.view.NewsChannelView;
 import com.kaku.colorfulnews.utils.RxBus;
 

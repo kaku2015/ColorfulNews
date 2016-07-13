@@ -29,7 +29,7 @@ import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.event.ChannelItemMoveEvent;
 import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
-import com.kaku.colorfulnews.mvp.ui.widget.ItemDragHelperCallback;
+import com.kaku.colorfulnews.widget.ItemDragHelperCallback;
 import com.kaku.colorfulnews.utils.ClickUtil;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.utils.RxBus;

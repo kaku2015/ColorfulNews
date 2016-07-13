@@ -31,7 +31,7 @@ import com.kaku.colorfulnews.mvp.entity.PhotoDetail;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.PagerAdapter.PhotoPagerAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.PhotoDetailFragment;
-import com.kaku.colorfulnews.mvp.ui.widget.PhotoViewPager;
+import com.kaku.colorfulnews.widget.PhotoViewPager;
 import com.kaku.colorfulnews.utils.RxBus;
 
 import java.util.ArrayList;
