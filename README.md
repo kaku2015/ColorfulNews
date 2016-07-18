@@ -3,11 +3,20 @@
 
 截图
 --------------
-![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/news.jif)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/news.gif)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/channel.gif)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/1.jpg)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/2.jpg)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/3.jpg)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/4.jpg)
 
 TODO
 ---------------
-优化、图片新闻模块、视频模块...
+单体测试、新闻模块优化、图片新闻模块、视频模块...
+
+声明
+
+本项目所使用数据来自网易，原作公司拥有所有权利。本程序仅供测试学习，用于其他用途所造成的纠纷与本人无关。
 
 License
 ---------------
