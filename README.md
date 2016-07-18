@@ -1,9 +1,13 @@
 # ColorfulNews
 一个Material Design风格的新闻阅读App，采用MVP模式，基于Dagger2+RxJava+Retrofit2进行开发
 
+截图
+--------------
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/news.jif)
+
 TODO
 ---------------
-开发中...
+优化、图片新闻模块、视频模块...
 
 License
 ---------------

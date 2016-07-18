@@ -114,7 +114,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     }
 
     private void registerScrollToTopEvent() {
-        RxBus.getInstance().toObservable(ScrollToTopEvent.class)
+        mSubscription = RxBus.getInstance().toObservable(ScrollToTopEvent.class)
                 .subscribe(new Action1<ScrollToTopEvent>() {
                     @Override
                     public void call(ScrollToTopEvent scrollToTopEvent) {

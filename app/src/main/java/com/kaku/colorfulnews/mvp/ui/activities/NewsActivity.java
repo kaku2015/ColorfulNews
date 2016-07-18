@@ -298,9 +298,9 @@ public class NewsActivity extends BaseActivity
 
         } else if (id == R.id.nav_video) {
 
-        } else if (id == R.id.nav_about) {
+        } /*else if (id == R.id.nav_about) {
 
-        } else if (id == R.id.nav_night_mode) {
+        }*/ else if (id == R.id.nav_night_mode) {
             // Fixme
             SharedPreferences sharedPreferences = MyUtils.getSharedPreferences();
             boolean isShowNewsPhoto = sharedPreferences.getBoolean(Constants.SHOW_NEWS_PHOTO, true);

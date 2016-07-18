@@ -15,16 +15,13 @@
             android:id="@+id/nav_video"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/video"/>
+        <!--        <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_arrow_back"
+                    android:title="@string/about"/>-->
     </group>
 
-    <item
-        android:id="@+id/nav_about"
-        android:icon="@drawable/ic_arrow_back"
-        android:title="@string/about"/>
-
-    <group
-        android:id="@+id/drawerSetting"
-        android:checkableBehavior="single">
+    <item android:title="@string/tools">
         <menu>
             <item
                 android:id="@+id/nav_night_mode"
@@ -38,5 +35,5 @@
                 app:actionLayout="@layout/drawer_switch"
                 app:showAsAction="always"/>
         </menu>
-    </group>
+    </item>
 </menu>
