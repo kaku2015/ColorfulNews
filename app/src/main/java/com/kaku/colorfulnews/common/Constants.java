@@ -41,4 +41,7 @@ public class Constants {
 
     public static final String PHOTO_DETAIL = "photo_detail";
     public static final String PHOTO_DETAIL_IMGSRC = "photo_detail_imgsrc";
+
+    public static final String NEWS_LINK = "news_link";
+    public static final String NEWS_TITLE = "news_title";
 }

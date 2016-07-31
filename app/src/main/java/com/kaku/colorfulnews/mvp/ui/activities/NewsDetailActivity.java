@@ -60,7 +60,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -94,7 +93,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     NewsDetailPresenterImpl mNewsDetailPresenter;
 
     private URLImageGetter mUrlImageGetter;
-    private Subscription mBodySubscription;
     private String mNewsTitle;
     private String mShareLink;
 
@@ -245,14 +243,25 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (R.id.action_web_browse == item.getItemId()) {
-            openWeb();
+        switch (item.getItemId()) {
+            case R.id.action_web_view:
+                openByWebView();
+                break;
+            case R.id.action_browser:
+                openByBrowser();
+                break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void openWeb() {
+    private void openByWebView() {
+        Intent intent = new Intent(this, NewsBrowserActivity.class);
+        intent.putExtra(Constants.NEWS_LINK, mShareLink);
+        intent.putExtra(Constants.NEWS_TITLE, mNewsTitle);
+        startActivity(intent);
+    }
+
+    private void openByBrowser() {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         if (canBrowse(intent)) {
