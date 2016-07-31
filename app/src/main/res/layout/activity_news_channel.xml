@@ -27,7 +27,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/channel_explain"
         android:textColor="@color/secondary_text"
-        android:textSize="@dimen/medium"/>
+        android:textSize="@dimen/big_small"/>
 
     <TextView
         style="@style/news_channel_sort_title"

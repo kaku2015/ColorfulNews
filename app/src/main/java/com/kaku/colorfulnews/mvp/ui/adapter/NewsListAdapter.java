@@ -296,6 +296,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
+        if (mNewsSummaryList == null) {
+            return 0;
+        }
         int itemSize = mNewsSummaryList.size();
         if (mIsShowFooter) {
             itemSize += 1;

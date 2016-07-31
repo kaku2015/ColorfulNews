@@ -34,6 +34,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
@@ -57,6 +58,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.functions.Action1;
 
 import static android.support.v7.widget.RecyclerView.LayoutManager;
@@ -72,6 +74,10 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     RecyclerView mNewsRV;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.empty_view)
+    TextView mEmptyView;
 
     @Inject
     NewsListAdapter mNewsListAdapter;
@@ -79,8 +85,6 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     NewsListPresenterImpl mNewsListPresenter;
     @Inject
     Activity mActivity;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private String mNewsId;
     private String mNewsType;
@@ -150,6 +154,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
         });
 
         mNewsListAdapter.setOnNewsListItemClickListener(this);
+        mNewsRV.setAdapter(mNewsListAdapter);
     }
 
     @Override
@@ -168,7 +173,6 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
         if (getArguments() != null) {
             mNewsId = getArguments().getString(Constants.NEWS_ID);
             mNewsType = getArguments().getString(Constants.NEWS_TYPE);
-//            int startPage = getArguments().getInt(Constants.CHANNEL_POSITION);
         }
     }
 
@@ -194,14 +198,12 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
             case LoadNewsType.TYPE_REFRESH_SUCCESS:
                 mSwipeRefreshLayout.setRefreshing(false);
                 mNewsListAdapter.setItems(newsSummary);
-                if (mNewsRV.getAdapter() == null) {
-                    mNewsRV.setAdapter(mNewsListAdapter);
-                } else {
-                    mNewsListAdapter.notifyDataSetChanged();
-                }
+                mNewsListAdapter.notifyDataSetChanged();
+                checkIsEmpty(newsSummary);
                 break;
             case LoadNewsType.TYPE_REFRESH_ERROR:
                 mSwipeRefreshLayout.setRefreshing(false);
+                checkIsEmpty(newsSummary);
                 break;
             case LoadNewsType.TYPE_LOAD_MORE_SUCCESS:
                 mNewsListAdapter.hideFooter();
@@ -215,6 +217,17 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
             case LoadNewsType.TYPE_LOAD_MORE_ERROR:
                 mNewsListAdapter.hideFooter();
                 break;
+        }
+    }
+
+    private void checkIsEmpty(List<NewsSummary> newsSummary) {
+        if (newsSummary == null && mNewsListAdapter.getNewsSummaryList() == null) {
+            mNewsRV.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+
+        } else {
+            mNewsRV.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.GONE);
         }
     }
 
@@ -325,6 +338,12 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
 
     @Override
     public void onRefresh() {
+        mNewsListPresenter.refreshData();
+    }
+
+    @OnClick(R.id.empty_view)
+    public void onClick() {
+        mSwipeRefreshLayout.setRefreshing(true);
         mNewsListPresenter.refreshData();
     }
 }
