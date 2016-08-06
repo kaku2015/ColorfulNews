@@ -197,7 +197,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
         switch (loadType) {
             case LoadNewsType.TYPE_REFRESH_SUCCESS:
                 mSwipeRefreshLayout.setRefreshing(false);
-                mNewsListAdapter.setItems(newsSummary);
+                mNewsListAdapter.setList(newsSummary);
                 mNewsListAdapter.notifyDataSetChanged();
                 checkIsEmpty(newsSummary);
                 break;
@@ -221,7 +221,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     }
 
     private void checkIsEmpty(List<NewsSummary> newsSummary) {
-        if (newsSummary == null && mNewsListAdapter.getNewsSummaryList() == null) {
+        if (newsSummary == null && mNewsListAdapter.getList() == null) {
             mNewsRV.setVisibility(View.GONE);
             mEmptyView.setVisibility(View.VISIBLE);
 
@@ -258,7 +258,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     }
 
     private PhotoDetail getPhotoDetail(int position) {
-        NewsSummary newsSummary = mNewsListAdapter.getNewsSummaryList().get(position);
+        NewsSummary newsSummary = mNewsListAdapter.getList().get(position);
         PhotoDetail photoDetail = new PhotoDetail();
         photoDetail.setTitle(newsSummary.getTitle());
         setPictures(newsSummary, photoDetail);
@@ -306,7 +306,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
 
     @NonNull
     private Intent setIntent(int position) {
-        List<NewsSummary> newsSummaryList = mNewsListAdapter.getNewsSummaryList();
+        List<NewsSummary> newsSummaryList = mNewsListAdapter.getList();
 
         Intent intent = new Intent(mActivity, NewsDetailActivity.class);
         intent.putExtra(Constants.NEWS_POST_ID, newsSummaryList.get(position).getPostid());

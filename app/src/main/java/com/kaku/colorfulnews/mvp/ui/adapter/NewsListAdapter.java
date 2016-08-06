@@ -33,6 +33,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.mvp.entity.NewsSummary;
+import com.kaku.colorfulnews.mvp.ui.adapter.base.BaseRecyclerViewAdapter;
 import com.kaku.colorfulnews.utils.DimenUtil;
 
 import java.util.List;
@@ -46,13 +47,12 @@ import butterknife.ButterKnife;
  * @author 咖枯
  * @version 1.0 2016/5/19
  */
-public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
 
     public static final int TYPE_ITEM = 0;
     public static final int TYPE_FOOTER = 1;
     public static final int TYPE_PHOTO_ITEM = 2;
     private boolean mIsShowFooter;
-    private List<NewsSummary> mNewsSummaryList;
     private OnNewsListItemClickListener mOnNewsListItemClickListener;
     private int mLastPosition = -1;
 
@@ -62,18 +62,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Inject
     public NewsListAdapter() {
+        super(null);
     }
 
     public void setOnNewsListItemClickListener(OnNewsListItemClickListener onNewsListItemClickListener) {
         mOnNewsListItemClickListener = onNewsListItemClickListener;
-    }
-
-    public List<NewsSummary> getNewsSummaryList() {
-        return mNewsSummaryList;
-    }
-
-    public void setItems(List<NewsSummary> items) {
-        mNewsSummaryList = items;
     }
 
     @Override
@@ -118,7 +111,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         if (mIsShowFooter && isFooterPosition(position)) {
             return TYPE_FOOTER;
-        } else if (!TextUtils.isEmpty(mNewsSummaryList.get(position).getDigest())) {
+        } else if (!TextUtils.isEmpty(mList.get(position).getDigest())) {
             return TYPE_ITEM;
         } else {
             return TYPE_PHOTO_ITEM;
@@ -143,7 +136,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setItemValues(ItemViewHolder holder, int position) {
-        NewsSummary newsSummary = mNewsSummaryList.get(position);
+        NewsSummary newsSummary = mList.get(position);
         String title = newsSummary.getLtitle();
         if (title == null) {
             title = newsSummary.getTitle();
@@ -165,7 +158,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setPhotoItemValues(PhotoViewHolder holder, int position) {
-        NewsSummary newsSummary = mNewsSummaryList.get(position);
+        NewsSummary newsSummary = mList.get(position);
         setTextView(holder, newsSummary);
         setImageView(holder, newsSummary);
     }
@@ -296,20 +289,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        if (mNewsSummaryList == null) {
+        if (mList == null) {
             return 0;
         }
-        int itemSize = mNewsSummaryList.size();
+        int itemSize = mList.size();
         if (mIsShowFooter) {
             itemSize += 1;
         }
         return itemSize;
-    }
-
-    public void addMore(List<NewsSummary> data) {
-        int startPosition = mNewsSummaryList.size();
-        mNewsSummaryList.addAll(data);
-        notifyItemRangeInserted(startPosition, mNewsSummaryList.size());
     }
 
     public void showFooter() {
