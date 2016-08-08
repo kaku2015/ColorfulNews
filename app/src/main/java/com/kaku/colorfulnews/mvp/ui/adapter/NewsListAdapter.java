@@ -18,11 +18,8 @@ package com.kaku.colorfulnews.mvp.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +29,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.mvp.ui.adapter.base.BaseRecyclerViewAdapter;
 import com.kaku.colorfulnews.utils.DimenUtil;
@@ -49,24 +47,15 @@ import butterknife.ButterKnife;
  */
 public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
 
-    public static final int TYPE_ITEM = 0;
-    public static final int TYPE_FOOTER = 1;
     public static final int TYPE_PHOTO_ITEM = 2;
-    private boolean mIsShowFooter;
-    private OnNewsListItemClickListener mOnNewsListItemClickListener;
-    private int mLastPosition = -1;
 
-    public interface OnNewsListItemClickListener {
+    public interface OnNewsListItemClickListener extends OnItemClickListener {
         void onItemClick(View view, int position, boolean isPhoto);
     }
 
     @Inject
     public NewsListAdapter() {
         super(null);
-    }
-
-    public void setOnNewsListItemClickListener(OnNewsListItemClickListener onNewsListItemClickListener) {
-        mOnNewsListItemClickListener = onNewsListItemClickListener;
     }
 
     @Override
@@ -92,16 +81,12 @@ public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
         }
     }
 
-    private View getView(ViewGroup parent, int layoutId) {
-        return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
-    }
-
     private void setItemOnClickEvent(final RecyclerView.ViewHolder holder, final boolean isPhoto) {
-        if (mOnNewsListItemClickListener != null) {
+        if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnNewsListItemClickListener.onItemClick(v, holder.getLayoutPosition(), isPhoto);
+                    ((OnNewsListItemClickListener) mOnItemClickListener).onItemClick(v, holder.getLayoutPosition(), isPhoto);
                 }
             });
         }
@@ -116,10 +101,6 @@ public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
         } else {
             return TYPE_PHOTO_ITEM;
         }
-    }
-
-    private boolean isFooterPosition(int position) {
-        return (getItemCount() - 1) == position;
     }
 
     @Override
@@ -266,14 +247,6 @@ public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
         imageView.setVisibility(View.GONE);
     }
 
-    private void setItemAppearAnimation(RecyclerView.ViewHolder holder, int position) {
-        if (position > mLastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.item_bottom_in);
-            holder.itemView.startAnimation(animation);
-            mLastPosition = position;
-        }
-    }
-
     @Override
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
@@ -285,28 +258,6 @@ public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
     private boolean isShowingAnimation(RecyclerView.ViewHolder holder) {
         return holder.itemView.getAnimation() != null && holder.itemView
                 .getAnimation().hasStarted();
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mList == null) {
-            return 0;
-        }
-        int itemSize = mList.size();
-        if (mIsShowFooter) {
-            itemSize += 1;
-        }
-        return itemSize;
-    }
-
-    public void showFooter() {
-        mIsShowFooter = true;
-        notifyItemInserted(getItemCount());
-    }
-
-    public void hideFooter() {
-        mIsShowFooter = false;
-        notifyItemRemoved(getItemCount());
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -322,13 +273,6 @@ public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
         public ItemViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-        }
-    }
-
-    class FooterViewHolder extends RecyclerView.ViewHolder {
-
-        public FooterViewHolder(View itemView) {
-            super(itemView);
         }
     }
 

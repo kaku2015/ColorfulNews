@@ -9,7 +9,7 @@
     <!--menu-->
     <string name="news">新闻</string>
     <string name="zhihu">知乎</string>
-    <string name="photo">图集</string>
+    <string name="photo">图片</string>
     <string name="video">视频</string>
     <string name="tools">设置</string>
     <string name="no_photo_mode">无图模式</string>
@@ -41,5 +41,7 @@
     <string name="my_channel">我的频道</string>
     <string name="more_channel">更多频道</string>
     <string name="channel_manage">频道管理</string>
+
+    <!-- 图片 -->
 
 </resources>

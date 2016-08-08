@@ -37,6 +37,10 @@
             android:name=".mvp.ui.activities.NewsBrowserActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".mvp.ui.activities.PhotoActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

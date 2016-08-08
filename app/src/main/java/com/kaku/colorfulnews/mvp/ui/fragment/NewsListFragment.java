@@ -153,7 +153,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
 
         });
 
-        mNewsListAdapter.setOnNewsListItemClickListener(this);
+        mNewsListAdapter.setOnItemClickListener(this);
         mNewsRV.setAdapter(mNewsListAdapter);
     }
 
@@ -345,5 +345,10 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     public void onClick() {
         mSwipeRefreshLayout.setRefreshing(true);
         mNewsListPresenter.refreshData();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
     }
 }

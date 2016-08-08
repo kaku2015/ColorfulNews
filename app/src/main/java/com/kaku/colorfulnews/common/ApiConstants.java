@@ -126,7 +126,7 @@ public class ApiConstants {
     /**
      * 新浪图片新闻
      */
-    public static final String SINA_PHOTO_HOST = "http://api.sina.cn/sinago/";
+    public static final String SINA_PHOTO_HOST = "http://gank.io/api/";
 
     // 精选列表
     public static final String SINA_PHOTO_CHOICE_ID = "hdpic_toutiao";

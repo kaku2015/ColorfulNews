@@ -293,6 +293,8 @@ public class NewsActivity extends BaseActivity
         if (id == R.id.nav_news) {
             // Handle the camera action
         } else if (id == R.id.nav_photo) {
+            Intent intent = new Intent(this, PhotoActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_video) {
 
