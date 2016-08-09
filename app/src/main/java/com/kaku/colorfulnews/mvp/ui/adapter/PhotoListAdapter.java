@@ -19,15 +19,18 @@ package com.kaku.colorfulnews.mvp.ui.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.mvp.entity.PhotoGirl;
 import com.kaku.colorfulnews.mvp.ui.adapter.base.BaseRecyclerViewAdapter;
+import com.kaku.colorfulnews.utils.DimenUtil;
+import com.kaku.colorfulnews.widget.RatioImageView;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -39,6 +42,10 @@ import butterknife.ButterKnife;
  * @version 1.0 2016/8/7
  */
 public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
+
+    private int width = (int) (DimenUtil.getScreenSize() / 2);
+
+    private Map<Integer, Integer> mHeights = new HashMap<>();
 
     @Inject
     public PhotoListAdapter() {
@@ -55,6 +62,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
             case TYPE_ITEM:
                 view = getView(parent, R.layout.item_photo);
                 final ItemViewHolder itemViewHolder = new ItemViewHolder(view);
+//                itemViewHolder.setIsRecyclable(false);
                 setItemOnClickEvent(itemViewHolder);
                 return itemViewHolder;
             default:
@@ -76,18 +84,31 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
+            ((ItemViewHolder) holder).mPhotoIv.setOriginalSize(width, getHeight(position));
+
             Glide.with(App.getAppContext())
                     .load(mList.get(position).getUrl())
-                    .asBitmap().format(DecodeFormat.PREFER_ARGB_8888)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .asBitmap().format(DecodeFormat.PREFER_ARGB_8888)
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.color.image_place_holder)
                     .error(R.drawable.ic_load_fail)
                     .into(((ItemViewHolder) holder).mPhotoIv);
         }
-        setItemAppearAnimation(holder, position);
+
+//        setItemAppearAnimation(holder, position);
+    }
+
+    private int getHeight(int position) {
+        int height;
+        if (position >= mHeights.size()) {
+            height = (int) (width * (new Random().nextFloat() / 2 + 1));
+            mHeights.put(position, height);
+        } else {
+            height = mHeights.get(position);
+        }
+        return height;
     }
 
     @Override
@@ -101,7 +122,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.photo_iv)
-        ImageView mPhotoIv;
+        RatioImageView mPhotoIv;
 
         ItemViewHolder(View view) {
             super(view);

@@ -32,4 +32,8 @@ public class DimenUtil {
         final float scale = App.getAppContext().getResources().getDisplayMetrics().scaledDensity;
         return sp * scale;
     }
+
+    public static int getScreenSize() {
+        return App.getAppContext().getResources().getDisplayMetrics().widthPixels;
+    }
 }

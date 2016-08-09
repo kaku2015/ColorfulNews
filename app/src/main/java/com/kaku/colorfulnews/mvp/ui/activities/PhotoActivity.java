@@ -95,7 +95,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
     }
 
     private void initRecyclerView() {
-        //        mPhotoRv.setHasFixedSize(true);
+        mPhotoRv.setHasFixedSize(true);
         mPhotoRv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mPhotoRv.setItemAnimator(new DefaultItemAnimator());
         mPhotoRv.setAdapter(mPhotoListAdapter);
@@ -114,7 +114,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
                         && ((lastVisibleItemPosition[0] >= totalItemCount - 1) ||
                         (lastVisibleItemPosition[1] >= totalItemCount - 1))) {
                     mPhotoPresenter.loadMore();
-                    mPhotoListAdapter.showFooter();
+//                    mPhotoListAdapter.showFooter();
                     mPhotoRv.scrollToPosition(mPhotoListAdapter.getItemCount() - 1);
                 }
             }
@@ -154,7 +154,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
                 checkIsEmpty(photoGirls);
                 break;
             case LoadNewsType.TYPE_LOAD_MORE_SUCCESS:
-                mPhotoListAdapter.hideFooter();
+//                mPhotoListAdapter.hideFooter();
                 if (photoGirls == null || photoGirls.size() == 0) {
                     mIsAllLoaded = true;
                     Snackbar.make(mPhotoRv, getString(R.string.no_more), Snackbar.LENGTH_SHORT).show();
@@ -163,7 +163,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
                 }
                 break;
             case LoadNewsType.TYPE_LOAD_MORE_ERROR:
-                mPhotoListAdapter.hideFooter();
+//                mPhotoListAdapter.hideFooter();
                 break;
         }
     }

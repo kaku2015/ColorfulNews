@@ -35,7 +35,7 @@ public class PhotoPresenterImpl extends BasePresenterImpl<com.kaku.colorfulnews.
         implements PhotoPresenter, RequestCallBack<List<PhotoGirl>> {
     private PhotoInteractorImpl mPhotoInteractor;
     private static int SIZE = 20;
-    private int mStartPage = 0;
+    private int mStartPage = 1;
     private boolean misFirstLoad;
     private boolean mIsRefresh = true;
 
@@ -83,7 +83,7 @@ public class PhotoPresenterImpl extends BasePresenterImpl<com.kaku.colorfulnews.
 
     @Override
     public void refreshData() {
-        mStartPage = 0;
+        mStartPage = 1;
         mIsRefresh = true;
         loadPhotoData();
     }
