@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -29,7 +30,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
@@ -87,9 +87,15 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void initViews() {
         initSwipeRefreshLayout();
         initRecyclerView();
+        setAdapterItemClickEvent();
         initPresenter();
     }
 
@@ -103,6 +109,10 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
         mPhotoRv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mPhotoRv.setItemAnimator(new DefaultItemAnimator());
         mPhotoRv.setAdapter(mPhotoListAdapter);
+        setRvScrollEvent();
+    }
+
+    private void setRvScrollEvent() {
         mPhotoRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -125,11 +135,12 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
             }
 
         });
+    }
 
+    private void setAdapterItemClickEvent() {
         mPhotoListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
             }
         });
     }
@@ -198,7 +209,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
     @Override
     public void showErrorMsg(String message) {
         mProgressBar.setVisibility(View.GONE);
-        if (NetUtil.isNetworkAvailable(App.getAppContext())) {
+        if (NetUtil.isNetworkAvailable()) {
             Snackbar.make(mPhotoRv, message, Snackbar.LENGTH_LONG).show();
         }
     }

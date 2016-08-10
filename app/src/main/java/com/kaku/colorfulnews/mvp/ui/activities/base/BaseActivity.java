@@ -35,6 +35,7 @@ import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.mvp.ui.activities.PhotoActivity;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.kaku.colorfulnews.utils.NetUtil;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.socks.library.KLog;
 import com.squareup.leakcanary.RefWatcher;
@@ -76,6 +77,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         KLog.i(LOG_TAG, getClass().getSimpleName());
+        NetUtil.isNetworkErrThenShowMsg();
         mActivityComponent = DaggerActivityComponent.builder()
                 .applicationComponent(((App) getApplication()).getApplicationComponent())
                 .activityModule(new ActivityModule(this))

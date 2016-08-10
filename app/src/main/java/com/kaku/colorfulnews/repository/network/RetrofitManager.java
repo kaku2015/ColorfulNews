@@ -109,14 +109,14 @@ public class RetrofitManager {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
+            if (!NetUtil.isNetworkAvailable()) {
                 request = request.newBuilder()
                         .cacheControl(CacheControl.FORCE_CACHE)
                         .build();
                 KLog.d("no network");
             }
             Response originalResponse = chain.proceed(request);
-            if (NetUtil.isNetworkAvailable(App.getAppContext())) {
+            if (NetUtil.isNetworkAvailable()) {
                 //有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()
@@ -166,7 +166,7 @@ public class RetrofitManager {
      */
     @NonNull
     private String getCacheControl() {
-        return NetUtil.isNetworkAvailable(App.getAppContext()) ? CACHE_CONTROL_AGE : CACHE_CONTROL_CACHE;
+        return NetUtil.isNetworkAvailable() ? CACHE_CONTROL_AGE : CACHE_CONTROL_CACHE;
     }
 
     /**

@@ -8,7 +8,7 @@
     android:background="@color/black"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
-    tools:context="com.kaku.colorfulnews.mvp.ui.activities.PhotoDetailActivity">
+    tools:context=".mvp.ui.activities.NewsPhotoDetailActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

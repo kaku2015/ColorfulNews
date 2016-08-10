@@ -115,7 +115,7 @@ public class PhotoDetailFragment extends BaseFragment {
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_photo_detail;
+        return R.layout.fragment_news_photo_detail;
     }
 
 }

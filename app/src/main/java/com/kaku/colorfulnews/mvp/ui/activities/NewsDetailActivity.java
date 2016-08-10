@@ -122,7 +122,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NetUtil.checkNetworkState(getString(R.string.internet_error));
     }
 
     @SuppressWarnings("deprecation")
@@ -228,7 +227,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
     @Override
     public void showErrorMsg(String message) {
         mProgressBar.setVisibility(View.GONE);
-        if (NetUtil.isNetworkAvailable(App.getAppContext())) {
+        if (NetUtil.isNetworkAvailable()) {
             Snackbar.make(mAppBar, message, Snackbar.LENGTH_LONG).show();
         }
     }

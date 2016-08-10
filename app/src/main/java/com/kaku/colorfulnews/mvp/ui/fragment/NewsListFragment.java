@@ -36,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.LoadNewsType;
@@ -45,7 +44,7 @@ import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.mvp.entity.PhotoDetail;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
-import com.kaku.colorfulnews.mvp.ui.activities.PhotoDetailActivity;
+import com.kaku.colorfulnews.mvp.ui.activities.NewsPhotoDetailActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.NewsListAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.base.BaseFragment;
 import com.kaku.colorfulnews.mvp.view.NewsListView;
@@ -166,7 +165,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initValues();
-        NetUtil.checkNetworkState(mActivity.getString(R.string.internet_error));
+        NetUtil.isNetworkErrThenShowMsg();
     }
 
     private void initValues() {
@@ -235,7 +234,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     public void showErrorMsg(String message) {
         mProgressBar.setVisibility(View.GONE);
         // 网络不可用状态在此之前已经显示了提示信息
-        if (NetUtil.isNetworkAvailable(App.getAppContext())) {
+        if (NetUtil.isNetworkAvailable()) {
             Snackbar.make(mNewsRV, message, Snackbar.LENGTH_LONG).show();
         }
     }
@@ -294,7 +293,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     }
 
     private void goToPhotoDetailActivity(PhotoDetail photoDetail) {
-        Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
+        Intent intent = new Intent(getActivity(), NewsPhotoDetailActivity.class);
         intent.putExtra(Constants.PHOTO_DETAIL, photoDetail);
         startActivity(intent);
     }

@@ -44,7 +44,7 @@ import rx.functions.Action1;
  * @author 咖枯
  * @version 1.0 2016/7/8
  */
-public class PhotoDetailActivity extends BaseActivity {
+public class NewsPhotoDetailActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -104,7 +104,7 @@ public class PhotoDetailActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_photo_detail;
+        return R.layout.activity_news_photo_detail;
     }
 
     @Override

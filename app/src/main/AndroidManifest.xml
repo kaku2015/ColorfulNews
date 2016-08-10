@@ -30,7 +30,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".mvp.ui.activities.PhotoDetailActivity"
+            android:name=".mvp.ui.activities.NewsPhotoDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity

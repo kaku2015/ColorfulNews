@@ -22,6 +22,7 @@ import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.kaku.colorfulnews.App;
+import com.kaku.colorfulnews.R;
 
 /**
  * @author 咖枯
@@ -32,12 +33,10 @@ public class NetUtil {
     /**
      * 检查当前网络是否可用
      *
-     * @param context context
      * @return 是否连接到网络
      */
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getApplicationContext()
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) App.getAppContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (connectivityManager != null) {
@@ -52,11 +51,14 @@ public class NetUtil {
         return false;
     }
 
-    public static void checkNetworkState(String msg) {
-        if (!NetUtil.isNetworkAvailable(App.getAppContext())) {
+    public static boolean isNetworkErrThenShowMsg() {
+        if (!isNetworkAvailable()) {
             //TODO: 刚启动app Snackbar不起作用，延迟显示也不好使，这是why？
-            Toast.makeText(App.getAppContext(), msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(App.getAppContext(), App.getAppContext().getString(R.string.internet_error),
+                    Toast.LENGTH_SHORT).show();
+            return true;
         }
+        return false;
     }
 
 }
