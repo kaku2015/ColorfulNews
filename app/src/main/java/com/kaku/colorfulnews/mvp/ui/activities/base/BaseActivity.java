@@ -33,6 +33,7 @@ import com.kaku.colorfulnews.di.component.DaggerActivityComponent;
 import com.kaku.colorfulnews.di.module.ActivityModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
+import com.kaku.colorfulnews.mvp.ui.activities.PhotoActivity;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.socks.library.KLog;
@@ -106,7 +107,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     // TODO:适配4.4
     protected void setStatusBarTranslucent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !(this instanceof NewsDetailActivity)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
+                !((this instanceof NewsDetailActivity) || this instanceof PhotoActivity)) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);

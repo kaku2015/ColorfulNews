@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
@@ -44,6 +45,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * @author 咖枯
@@ -64,6 +66,8 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.empty_view)
     TextView mEmptyView;
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
 
     @Inject
     PhotoPresenterImpl mPhotoPresenter;
@@ -110,11 +114,12 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
                 int visibleItemCount = layoutManager.getChildCount();
                 int totalItemCount = layoutManager.getItemCount();
 
-                if (!mIsAllLoaded && visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE
-                        && ((lastVisibleItemPosition[0] >= totalItemCount - 1) ||
-                        (lastVisibleItemPosition[1] >= totalItemCount - 1))) {
+                if (!mIsAllLoaded && visibleItemCount > 0 &&
+                        (newState == RecyclerView.SCROLL_STATE_IDLE) &&
+                        ((lastVisibleItemPosition[0] >= totalItemCount - 1) ||
+                                (lastVisibleItemPosition[1] >= totalItemCount - 1))) {
                     mPhotoPresenter.loadMore();
-//                    mPhotoListAdapter.showFooter();
+                    mPhotoListAdapter.showFooter();
                     mPhotoRv.scrollToPosition(mPhotoListAdapter.getItemCount() - 1);
                 }
             }
@@ -148,13 +153,14 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
                 mPhotoListAdapter.setList(photoGirls);
                 mPhotoListAdapter.notifyDataSetChanged();
                 checkIsEmpty(photoGirls);
+                mIsAllLoaded = false;
                 break;
             case LoadNewsType.TYPE_REFRESH_ERROR:
                 mSwipeRefreshLayout.setRefreshing(false);
                 checkIsEmpty(photoGirls);
                 break;
             case LoadNewsType.TYPE_LOAD_MORE_SUCCESS:
-//                mPhotoListAdapter.hideFooter();
+                mPhotoListAdapter.hideFooter();
                 if (photoGirls == null || photoGirls.size() == 0) {
                     mIsAllLoaded = true;
                     Snackbar.make(mPhotoRv, getString(R.string.no_more), Snackbar.LENGTH_SHORT).show();
@@ -163,7 +169,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
                 }
                 break;
             case LoadNewsType.TYPE_LOAD_MORE_ERROR:
-//                mPhotoListAdapter.hideFooter();
+                mPhotoListAdapter.hideFooter();
                 break;
         }
     }
@@ -200,5 +206,10 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
     @Override
     public void onRefresh() {
         mPhotoPresenter.refreshData();
+    }
+
+    @OnClick(R.id.fab)
+    public void onClick() {
+        mPhotoRv.getLayoutManager().scrollToPosition(0);
     }
 }

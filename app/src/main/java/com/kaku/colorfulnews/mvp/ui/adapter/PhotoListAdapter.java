@@ -85,6 +85,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        super.onBindViewHolder(holder, position);
         if (holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).mPhotoIv.setOriginalSize(width, getHeight(position));
 
