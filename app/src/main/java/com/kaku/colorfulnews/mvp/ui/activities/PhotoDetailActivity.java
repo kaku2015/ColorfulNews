@@ -29,10 +29,10 @@ import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.kaku.colorfulnews.widget.PullBackLayout;
 import com.socks.library.KLog;
 
 import butterknife.BindView;
-import ooo.oxo.library.widget.PullBackLayout;
 import uk.co.senab.photoview.PhotoView;
 
 /**
@@ -85,6 +85,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                 .into(mPhotoIv);
     }
 
+    @SuppressWarnings("deprecation")
     private void initBackground() {
         mBackground = new ColorDrawable(Color.BLACK);
         MyUtils.getRootView(this).setBackgroundDrawable(mBackground);

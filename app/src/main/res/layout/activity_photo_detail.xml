@@ -9,7 +9,7 @@
     android:background="@color/black"
     tools:context=".mvp.ui.activities.NewsPhotoDetailActivity">
 
-    <ooo.oxo.library.widget.PullBackLayout
+    <com.kaku.colorfulnews.widget.PullBackLayout
         android:id="@+id/pull_back_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,7 +22,7 @@
             android:transitionName="@string/transition_photos"
             tools:src="@mipmap/ic_launcher"
             tools:targetApi="lollipop"/>
-    </ooo.oxo.library.widget.PullBackLayout>
+    </com.kaku.colorfulnews.widget.PullBackLayout>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

@@ -166,7 +166,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                 if (mClass != null) {
                     Intent intent = new Intent(BaseActivity.this, mClass);
                     // 此标志用于启动一个Activity的时候，若栈中存在此Activity实例，则把它调到栈顶。不创建多一个
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                     mClass = null;
