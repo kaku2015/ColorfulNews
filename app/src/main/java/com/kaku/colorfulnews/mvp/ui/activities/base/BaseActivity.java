@@ -17,11 +17,17 @@
 package com.kaku.colorfulnews.mvp.ui.activities.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -32,6 +38,7 @@ import com.kaku.colorfulnews.di.component.ActivityComponent;
 import com.kaku.colorfulnews.di.component.DaggerActivityComponent;
 import com.kaku.colorfulnews.di.module.ActivityModule;
 import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
+import com.kaku.colorfulnews.mvp.ui.activities.NewsActivity;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.mvp.ui.activities.PhotoActivity;
 import com.kaku.colorfulnews.utils.MyUtils;
@@ -62,6 +69,9 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     private View mNightView = null;
     private boolean mIsAddedView;
     protected T mPresenter;
+    protected boolean mIsHasNavigationView;
+    private DrawerLayout mDrawerLayout;
+    private Class mClass;
 
     public abstract int getLayoutId();
 
@@ -78,10 +88,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         super.onCreate(savedInstanceState);
         KLog.i(LOG_TAG, getClass().getSimpleName());
         NetUtil.isNetworkErrThenShowMsg();
-        mActivityComponent = DaggerActivityComponent.builder()
-                .applicationComponent(((App) getApplication()).getApplicationComponent())
-                .activityModule(new ActivityModule(this))
-                .build();
+        initActivityComponent();
         setStatusBarTranslucent();
         setNightOrDayMode();
 
@@ -91,9 +98,80 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         ButterKnife.bind(this);
         initSupportActionBar();
         initViews();
+        if (mIsHasNavigationView) {
+            initDrawerLayout();
+        }
         if (mPresenter != null) {
             mPresenter.onCreate();
         }
+    }
+
+    private void initActivityComponent() {
+        mActivityComponent = DaggerActivityComponent.builder()
+                .applicationComponent(((App) getApplication()).getApplicationComponent())
+                .activityModule(new ActivityModule(this))
+                .build();
+    }
+
+    private void initDrawerLayout() {
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        if (navView != null) {
+            navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.nav_news:
+                            mClass = NewsActivity.class;
+                            break;
+                        case R.id.nav_photo:
+                            mClass = PhotoActivity.class;
+                            break;
+                        case R.id.nav_video:
+                            break;
+                        case R.id.nav_night_mode:
+                            // Fixme
+    /*                        SharedPreferences sharedPreferences = MyUtils.getSharedPreferences();
+                            boolean isShowNewsPhoto = sharedPreferences.getBoolean(Constants.SHOW_NEWS_PHOTO, true);
+                            if (isShowNewsPhoto) {
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean(Constants.SHOW_NEWS_PHOTO, false);
+                                editor.apply();
+                            } else {
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean(Constants.SHOW_NEWS_PHOTO, true);
+                                editor.apply();
+                            }*/
+                            break;
+                    }
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    return false;
+                }
+            });
+        }
+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                if (mClass != null) {
+                    Intent intent = new Intent(BaseActivity.this, mClass);
+                    // 此标志用于启动一个Activity的时候，若栈中存在此Activity实例，则把它调到栈顶。不创建多一个
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                    mClass = null;
+                }
+            }
+        });
     }
 
     private void setNightOrDayMode() {
@@ -144,6 +222,15 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         mNightView = new View(this);
         mWindowManager.addView(mNightView, nightViewParam);
         mIsAddedView = true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (mIsHasNavigationView) {
+            overridePendingTransition(0, 0);
+        }
     }
 
     @Override

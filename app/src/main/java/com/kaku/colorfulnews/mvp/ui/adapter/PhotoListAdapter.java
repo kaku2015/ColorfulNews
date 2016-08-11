@@ -91,8 +91,9 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
 
             Glide.with(App.getAppContext())
                     .load(mList.get(position).getUrl())
-//                    .asBitmap().format(DecodeFormat.PREFER_ARGB_8888)
+//                    .asBitmap().format(DecodeFormat.PREFER_ARGB_8888) // 没有动画
 //                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .crossFade()
                     .placeholder(R.color.image_place_holder)
                     .error(R.drawable.ic_load_fail)
                     .into(((ItemViewHolder) holder).mPhotoIv);

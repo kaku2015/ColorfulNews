@@ -17,7 +17,6 @@
 package com.kaku.colorfulnews.mvp.ui.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -28,7 +27,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -62,7 +60,7 @@ import rx.functions.Action1;
  * @version 1.0 2016/6
  */
 public class NewsActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, NewsView {
+        implements NewsView {
     private String mCurrentViewPagerName;
     private List<String> mChannelNames;
 
@@ -109,11 +107,7 @@ public class NewsActivity extends BaseActivity
 
     @Override
     public void initViews() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        mNavView.setNavigationItemSelectedListener(this);
+        mIsHasNavigationView = true;
 
         mPresenter = mNewsPresenter;
         mPresenter.attachView(this);
@@ -282,41 +276,5 @@ public class NewsActivity extends BaseActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_news) {
-            // Handle the camera action
-        } else if (id == R.id.nav_photo) {
-            Intent intent = new Intent(this, PhotoActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_video) {
-
-        } /*else if (id == R.id.nav_about) {
-
-        }*/ else if (id == R.id.nav_night_mode) {
-            // Fixme
-            SharedPreferences sharedPreferences = MyUtils.getSharedPreferences();
-            boolean isShowNewsPhoto = sharedPreferences.getBoolean(Constants.SHOW_NEWS_PHOTO, true);
-            if (isShowNewsPhoto) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Constants.SHOW_NEWS_PHOTO, false);
-                editor.apply();
-            } else {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(Constants.SHOW_NEWS_PHOTO, true);
-                editor.apply();
-            }
-
-        }
-
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 }

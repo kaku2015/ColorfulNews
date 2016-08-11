@@ -93,6 +93,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
 
     @Override
     public void initViews() {
+        mIsHasNavigationView = true;
         initSwipeRefreshLayout();
         initRecyclerView();
         setAdapterItemClickEvent();
