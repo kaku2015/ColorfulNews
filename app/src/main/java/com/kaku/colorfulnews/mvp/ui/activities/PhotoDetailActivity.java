@@ -18,6 +18,7 @@ package com.kaku.colorfulnews.mvp.ui.activities;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
@@ -34,7 +37,13 @@ import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.widget.PullBackLayout;
 import com.socks.library.KLog;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 
 /**
@@ -83,8 +92,36 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     private void initImageView() {
-        loadPhotoTouchIv();
         loadPhotoIv();
+    }
+
+    private void loadPhotoIv() {
+        Glide.with(this)
+                .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
+                .asBitmap()
+                .placeholder(R.color.image_place_holder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<String, Bitmap>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        mSubscription = Observable.timer(500, TimeUnit.MILLISECONDS)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Long>() {
+                                    @Override
+                                    public void call(Long aLong) {
+                                        loadPhotoTouchIv();
+                                    }
+                                });
+                        return false;
+                    }
+                })
+                .into(mPhotoIv);
     }
 
     private void loadPhotoTouchIv() {
@@ -95,14 +132,6 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                 .placeholder(R.color.image_place_holder)
                 .error(R.drawable.ic_load_fail)
                 .into(mPhotoTouchIv);
-    }
-
-    private void loadPhotoIv() {
-        Glide.with(this)
-                .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mPhotoIv);
     }
 
     @SuppressWarnings("deprecation")
