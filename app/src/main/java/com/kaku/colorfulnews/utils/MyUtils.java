@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.kaku.colorfulnews.App;
@@ -181,5 +182,9 @@ public class MyUtils {
                 t.printStackTrace();
             }
         }
+    }
+
+    public static View getRootView(Activity context) {
+        return ((ViewGroup) context.findViewById(android.R.id.content)).getChildAt(0);
     }
 }

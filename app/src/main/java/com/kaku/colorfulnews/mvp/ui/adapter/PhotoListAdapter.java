@@ -21,12 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.mvp.entity.PhotoGirl;
 import com.kaku.colorfulnews.mvp.ui.adapter.base.BaseRecyclerViewAdapter;
 import com.kaku.colorfulnews.utils.DimenUtil;
 import com.kaku.colorfulnews.widget.RatioImageView;
+import com.socks.library.KLog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,7 +94,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
             Glide.with(App.getAppContext())
                     .load(mList.get(position).getUrl())
 //                    .asBitmap().format(DecodeFormat.PREFER_ARGB_8888) // 没有动画
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .crossFade()
                     .placeholder(R.color.image_place_holder)
                     .error(R.drawable.ic_load_fail)
@@ -104,12 +106,23 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
 
     private int getHeight(int position) {
         int height;
-        if (position >= mHeights.size()) {
-            height = (int) (width * (new Random().nextFloat() / 2 + 1));
-            mHeights.put(position, height);
-        } else {
-            height = mHeights.get(position);
+        try {
+            if (position >= mHeights.size()) {
+                height = getHeight();
+                mHeights.put(position, height);
+            } else {
+                height = mHeights.get(position);
+            }
+        } catch (Exception e) {
+            KLog.e();
+            height = getHeight();
         }
+        return height;
+    }
+
+    private int getHeight() {
+        int height;
+        height = (int) (width * (new Random().nextFloat() / 2 + 1));
         return height;
     }
 

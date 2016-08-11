@@ -16,10 +16,16 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -31,6 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 import com.kaku.colorfulnews.mvp.entity.PhotoGirl;
@@ -73,6 +80,8 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
     PhotoPresenterImpl mPhotoPresenter;
     @Inject
     PhotoListAdapter mPhotoListAdapter;
+    @Inject
+    Activity mActivity;
 
     private boolean mIsAllLoaded;
 
@@ -142,8 +151,23 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
         mPhotoListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Intent intent = new Intent(PhotoActivity.this, PhotoDetailActivity.class);
+                intent.putExtra(Constants.PHOTO_DETAIL, mPhotoListAdapter.getList().get(position).getUrl());
+                startActivity(view, intent);
             }
         });
+    }
+
+    private void startActivity(View view, Intent intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(mActivity, view, Constants.TRANSITION_ANIMATION_NEWS_PHOTOS);
+            startActivity(intent, options.toBundle());
+        } else {
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeScaleUpAnimation(view, view.getWidth() / 2, view.getHeight() / 2, 0, 0);
+            ActivityCompat.startActivity(mActivity, intent, options.toBundle());
+        }
     }
 
     private void initPresenter() {
