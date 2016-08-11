@@ -99,7 +99,6 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
         Glide.with(this)
                 .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
                 .asBitmap()
-                .placeholder(R.color.image_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .listener(new RequestListener<String, Bitmap>() {
                     @Override
@@ -129,7 +128,6 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                 .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.color.image_place_holder)
                 .error(R.drawable.ic_load_fail)
                 .into(mPhotoTouchIv);
     }
