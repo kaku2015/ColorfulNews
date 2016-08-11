@@ -23,8 +23,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
@@ -43,11 +45,14 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.photo_iv)
-    PhotoView mPhotoIv;
+    ImageView mPhotoIv;
     @BindView(R.id.pull_back_layout)
     PullBackLayout mPullBackLayout;
+    @BindView(R.id.photo_touch_iv)
+    PhotoView mPhotoTouchIv;
 
     private ColorDrawable mBackground;
+//    PhotoViewAttacher mPhotoViewAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
         initToolbar();
         initImageView();
         initBackground();
+//        setupPhotoAttacher();
     }
 
     private void initToolbar() {
@@ -77,11 +83,25 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     private void initImageView() {
+        loadPhotoTouchIv();
+        loadPhotoIv();
+    }
+
+    private void loadPhotoTouchIv() {
         Glide.with(this)
                 .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
                 .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.color.image_place_holder)
                 .error(R.drawable.ic_load_fail)
+                .into(mPhotoTouchIv);
+    }
+
+    private void loadPhotoIv() {
+        Glide.with(this)
+                .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mPhotoIv);
     }
 
@@ -96,6 +116,10 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
         setSupportActionBar(mToolbar);
     }
 
+    //    private void setupPhotoAttacher() {
+//        mPhotoViewAttacher = new PhotoViewAttacher(mPhotoIv);
+//
+//    }
     @Override
     public void onPullStart() {
         startAnimation(View.GONE, 0.9f, 0.5f);

@@ -47,6 +47,10 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
 
     private int width = (int) (DimenUtil.getScreenSize() / 2);
 
+    public Map<Integer, Integer> getHeights() {
+        return mHeights;
+    }
+
     private Map<Integer, Integer> mHeights = new HashMap<>();
 
     @Inject
@@ -115,7 +119,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
             }
         } catch (Exception e) {
             KLog.e();
-            height = getHeight();
+            height = width / 2;
         }
         return height;
     }
