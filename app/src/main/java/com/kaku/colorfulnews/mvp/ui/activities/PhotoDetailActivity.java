@@ -16,14 +16,13 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -33,6 +32,7 @@ import com.bumptech.glide.request.target.Target;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
+import com.kaku.colorfulnews.utils.SystemUiVisibilityUtil;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.widget.PullBackLayout;
 import com.socks.library.KLog;
@@ -45,6 +45,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * @author 咖枯
@@ -61,7 +62,8 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     PhotoView mPhotoTouchIv;
 
     private ColorDrawable mBackground;
-//    PhotoViewAttacher mPhotoViewAttacher;
+    private boolean mIsToolBarHidden;
+    private boolean mIsStatusBarHidden;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +86,10 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
         initToolbar();
         initImageView();
         initBackground();
-//        setupPhotoAttacher();
     }
 
     private void initToolbar() {
-        mToolbar.setTitle("");
+        mToolbar.setTitle(getString(R.string.girl));
     }
 
     private void initImageView() {
@@ -115,6 +116,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                                     @Override
                                     public void call(Long aLong) {
                                         loadPhotoTouchIv();
+                                        setPhotoViewClickEvent();
                                     }
                                 });
                         return false;
@@ -132,6 +134,41 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                 .into(mPhotoTouchIv);
     }
 
+    private void setPhotoViewClickEvent() {
+        mPhotoTouchIv.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float v, float v1) {
+                KLog.d();
+                hideOrShowToolbar();
+                hideOrShowStatusBar();
+            }
+
+            @Override
+            public void onOutsidePhotoTap() {
+                KLog.d();
+                hideOrShowToolbar();
+                hideOrShowStatusBar();
+            }
+        });
+    }
+
+    protected void hideOrShowToolbar() {
+        mToolbar.animate()
+                .alpha(mIsToolBarHidden ? 1.0f : 0.0f)
+                .setInterpolator(new DecelerateInterpolator(2))
+                .start();
+        mIsToolBarHidden = !mIsToolBarHidden;
+    }
+
+    private void hideOrShowStatusBar() {
+        if (mIsStatusBarHidden) {
+            SystemUiVisibilityUtil.enter(PhotoDetailActivity.this);
+        } else {
+            SystemUiVisibilityUtil.exit(PhotoDetailActivity.this);
+        }
+        mIsStatusBarHidden = !mIsStatusBarHidden;
+    }
+
     @SuppressWarnings("deprecation")
     private void initBackground() {
         mBackground = new ColorDrawable(Color.BLACK);
@@ -143,13 +180,12 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
         setSupportActionBar(mToolbar);
     }
 
-    //    private void setupPhotoAttacher() {
-//        mPhotoViewAttacher = new PhotoViewAttacher(mPhotoIv);
-//
-//    }
     @Override
     public void onPullStart() {
-        startAnimation(View.GONE, 0.9f, 0.5f);
+        mIsToolBarHidden = false;
+        hideOrShowToolbar();
+        mIsStatusBarHidden = true;
+        hideOrShowStatusBar();
     }
 
     @Override
@@ -162,36 +198,8 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
 
     @Override
     public void onPullCancel() {
-        startAnimation(View.VISIBLE, 0.9f, 0.5f);
-    }
-
-    private void startAnimation(final int endState, float startValue, float endValue) {
-        ObjectAnimator animator = ObjectAnimator
-                .ofFloat(mToolbar, "alpha", startValue, endValue)
-                .setDuration(200);
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mToolbar.setAlpha(1.0f);
-                mToolbar.setVisibility(endState);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.start();
+        mIsToolBarHidden = true;
+        hideOrShowToolbar();
     }
 
     @Override

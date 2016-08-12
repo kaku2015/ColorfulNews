@@ -20,6 +20,7 @@
     <color name="image_place_holder">#DFDFDF</color>
     <color name="image_place_holder_night">#272B2F</color>
     <!--87%white-->
+    <color name="progress_bar_unfinished">#D4D4D4</color>
 
     <color name="alpha_05_white">#0DFFFFFF</color>
     <color name="alpha_10_white">#1AFFFFFF</color>

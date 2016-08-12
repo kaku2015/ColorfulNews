@@ -5,5 +5,5 @@
     <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
     <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
     <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
-    <drawable name="progress_bar_bg">@color/alpha_25_black</drawable>
+    <drawable name="progress_bar_bg">@color/progress_bar_unfinished</drawable>
 </resources>
