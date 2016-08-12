@@ -30,7 +30,7 @@ import android.widget.FrameLayout;
 
 public class PullBackLayout extends FrameLayout {
 
-    private final ViewDragHelper dragger;
+    private final ViewDragHelper dragger; // http://blog.csdn.net/lmj623565791/article/details/46858663
 
     private final int minimumFlingVelocity;
 
@@ -47,7 +47,7 @@ public class PullBackLayout extends FrameLayout {
 
     public PullBackLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        dragger = ViewDragHelper.create(this, 1f / 8f, new ViewDragCallback());
+        dragger = ViewDragHelper.create(this, 1f / 8f, new ViewDragCallback()); // 1f / 8f是敏感度参数参数越大越敏感
         minimumFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
     }
 

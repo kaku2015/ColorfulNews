@@ -41,7 +41,7 @@ import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.event.ScrollToTopEvent;
 import com.kaku.colorfulnews.mvp.entity.NewsSummary;
-import com.kaku.colorfulnews.mvp.entity.PhotoDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsPhotoDetail;
 import com.kaku.colorfulnews.mvp.presenter.impl.NewsListPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsDetailActivity;
 import com.kaku.colorfulnews.mvp.ui.activities.NewsPhotoDetailActivity;
@@ -249,23 +249,23 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     @Override
     public void onItemClick(View view, int position, boolean isPhoto) {
         if (isPhoto) {
-            PhotoDetail photoDetail = getPhotoDetail(position);
-            goToPhotoDetailActivity(photoDetail);
+            NewsPhotoDetail newsPhotoDetail = getPhotoDetail(position);
+            goToPhotoDetailActivity(newsPhotoDetail);
         } else {
             goToNewsDetailActivity(view, position);
         }
     }
 
-    private PhotoDetail getPhotoDetail(int position) {
+    private NewsPhotoDetail getPhotoDetail(int position) {
         NewsSummary newsSummary = mNewsListAdapter.getList().get(position);
-        PhotoDetail photoDetail = new PhotoDetail();
-        photoDetail.setTitle(newsSummary.getTitle());
-        setPictures(newsSummary, photoDetail);
-        return photoDetail;
+        NewsPhotoDetail newsPhotoDetail = new NewsPhotoDetail();
+        newsPhotoDetail.setTitle(newsSummary.getTitle());
+        setPictures(newsSummary, newsPhotoDetail);
+        return newsPhotoDetail;
     }
 
-    private void setPictures(NewsSummary newsSummary, PhotoDetail photoDetail) {
-        List<PhotoDetail.Picture> pictureList = new ArrayList<>();
+    private void setPictures(NewsSummary newsSummary, NewsPhotoDetail newsPhotoDetail) {
+        List<NewsPhotoDetail.Picture> pictureList = new ArrayList<>();
 
         if (newsSummary.getAds() != null) {
             for (NewsSummary.AdsBean entity : newsSummary.getAds()) {
@@ -279,11 +279,11 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
             setValuesAndAddToList(pictureList, null, newsSummary.getImgsrc());
         }
 
-        photoDetail.setPictures(pictureList);
+        newsPhotoDetail.setPictures(pictureList);
     }
 
-    private void setValuesAndAddToList(List<PhotoDetail.Picture> pictureList, String title, String imgsrc) {
-        PhotoDetail.Picture picture = new PhotoDetail.Picture();
+    private void setValuesAndAddToList(List<NewsPhotoDetail.Picture> pictureList, String title, String imgsrc) {
+        NewsPhotoDetail.Picture picture = new NewsPhotoDetail.Picture();
         if (title != null) {
             picture.setTitle(title);
         }
@@ -292,9 +292,9 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
         pictureList.add(picture);
     }
 
-    private void goToPhotoDetailActivity(PhotoDetail photoDetail) {
+    private void goToPhotoDetailActivity(NewsPhotoDetail newsPhotoDetail) {
         Intent intent = new Intent(getActivity(), NewsPhotoDetailActivity.class);
-        intent.putExtra(Constants.PHOTO_DETAIL, photoDetail);
+        intent.putExtra(Constants.PHOTO_DETAIL, newsPhotoDetail);
         startActivity(intent);
     }
 

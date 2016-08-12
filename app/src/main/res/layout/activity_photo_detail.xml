@@ -43,10 +43,12 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:alpha="0"
         android:background="@drawable/bg_toolbar_shade"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="@string/photo"/>
+        app:title="@string/photo"
+        tools:alpha="1.0"/>
 </FrameLayout>
 

@@ -26,7 +26,7 @@ import java.util.List;
  * @author 咖枯
  * @version 1.0 2016/7/8
  */
-public class PhotoDetail implements Parcelable {
+public class NewsPhotoDetail implements Parcelable {
     private String title;
     private List<Picture> pictures;
 
@@ -110,24 +110,24 @@ public class PhotoDetail implements Parcelable {
         dest.writeList(this.pictures);
     }
 
-    public PhotoDetail() {
+    public NewsPhotoDetail() {
     }
 
-    protected PhotoDetail(Parcel in) {
+    protected NewsPhotoDetail(Parcel in) {
         this.title = in.readString();
         this.pictures = new ArrayList<>();
         in.readList(this.pictures, Picture.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<PhotoDetail> CREATOR = new Parcelable.Creator<PhotoDetail>() {
+    public static final Parcelable.Creator<NewsPhotoDetail> CREATOR = new Parcelable.Creator<NewsPhotoDetail>() {
         @Override
-        public PhotoDetail createFromParcel(Parcel source) {
-            return new PhotoDetail(source);
+        public NewsPhotoDetail createFromParcel(Parcel source) {
+            return new NewsPhotoDetail(source);
         }
 
         @Override
-        public PhotoDetail[] newArray(int size) {
-            return new PhotoDetail[size];
+        public NewsPhotoDetail[] newArray(int size) {
+            return new NewsPhotoDetail[size];
         }
     };
 }

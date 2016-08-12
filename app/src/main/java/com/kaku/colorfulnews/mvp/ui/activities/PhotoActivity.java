@@ -32,6 +32,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -174,6 +176,21 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
         mPresenter = mPhotoPresenter;
         mPresenter.attachView(this);
         mPresenter.onCreate();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_photo, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

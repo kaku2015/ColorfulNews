@@ -16,34 +16,27 @@
  */
 package com.kaku.colorfulnews.mvp.ui.activities;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
-import com.kaku.colorfulnews.utils.SystemUiVisibilityUtil;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.kaku.colorfulnews.utils.SystemUiVisibilityUtil;
 import com.kaku.colorfulnews.widget.PullBackLayout;
 import com.socks.library.KLog;
 
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -69,6 +62,59 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPullBackLayout.setCallback(this);
+        initLazyLoadView();
+    }
+
+    private void initLazyLoadView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getEnterTransition().addListener(new Transition.TransitionListener() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    showToolBarAndPhotoTouchView();
+                }
+
+                @Override
+                public void onTransitionCancel(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionPause(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionResume(Transition transition) {
+
+                }
+            });
+        } else {
+            showToolBarAndPhotoTouchView();
+        }
+    }
+
+    private void showToolBarAndPhotoTouchView() {
+        toolBarFadeIn();
+        loadPhotoTouchIv();
+    }
+
+    private void toolBarFadeIn() {
+        mIsToolBarHidden = true;
+        hideOrShowToolbar();
+    }
+
+    private void loadPhotoTouchIv() {
+        Glide.with(this)
+                .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.drawable.ic_load_fail)
+                .into(mPhotoTouchIv);
     }
 
     @Override
@@ -86,6 +132,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
         initToolbar();
         initImageView();
         initBackground();
+        setPhotoViewClickEvent();
     }
 
     private void initToolbar() {
@@ -101,7 +148,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                 .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .listener(new RequestListener<String, Bitmap>() {
+/*                .listener(new RequestListener<String, Bitmap>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
                         return false;
@@ -116,22 +163,12 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                                     @Override
                                     public void call(Long aLong) {
                                         loadPhotoTouchIv();
-                                        setPhotoViewClickEvent();
                                     }
                                 });
                         return false;
                     }
-                })
+                })*/
                 .into(mPhotoIv);
-    }
-
-    private void loadPhotoTouchIv() {
-        Glide.with(this)
-                .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.ic_load_fail)
-                .into(mPhotoTouchIv);
     }
 
     private void setPhotoViewClickEvent() {
@@ -182,10 +219,15 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
 
     @Override
     public void onPullStart() {
-        mIsToolBarHidden = false;
-        hideOrShowToolbar();
+        toolBarFadeOut();
+
         mIsStatusBarHidden = true;
         hideOrShowStatusBar();
+    }
+
+    private void toolBarFadeOut() {
+        mIsToolBarHidden = false;
+        hideOrShowToolbar();
     }
 
     @Override
@@ -198,8 +240,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
 
     @Override
     public void onPullCancel() {
-        mIsToolBarHidden = true;
-        hideOrShowToolbar();
+        toolBarFadeIn();
     }
 
     @Override

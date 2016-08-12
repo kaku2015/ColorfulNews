@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.event.PhotoDetailOnClickEvent;
-import com.kaku.colorfulnews.mvp.entity.PhotoDetail;
+import com.kaku.colorfulnews.mvp.entity.NewsPhotoDetail;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.ui.adapter.PagerAdapter.PhotoPagerAdapter;
 import com.kaku.colorfulnews.mvp.ui.fragment.PhotoDetailFragment;
@@ -54,7 +54,7 @@ public class NewsPhotoDetailActivity extends BaseActivity {
     TextView mPhotoDetailTitleTv;
 
     private List<PhotoDetailFragment> mPhotoDetailFragmentList = new ArrayList<>();
-    private PhotoDetail mPhotoDetail;
+    private NewsPhotoDetail mNewsPhotoDetail;
 
 
     @Override
@@ -114,15 +114,15 @@ public class NewsPhotoDetailActivity extends BaseActivity {
 
     @Override
     public void initViews() {
-        mPhotoDetail = getIntent().getParcelableExtra(Constants.PHOTO_DETAIL);
-        createFragment(mPhotoDetail);
+        mNewsPhotoDetail = getIntent().getParcelableExtra(Constants.PHOTO_DETAIL);
+        createFragment(mNewsPhotoDetail);
         initViewPager();
         setPhotoDetailTitle(0);
     }
 
-    private void createFragment(PhotoDetail photoDetail) {
+    private void createFragment(NewsPhotoDetail newsPhotoDetail) {
         mPhotoDetailFragmentList.clear();
-        for (PhotoDetail.Picture picture : photoDetail.getPictures()) {
+        for (NewsPhotoDetail.Picture picture : newsPhotoDetail.getPictures()) {
             PhotoDetailFragment fragment = new PhotoDetailFragment();
             Bundle bundle = new Bundle();
             bundle.putString(Constants.PHOTO_DETAIL_IMGSRC, picture.getImgSrc());
@@ -159,9 +159,9 @@ public class NewsPhotoDetailActivity extends BaseActivity {
     }
 
     private String getTitle(int position) {
-        String title = mPhotoDetail.getPictures().get(position).getTitle();
+        String title = mNewsPhotoDetail.getPictures().get(position).getTitle();
         if (title == null) {
-            title = mPhotoDetail.getTitle();
+            title = mNewsPhotoDetail.getTitle();
         }
         return title;
     }
