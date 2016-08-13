@@ -147,7 +147,7 @@ public class RetrofitManager {
     };
 
     /**
-     * @param hostType NETEASE_NEWS_VIDEO：1 （新闻，视频），SINA_NEWS_PHOTO：2（图片新闻）;
+     * @param hostType NETEASE_NEWS_VIDEO：1 （新闻，视频），GANK_GIRL_PHOTO：2（图片新闻）;
      *                 EWS_DETAIL_HTML_PHOTO:3新闻详情html图片)
      */
     public static RetrofitManager getInstance(int hostType) {

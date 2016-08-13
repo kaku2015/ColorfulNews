@@ -170,7 +170,7 @@ public class ApiConstants {
             case HostType.NETEASE_NEWS_VIDEO:
                 host = NETEAST_HOST;
                 break;
-            case HostType.SINA_NEWS_PHOTO:
+            case HostType.GANK_GIRL_PHOTO:
                 host = SINA_PHOTO_HOST;
                 break;
             case HostType.NEWS_DETAIL_HTML_PHOTO:

@@ -47,7 +47,7 @@ public class PhotoInteractorImpl implements PhotoInteractor<List<PhotoGirl>> {
 
     @Override
     public Subscription loadPhotos(final RequestCallBack<List<PhotoGirl>> listener, int size, int page) {
-        return RetrofitManager.getInstance(HostType.SINA_NEWS_PHOTO)
+        return RetrofitManager.getInstance(HostType.GANK_GIRL_PHOTO)
                 .getPhotoListObservable(size, page)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

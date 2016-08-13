@@ -44,5 +44,6 @@
 
     <!-- 图片 -->
     <string name="girl">妹纸</string>
+    <string name="share_error">分享失败，再试一下</string>
 
 </resources>
