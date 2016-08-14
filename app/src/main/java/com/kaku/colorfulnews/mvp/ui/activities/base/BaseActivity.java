@@ -59,16 +59,12 @@ import rx.Subscription;
  * @version 1.0 2016/5/19
  */
 public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
-    /**
-     * Log tag ：BaseActivity
-     */
     protected ActivityComponent mActivityComponent;
 
     public ActivityComponent getActivityComponent() {
         return mActivityComponent;
     }
 
-    private static final String LOG_TAG = "BaseActivity";
     private WindowManager mWindowManager = null;
     private View mNightView = null;
     private boolean mIsAddedView;
@@ -89,7 +85,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        KLog.i(LOG_TAG, getClass().getSimpleName());
+        KLog.i(getClass().getSimpleName());
         NetUtil.isNetworkErrThenShowMsg();
         initActivityComponent();
         setStatusBarTranslucent();
@@ -219,6 +215,15 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void setNightOrDayMode() {
         if (MyUtils.isNightMode()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -277,6 +282,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         if (mIsHasNavigationView) {
             overridePendingTransition(0, 0);
         }
+//        getWindow().getDecorView().invalidate();
     }
 
     @Override
