@@ -231,7 +231,7 @@ public class NewsListFragment extends BaseFragment implements NewsListView, News
     }
 
     @Override
-    public void showErrorMsg(String message) {
+    public void showMsg(String message) {
         mProgressBar.setVisibility(View.GONE);
         // 网络不可用状态在此之前已经显示了提示信息
         if (NetUtil.isNetworkAvailable()) {

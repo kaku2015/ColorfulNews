@@ -242,7 +242,7 @@ public class NewsActivity extends BaseActivity
     }
 
     @Override
-    public void showErrorMsg(String message) {
+    public void showMsg(String message) {
         Snackbar.make(mFab, message, Snackbar.LENGTH_SHORT).show();
     }
 

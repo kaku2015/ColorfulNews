@@ -305,7 +305,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     @Override
-    public void showErrorMsg(String message) {
+    public void showMsg(String message) {
         Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
 }

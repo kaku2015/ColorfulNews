@@ -83,7 +83,7 @@ public class PhotoDetailPresenterImpl extends BasePresenterImpl<PhotoDetailView,
     }
 
     private void showSavePathMsg(Uri imageUri) {
-        mView.showErrorMsg(mActivity.getString(R.string.picture_already_save_to, imageUri.getPath()));
+        mView.showMsg(mActivity.getString(R.string.picture_already_save_to, imageUri.getPath()));
     }
 
     private void setWallpaper(Uri imageUri) {
@@ -96,10 +96,10 @@ public class PhotoDetailPresenterImpl extends BasePresenterImpl<PhotoDetailView,
         } else {
             try {
                 wallpaperManager.setStream(mActivity.getContentResolver().openInputStream(imageUri));
-                mView.showErrorMsg(App.getAppContext().getString(R.string.set_wallpaper_success));
+                mView.showMsg(App.getAppContext().getString(R.string.set_wallpaper_success));
             } catch (IOException e) {
                 KLog.e(e.toString());
-                mView.showErrorMsg(e.getMessage());
+                mView.showMsg(e.getMessage());
             }
         }
     }

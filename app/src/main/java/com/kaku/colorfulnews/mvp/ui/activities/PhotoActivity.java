@@ -232,7 +232,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
     }
 
     @Override
-    public void showErrorMsg(String message) {
+    public void showMsg(String message) {
         mProgressBar.setVisibility(View.GONE);
         if (NetUtil.isNetworkAvailable()) {
             Snackbar.make(mPhotoRv, message, Snackbar.LENGTH_LONG).show();

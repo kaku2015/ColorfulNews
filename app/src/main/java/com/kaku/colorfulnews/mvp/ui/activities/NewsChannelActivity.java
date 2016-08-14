@@ -178,7 +178,7 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     }
 
     @Override
-    public void showErrorMsg(String message) {
+    public void showMsg(String message) {
         Snackbar.make(mNewsChannelMoreRv, message, Snackbar.LENGTH_SHORT).show();
     }
 }
