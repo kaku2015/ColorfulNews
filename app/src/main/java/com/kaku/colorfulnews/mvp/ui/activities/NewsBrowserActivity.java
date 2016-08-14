@@ -101,11 +101,6 @@ public class NewsBrowserActivity extends BaseActivity {
     }
 
     @Override
-    public void initSupportActionBar() {
-        setSupportActionBar(mToolbar);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         mWebView.removeAllViews();

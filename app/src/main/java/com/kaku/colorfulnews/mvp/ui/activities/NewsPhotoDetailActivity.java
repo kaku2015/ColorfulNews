@@ -166,9 +166,4 @@ public class NewsPhotoDetailActivity extends BaseActivity {
         return title;
     }
 
-    @Override
-    public void initSupportActionBar() {
-        setSupportActionBar(mToolbar);
-    }
-
 }

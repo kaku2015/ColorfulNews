@@ -28,12 +28,6 @@
                 android:title="@string/night_mode"
                 app:actionLayout="@layout/drawer_switch"
                 app:showAsAction="always"/>
-            <item
-                android:id="@+id/nav_no_photo_mode"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:title="@string/no_photo_mode"
-                app:actionLayout="@layout/drawer_switch"
-                app:showAsAction="always"/>
         </menu>
     </item>
 </menu>

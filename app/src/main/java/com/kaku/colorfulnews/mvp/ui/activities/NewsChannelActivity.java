@@ -88,11 +88,6 @@ public class NewsChannelActivity extends BaseActivity implements NewsChannelView
     }
 
     @Override
-    public void initSupportActionBar() {
-        setSupportActionBar(mToolbar);
-    }
-
-    @Override
     public void initViews() {
         mPresenter = mNewsChannelPresenter;
         mPresenter.attachView(this);

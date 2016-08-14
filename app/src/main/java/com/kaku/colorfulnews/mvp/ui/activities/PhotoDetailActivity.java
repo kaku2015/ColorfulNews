@@ -232,11 +232,6 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     @Override
-    public void initSupportActionBar() {
-        setSupportActionBar(mToolbar);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_photo, menu);
         return true;

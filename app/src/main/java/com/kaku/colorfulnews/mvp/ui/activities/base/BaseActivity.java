@@ -23,14 +23,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
@@ -80,9 +83,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     public abstract void initViews();
 
-    public abstract void initSupportActionBar();
-
     protected Subscription mSubscription;
+    protected NavigationView mBaseNavView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +99,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         setContentView(layoutId);
         initInjector();
         ButterKnife.bind(this);
-        initSupportActionBar();
+        initToolBar();
         initViews();
         if (mIsHasNavigationView) {
             initDrawerLayout();
@@ -105,6 +107,42 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         if (mPresenter != null) {
             mPresenter.onCreate();
         }
+
+        initNightModeSwitch();
+    }
+
+    private void initNightModeSwitch() {
+        if (this instanceof NewsActivity || this instanceof PhotoActivity) {
+            MenuItem menuNightMode = mBaseNavView.getMenu().findItem(R.id.nav_night_mode);
+            SwitchCompat dayNightSwitch = (SwitchCompat) MenuItemCompat
+                    .getActionView(menuNightMode);
+            setCheckedState(dayNightSwitch);
+            setCheckedEvent(dayNightSwitch);
+        }
+    }
+
+    private void setCheckedState(SwitchCompat dayNightSwitch) {
+        if (MyUtils.isNightMode()) {
+            dayNightSwitch.setChecked(true);
+        } else {
+            dayNightSwitch.setChecked(false);
+        }
+    }
+
+    private void setCheckedEvent(SwitchCompat dayNightSwitch) {
+        dayNightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    changeToNight();
+                    MyUtils.saveTheme(true);
+                } else {
+                    changeToDay();
+                    MyUtils.saveTheme(false);
+                }
+                recreate();
+            }
+        });
     }
 
     private void initActivityComponent() {
@@ -112,6 +150,12 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                 .applicationComponent(((App) getApplication()).getApplicationComponent())
                 .activityModule(new ActivityModule(this))
                 .build();
+    }
+
+
+    private void initToolBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     private void initDrawerLayout() {

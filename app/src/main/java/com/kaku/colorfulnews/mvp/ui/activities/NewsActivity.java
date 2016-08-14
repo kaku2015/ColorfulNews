@@ -24,14 +24,11 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
 
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
@@ -108,48 +105,10 @@ public class NewsActivity extends BaseActivity
     @Override
     public void initViews() {
         mIsHasNavigationView = true;
+        mBaseNavView = mNavView;
 
         mPresenter = mNewsPresenter;
         mPresenter.attachView(this);
-
-        initNightModeSwitch();
-    }
-
-    private void initNightModeSwitch() {
-        MenuItem menuNightMode = mNavView.getMenu().findItem(R.id.nav_night_mode);
-        SwitchCompat dayNightSwitch = (SwitchCompat) MenuItemCompat
-                .getActionView(menuNightMode);
-        setCheckedState(dayNightSwitch);
-        setCheckedEvent(dayNightSwitch);
-    }
-
-    private void setCheckedState(SwitchCompat dayNightSwitch) {
-        if (MyUtils.isNightMode()) {
-            dayNightSwitch.setChecked(true);
-        } else {
-            dayNightSwitch.setChecked(false);
-        }
-    }
-
-    private void setCheckedEvent(SwitchCompat dayNightSwitch) {
-        dayNightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    changeToNight();
-                    MyUtils.saveTheme(true);
-                } else {
-                    changeToDay();
-                    MyUtils.saveTheme(false);
-                }
-                recreate();
-            }
-        });
-    }
-
-    @Override
-    public void initSupportActionBar() {
-        setSupportActionBar(mToolbar);
     }
 
     @OnClick(R.id.fab)
