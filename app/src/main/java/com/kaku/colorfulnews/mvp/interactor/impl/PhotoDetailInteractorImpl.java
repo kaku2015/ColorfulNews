@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.interactor.impl;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
@@ -28,6 +29,7 @@ import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.interactor.PhotoDetailInteractor;
+import com.socks.library.KLog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -88,7 +90,8 @@ public class PhotoDetailInteractorImpl implements PhotoDetailInteractor<Uri> {
 
                     @Override
                     public void onError(Throwable e) {
-                        listener.onError(App.getAppContext().getString(R.string.share_error));
+                        KLog.e(e.toString());
+                        listener.onError(App.getAppContext().getString(R.string.error_try_again));
                     }
 
                     @Override
@@ -101,16 +104,18 @@ public class PhotoDetailInteractorImpl implements PhotoDetailInteractor<Uri> {
     @NonNull
     private Observable<Uri> getUriObservable(Bitmap bitmap, String url) {
         File file = getImageFile(bitmap, url);
+        if (file == null) {
+            return Observable.error(new NullPointerException("Save image file failed!"));
+        }
         Uri uri = Uri.fromFile(file);
-        // 通知图库更新
-/*        Intent scannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
-        App.getAppContext().sendBroadcast(scannerIntent);*/
+        // 通知图库更新 //Update the System --> MediaStore.Images.Media --> 更新ContentUri
+        Intent scannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        App.getAppContext().sendBroadcast(scannerIntent);
         return Observable.just(uri);
     }
 
-    @NonNull
     private File getImageFile(Bitmap bitmap, String url) {
-        String fileName = "/photo/" + url.hashCode() + ".jpg";
+        String fileName = "/colorful_news/photo/" + url.hashCode() + ".jpg";
         File file = new File(Environment.getExternalStorageDirectory(), fileName); // getFilesDir()等只能在程序内部访问不能用作分享路径
         if (!file.getParentFile().exists()) {
             //noinspection ResultOfMethodCallIgnored
@@ -122,6 +127,7 @@ public class PhotoDetailInteractorImpl implements PhotoDetailInteractor<Uri> {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         } finally {
             try {
                 if (outputStream != null) {

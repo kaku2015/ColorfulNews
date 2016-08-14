@@ -47,10 +47,6 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
 
     private int width = (int) (DimenUtil.getScreenSize() / 2);
 
-    public Map<Integer, Integer> getHeights() {
-        return mHeights;
-    }
-
     private Map<Integer, Integer> mHeights = new HashMap<>();
 
     @Inject
@@ -95,13 +91,22 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
         if (holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).mPhotoIv.setOriginalSize(width, getHeight(position));
 
+/*            SimpleTarget<Bitmap> simpleTarget = new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    ((ItemViewHolder) holder).mPhotoIv.setOriginalSize(resource.getWidth(), resource.getHeight());
+                    ((ItemViewHolder) holder).mPhotoIv.setImageBitmap(resource);
+                }
+            };*/  // 加载图片后设置实际图片宽高比，由于加载图片耗时，使用瀑布流比较混乱，容易重叠错位
+
             Glide.with(App.getAppContext())
                     .load(mList.get(position).getUrl())
-//                    .asBitmap().format(DecodeFormat.PREFER_ARGB_8888) // 没有动画
+//                    .asBitmap()/*.format(DecodeFormat.PREFER_ARGB_8888)*/ // 没有动画
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .crossFade()
                     .placeholder(R.color.image_place_holder)
                     .error(R.drawable.ic_load_fail)
+//                    .into(simpleTarget);
                     .into(((ItemViewHolder) holder).mPhotoIv);
         }
 
@@ -112,7 +117,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
         int height;
         try {
             if (position >= mHeights.size()) {
-                height = getHeight();
+                height = getRandomHeight();
                 mHeights.put(position, height);
             } else {
                 height = mHeights.get(position);
@@ -124,7 +129,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
         return height;
     }
 
-    private int getHeight() {
+    private int getRandomHeight() {
         int height;
         height = (int) (width * (new Random().nextFloat() / 2 + 1));
         return height;

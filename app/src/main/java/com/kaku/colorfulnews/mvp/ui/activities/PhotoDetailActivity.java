@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
+import com.kaku.colorfulnews.common.PhotoRequestType;
 import com.kaku.colorfulnews.di.scope.ContextLife;
 import com.kaku.colorfulnews.mvp.presenter.impl.PhotoDetailPresenterImpl;
 import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
@@ -72,6 +73,11 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     private ColorDrawable mBackground;
     private boolean mIsToolBarHidden;
     private boolean mIsStatusBarHidden;
+
+    @Override
+    public void supportFinishAfterTransition() {
+        super.supportFinishAfterTransition();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +170,18 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
                 .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+/*                .listener(new RequestListener<String, Bitmap>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        showToolBarAndPhotoTouchView();
+                        return false;
+                    }
+                })*/
                 .into(mPhotoIv);
     }
 
@@ -226,11 +244,23 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_share) {
-            mPhotoDetailPresenter.shareUri(getIntent().getStringExtra(Constants.PHOTO_DETAIL));
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                handlePicture(PhotoRequestType.TYPE_SHARE);
+                return true;
+            case R.id.action_save:
+                handlePicture(PhotoRequestType.TYPE_SAVE);
+                return true;
+            case R.id.action_set_wallpaper:
+                handlePicture(PhotoRequestType.TYPE_SET_WALLPAPER);
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void handlePicture(int type) {
+        mPhotoDetailPresenter.handlePicture(getIntent().getStringExtra(Constants.PHOTO_DETAIL)
+                , type);
     }
 
     @Override
@@ -276,6 +306,6 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
 
     @Override
     public void showErrorMsg(String message) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
 }

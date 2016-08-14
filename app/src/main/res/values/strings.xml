@@ -44,6 +44,10 @@
 
     <!-- 图片 -->
     <string name="girl">妹纸</string>
-    <string name="share_error">分享失败，再试一下</string>
+    <string name="error_try_again">错误，请重试</string>
+    <string name="save">保存</string>
+    <string name="set_wallpaper">设为壁纸</string>
+    <string name="picture_already_save_to">图片已保存至%1$s</string>
+    <string name="set_wallpaper_success">设置壁纸成功</string>
 
 </resources>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 咖枯 <kaku201313@163.com>
+ * Copyright (c) 2016 咖枯 <kaku201313@163.com | 3772304@qq.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,25 @@
  * limitations under the License.
  *
  */
-package com.kaku.colorfulnews.mvp.presenter;
+package com.kaku.colorfulnews.common;
 
-import com.kaku.colorfulnews.common.PhotoRequestType;
-import com.kaku.colorfulnews.mvp.presenter.base.BasePresenter;
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author 咖枯
- * @version 1.0 2016/8/12
+ * @version 1.0 2016/8/13
  */
-public interface PhotoDetailPresenter extends BasePresenter {
-    void handlePicture(String imageUrl, @PhotoRequestType.PhotoRequestTypeChecker int type);
+public class PhotoRequestType {
+    public static final int TYPE_SHARE = 1;
+    public static final int TYPE_SAVE = 2;
+    public static final int TYPE_SET_WALLPAPER = 3;
+
+    @IntDef({TYPE_SHARE, TYPE_SAVE, TYPE_SET_WALLPAPER})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PhotoRequestTypeChecker {
+
+    }
 }
