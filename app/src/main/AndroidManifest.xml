@@ -16,6 +16,13 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
+        <!--android:fullBackupContent="true"  可以通过将应用数据自动备份到 Google Drive，帮助确保提供卓越的用户体验。 这样，即使用户更换或升级设备，应用数据也可自动恢复。-->
+        <!--
+                android:largeHeap
+                dalvik.vm.heapsize=128m
+                dalvik.vm.heapgrowthlimit=64m
+                heapgrowthlimit就是一个普通应用的内存限制，用ActivityManager.getLargeMemoryClass()获得的值就是这个。而heapsize是在manifest中设置了largeHeap=true之后，可以使用的最大内存值。
+                -->
         <activity
             android:name=".mvp.ui.activities.NewsActivity"
             android:label="@string/app_name"

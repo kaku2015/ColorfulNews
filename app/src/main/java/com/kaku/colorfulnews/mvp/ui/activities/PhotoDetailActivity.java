@@ -47,6 +47,7 @@ import com.socks.library.KLog;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import dagger.Lazy;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -65,7 +66,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     PhotoView mPhotoTouchIv;
 
     @Inject
-    PhotoDetailPresenterImpl mPhotoDetailPresenter;
+    Lazy<PhotoDetailPresenterImpl> mPhotoDetailPresenter;
     @Inject
     @ContextLife("Activity")
     Context mContext;
@@ -154,7 +155,6 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
         initImageView();
         initBackground();
         setPhotoViewClickEvent();
-        initPresenter();
     }
 
     private void initToolbar() {
@@ -227,7 +227,7 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     private void initPresenter() {
-        mPresenter = mPhotoDetailPresenter;
+        mPresenter = mPhotoDetailPresenter.get(); // 在这时才创建mPhotoDetailPresenter,以后每次调用get会得到同一个mPhotoDetailPresenter对象
         mPresenter.attachView(this);
     }
 
@@ -259,7 +259,8 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     private void handlePicture(int type) {
-        mPhotoDetailPresenter.handlePicture(getIntent().getStringExtra(Constants.PHOTO_DETAIL)
+        initPresenter();
+        mPhotoDetailPresenter.get().handlePicture(getIntent().getStringExtra(Constants.PHOTO_DETAIL)
                 , type);
     }
 
