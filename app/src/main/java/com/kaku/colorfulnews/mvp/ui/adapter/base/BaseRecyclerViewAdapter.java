@@ -16,6 +16,7 @@
  */
 package com.kaku.colorfulnews.mvp.ui.adapter.base;
 
+import android.support.annotation.AnimRes;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -24,7 +25,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
 
 import java.util.List;
@@ -98,9 +98,9 @@ public class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerVie
         return itemSize;
     }
 
-    protected void setItemAppearAnimation(RecyclerView.ViewHolder holder, int position) {
-        if (position > mLastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.item_bottom_in);
+    protected void setItemAppearAnimation(RecyclerView.ViewHolder holder, int position, @AnimRes int type) {
+        if (position > mLastPosition && !isFooterPosition(position)) {
+            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), type);
             holder.itemView.startAnimation(animation);
             mLastPosition = position;
         }

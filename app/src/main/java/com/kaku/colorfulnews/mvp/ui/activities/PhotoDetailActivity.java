@@ -30,8 +30,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.PhotoRequestType;
@@ -43,6 +41,7 @@ import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.utils.SystemUiVisibilityUtil;
 import com.kaku.colorfulnews.widget.PullBackLayout;
 import com.socks.library.KLog;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -76,15 +75,15 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     private boolean mIsStatusBarHidden;
 
     @Override
-    public void supportFinishAfterTransition() {
-        super.supportFinishAfterTransition();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPullBackLayout.setCallback(this);
         initLazyLoadView();
+    }
+
+    @Override
+    public void supportFinishAfterTransition() {
+        super.supportFinishAfterTransition();
     }
 
     private void initLazyLoadView() {
@@ -131,10 +130,8 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     private void loadPhotoTouchIv() {
-        Glide.with(this)
+        Picasso.with(this)
                 .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.ic_load_fail)
                 .into(mPhotoTouchIv);
     }
@@ -166,22 +163,8 @@ public class PhotoDetailActivity extends BaseActivity implements PullBackLayout.
     }
 
     private void loadPhotoIv() {
-        Glide.with(this)
+        Picasso.with(this)
                 .load(getIntent().getStringExtra(Constants.PHOTO_DETAIL))
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-/*                .listener(new RequestListener<String, Bitmap>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        showToolBarAndPhotoTouchView();
-                        return false;
-                    }
-                })*/
                 .into(mPhotoIv);
     }
 

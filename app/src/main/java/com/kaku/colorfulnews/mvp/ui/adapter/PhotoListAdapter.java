@@ -116,7 +116,8 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
             // 使用picasso加载图片可以自动计算图片实际宽高比进行设置，刷新也不会出现闪屏现象！
         }
 
-//        setItemAppearAnimation(holder, position);
+        // 使用动画效果，当滑动过快时会引起item重叠，除了不是用动画，暂还没有想到更好的方法解决此冲突问题！
+        setItemAppearAnimation(holder, position, R.anim.anim_rotate_scale_in);
     }
 
     private int getHeight(int position) {

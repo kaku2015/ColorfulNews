@@ -106,7 +106,7 @@ public class NewsListAdapter extends BaseRecyclerViewAdapter<NewsSummary> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         setValues(holder, position);
-        setItemAppearAnimation(holder, position);
+        setItemAppearAnimation(holder, position, R.anim.anim_bottom_in);
     }
 
     private void setValues(RecyclerView.ViewHolder holder, int position) {
