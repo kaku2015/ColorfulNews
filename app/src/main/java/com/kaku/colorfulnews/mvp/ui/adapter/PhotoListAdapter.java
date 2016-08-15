@@ -20,8 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.mvp.entity.PhotoGirl;
@@ -29,6 +27,7 @@ import com.kaku.colorfulnews.mvp.ui.adapter.base.BaseRecyclerViewAdapter;
 import com.kaku.colorfulnews.utils.DimenUtil;
 import com.kaku.colorfulnews.widget.RatioImageView;
 import com.socks.library.KLog;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,7 +88,7 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         super.onBindViewHolder(holder, position);
         if (holder instanceof ItemViewHolder) {
-            ((ItemViewHolder) holder).mPhotoIv.setOriginalSize(width, getHeight(position));
+//            ((ItemViewHolder) holder).mPhotoIv.setOriginalSize(width, getHeight(position));
 
 /*            SimpleTarget<Bitmap> simpleTarget = new SimpleTarget<Bitmap>() {
                 @Override
@@ -99,15 +98,22 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
                 }
             };*/  // 加载图片后设置实际图片宽高比，由于加载图片耗时，使用瀑布流比较混乱，容易重叠错位
 
-            Glide.with(App.getAppContext())
+/*            Glide.with(App.getAppContext())
                     .load(mList.get(position).getUrl())
-//                    .asBitmap()/*.format(DecodeFormat.PREFER_ARGB_8888)*/ // 没有动画
+//                    .asBitmap()*//*.format(DecodeFormat.PREFER_ARGB_8888)*//* // 没有动画
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .crossFade()
                     .placeholder(R.color.image_place_holder)
                     .error(R.drawable.ic_load_fail)
 //                    .into(simpleTarget);
+                    .into(((ItemViewHolder) holder).mPhotoIv);*/
+
+
+            Picasso.with(App.getAppContext()).load(mList.get(position).getUrl())
+                    .placeholder(R.color.image_place_holder)
+                    .error(R.drawable.ic_load_fail)
                     .into(((ItemViewHolder) holder).mPhotoIv);
+            // 使用picasso加载图片可以自动计算图片实际宽高比进行设置，刷新也不会出现闪屏现象！
         }
 
 //        setItemAppearAnimation(holder, position);
