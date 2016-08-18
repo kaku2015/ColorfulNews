@@ -117,7 +117,8 @@ public class PhotoListAdapter extends BaseRecyclerViewAdapter<PhotoGirl> {
         }
 
         // 使用动画效果，当滑动过快时会引起item重叠，除了不是用动画，暂还没有想到更好的方法解决此冲突问题！
-        setItemAppearAnimation(holder, position, R.anim.anim_rotate_scale_in);
+        // 跳转到图片详情有时共享动画会卡着不动，点一下屏幕才恢复
+//        setItemAppearAnimation(holder, position, R.anim.anim_rotate_scale_in);
     }
 
     private int getHeight(int position) {

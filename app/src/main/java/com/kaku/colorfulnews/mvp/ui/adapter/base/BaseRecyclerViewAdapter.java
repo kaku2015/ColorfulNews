@@ -99,7 +99,7 @@ public class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerVie
     }
 
     protected void setItemAppearAnimation(RecyclerView.ViewHolder holder, int position, @AnimRes int type) {
-        if (position > mLastPosition && !isFooterPosition(position)) {
+        if (position > mLastPosition/* && !isFooterPosition(position)*/) {
             Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), type);
             holder.itemView.startAnimation(animation);
             mLastPosition = position;

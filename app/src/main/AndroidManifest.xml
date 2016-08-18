@@ -14,8 +14,7 @@
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:largeHeap="true"
-        android:theme="@style/BaseAppTheme">
+        android:largeHeap="true">
         <!--android:fullBackupContent="true"  可以通过将应用数据自动备份到 Google Drive，帮助确保提供卓越的用户体验。 这样，即使用户更换或升级设备，应用数据也可自动恢复。-->
         <!--
                 android:largeHeap
@@ -24,17 +23,22 @@
                 heapgrowthlimit就是一个普通应用的内存限制，用ActivityManager.getLargeMemoryClass()获得的值就是这个。而heapsize是在manifest中设置了largeHeap=true之后，可以使用的最大内存值。
                 -->
         <activity
-            android:name=".mvp.ui.activities.NewsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:theme="@style/BaseAppTheme.NoTrans">
+            android:name=".mvp.ui.activities.SplashActivity"
+            android:excludeFromRecents="false"
+            android:theme="@style/BaseAppTheme.Trans">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".mvp.ui.activities.NewsActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:theme="@style/BaseAppTheme.NoTrans">
+        </activity>
+
         <activity
             android:name=".mvp.ui.activities.NewsDetailActivity"
             android:theme="@style/BaseAppTheme.NoTrans"/>
@@ -52,7 +56,6 @@
         </activity>
         <activity
             android:name=".mvp.ui.activities.PhotoActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/BaseAppTheme.NoTrans">
         </activity>
