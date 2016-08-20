@@ -36,8 +36,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -59,10 +59,20 @@ public class SplashActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.zoomin, 0);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
+        initAnimation();
+    }
 
+    private void initAnimation() {
+        startLogoInner1();
+        startLogoOuterAndAppName();
+    }
+
+    private void startLogoInner1() {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_top_in);
         mLogoInnerIv.startAnimation(animation);
+    }
 
+    private void startLogoOuterAndAppName() {
         final ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.setDuration(1000);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -75,39 +85,44 @@ public class SplashActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             isShowingRubberEffect = true;
-                            YoYo.with(Techniques.RubberBand).duration(1000).playOn(mLogoOuterIv);
-                            YoYo.with(Techniques.FadeIn).duration(1000).playOn(mAppNameTv);
-                            Observable.timer(1000, TimeUnit.MILLISECONDS)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Subscriber<Long>() {
-                                        @Override
-                                        public void onCompleted() {
-
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-
-                                        @Override
-                                        public void onNext(Long aLong) {
-                                            startActivity(new Intent(SplashActivity.this, NewsActivity.class));
-                                            overridePendingTransition(0, android.R.anim.fade_out);
-                                            finish();
-                                        }
-                                    });
+                            startLogoOuter();
+                            startShowAppName();
+                            finishActivity();
                         }
                     });
                 } else if (fraction >= 0.95) {
                     valueAnimator.cancel();
-                    YoYo.with(Techniques.Bounce).duration(1000).playOn(mLogoInnerIv);
+                    startLogoInner2();
                 }
 
             }
         });
         valueAnimator.start();
+    }
 
+    private void startLogoOuter() {
+        YoYo.with(Techniques.RubberBand).duration(1000).playOn(mLogoOuterIv);
+    }
+
+    private void startShowAppName() {
+        YoYo.with(Techniques.FadeIn).duration(1000).playOn(mAppNameTv);
+    }
+
+    private void startLogoInner2() {
+        YoYo.with(Techniques.Bounce).duration(1000).playOn(mLogoInnerIv);
+    }
+
+    private void finishActivity() {
+        Observable.timer(1000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        startActivity(new Intent(SplashActivity.this, NewsActivity.class));
+                        overridePendingTransition(0, android.R.anim.fade_out);
+                        finish();
+                    }
+                });
     }
 }
