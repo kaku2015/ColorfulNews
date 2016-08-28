@@ -1,22 +1,17 @@
 # ColorfulNews
 
-![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/logo.jpg)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/logo.png)
 
 一个Material Design风格的新闻阅读App，采用MVP模式，基于Dagger2+RxJava+Retrofit2进行开发
 
 ### 扫码下载:
 
-![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/qrcode.jpg)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/qrcode.png)
 
 [下载链接](http://fir.im/ksmx)
 
 Screenshot
 --------------
-![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/splash.gif)
-![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/news.gif)
-![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/channel.gif)
-![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/photo.gif)
-
 ![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/1.jpg)
 ![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/2.jpg)
 ![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/3.jpg)
