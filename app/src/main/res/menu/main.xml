@@ -2,9 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_add"
-        android:orderInCategory="100"
-        android:title="@string/action_channel"
-        app:showAsAction="always"/>
+        android:id="@+id/action_about"
+        android:title="@string/about"
+        app:showAsAction="never"/>
 </menu>

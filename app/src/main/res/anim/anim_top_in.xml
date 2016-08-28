@@ -4,7 +4,7 @@
      android:interpolator="@android:anim/accelerate_interpolator">
 
     <translate
-        android:fromYDelta="-50%"
+        android:fromYDelta="-50%p"
         android:toYDelta="0%"/>
     <scale
         android:fromXScale="0.0"
