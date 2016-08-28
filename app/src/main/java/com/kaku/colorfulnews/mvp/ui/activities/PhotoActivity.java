@@ -241,8 +241,16 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
         mPhotoPresenter.refreshData();
     }
 
-    @OnClick(R.id.fab)
-    public void onClick() {
-        mPhotoRv.getLayoutManager().scrollToPosition(0);
+    @OnClick({R.id.empty_view, R.id.fab})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.empty_view:
+                mSwipeRefreshLayout.setRefreshing(true);
+                mPhotoPresenter.refreshData();
+                break;
+            case R.id.fab:
+                mPhotoRv.getLayoutManager().scrollToPosition(0);
+                break;
+        }
     }
 }

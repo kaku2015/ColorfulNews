@@ -23,6 +23,7 @@ import com.kaku.colorfulnews.mvp.entity.NewsSummary;
 import com.kaku.colorfulnews.mvp.interactor.NewsListInteractor;
 import com.kaku.colorfulnews.repository.network.RetrofitManager;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.kaku.colorfulnews.utils.TransformUtils;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -33,10 +34,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -58,8 +57,6 @@ public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSumma
         // unsubscribe也在主线程，然后如果这时候调用call.cancel会导致NetworkOnMainThreadException
         // 加一句unsubscribeOn(io)
         return RetrofitManager.getInstance(HostType.NETEASE_NEWS_VIDEO).getNewsListObservable(type, id, startPage)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .flatMap(new Func1<Map<String, List<NewsSummary>>, Observable<NewsSummary>>() {
                     @Override
                     public Observable<NewsSummary> call(Map<String, List<NewsSummary>> map) {
@@ -86,7 +83,7 @@ public class NewsListInteractorImpl implements NewsListInteractor<List<NewsSumma
                         return newsSummary2.getPtime().compareTo(newsSummary.getPtime());
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(TransformUtils.<List<NewsSummary>>defaultSchedulers())
                 .subscribe(new Subscriber<List<NewsSummary>>() {
                     @Override
                     public void onCompleted() {

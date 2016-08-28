@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">多彩资讯</string>
+    <string name="version">v1.0</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -49,5 +50,23 @@
     <string name="set_wallpaper">设为壁纸</string>
     <string name="picture_already_save_to">图片已保存至%1$s</string>
     <string name="set_wallpaper_success">设置壁纸成功</string>
+    <string name="about_msg">
+        这是一款Material Design风格的新闻阅读App，采用MVP模式，基于Dagger2+RxJava+Retrofit2进行开发。
+        \n新闻模块数据来源于网易，图片模块数据来源于干货集中营。
+
+        \n\n项目源码：https://github.com/kaku2015/ColorfulNews
+
+        \n\n主要用到的开源库：Dagger2、RxJava、Retrofit2、Butterknife、Greendao、PhotoView、Glide、Picasso…
+
+        \n\n作者：咖枯
+
+        \n\nGitHub：https://github.com/kaku2015
+
+        \n\n简书：http://www.jianshu.com/users/dc68e267ea1c/latest_articles
+
+        \n\nCSDN：http://blog.csdn.net/kaku2013
+
+        \n\nEmail：kaku201313@163.com
+    </string>
 
 </resources>

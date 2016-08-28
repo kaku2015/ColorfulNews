@@ -80,16 +80,11 @@ public class SplashActivity extends AppCompatActivity {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float fraction = animation.getAnimatedFraction();
                 KLog.d("fraction: " + fraction);
-                if (fraction >= 0.9 && !isShowingRubberEffect) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            isShowingRubberEffect = true;
-                            startLogoOuter();
-                            startShowAppName();
-                            finishActivity();
-                        }
-                    });
+                if (fraction >= 0.8 && !isShowingRubberEffect) {
+                    isShowingRubberEffect = true;
+                    startLogoOuter();
+                    startShowAppName();
+                    finishActivity();
                 } else if (fraction >= 0.95) {
                     valueAnimator.cancel();
                     startLogoInner2();

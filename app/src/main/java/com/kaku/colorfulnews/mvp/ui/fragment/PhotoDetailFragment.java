@@ -16,6 +16,7 @@ import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.event.PhotoDetailOnClickEvent;
 import com.kaku.colorfulnews.mvp.ui.fragment.base.BaseFragment;
 import com.kaku.colorfulnews.utils.RxBus;
+import com.kaku.colorfulnews.utils.TransformUtils;
 import com.socks.library.KLog;
 
 import java.util.concurrent.TimeUnit;
@@ -24,8 +25,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -68,8 +67,7 @@ public class PhotoDetailFragment extends BaseFragment {
 
     private void initPhotoView() {
         mSubscription = Observable.timer(100, TimeUnit.MILLISECONDS) // 直接使用glide加载的话，activity切换动画时背景短暂为默认背景色
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(TransformUtils.<Long>defaultSchedulers())
                 .subscribe(new Subscriber<Long>() {
                     @Override
                     public void onCompleted() {

@@ -24,6 +24,7 @@ import com.kaku.colorfulnews.mvp.entity.GirlData;
 import com.kaku.colorfulnews.mvp.entity.PhotoGirl;
 import com.kaku.colorfulnews.mvp.interactor.PhotoInteractor;
 import com.kaku.colorfulnews.repository.network.RetrofitManager;
+import com.kaku.colorfulnews.utils.TransformUtils;
 
 import java.util.List;
 
@@ -31,9 +32,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -49,15 +48,13 @@ public class PhotoInteractorImpl implements PhotoInteractor<List<PhotoGirl>> {
     public Subscription loadPhotos(final RequestCallBack<List<PhotoGirl>> listener, int size, int page) {
         return RetrofitManager.getInstance(HostType.GANK_GIRL_PHOTO)
                 .getPhotoListObservable(size, page)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .map(new Func1<GirlData, List<PhotoGirl>>() {
                     @Override
                     public List<PhotoGirl> call(GirlData girlData) {
                         return girlData.getResults();
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(TransformUtils.<List<PhotoGirl>>defaultSchedulers())
                 .subscribe(new Subscriber<List<PhotoGirl>>() {
                     @Override
                     public void onCompleted() {

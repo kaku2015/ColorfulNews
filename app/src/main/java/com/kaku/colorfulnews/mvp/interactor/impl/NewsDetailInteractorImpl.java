@@ -23,6 +23,7 @@ import com.kaku.colorfulnews.mvp.entity.NewsDetail;
 import com.kaku.colorfulnews.mvp.interactor.NewsDetailInteractor;
 import com.kaku.colorfulnews.repository.network.RetrofitManager;
 import com.kaku.colorfulnews.utils.MyUtils;
+import com.kaku.colorfulnews.utils.TransformUtils;
 import com.socks.library.KLog;
 
 import java.util.List;
@@ -32,9 +33,7 @@ import javax.inject.Inject;
 
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -49,17 +48,17 @@ public class NewsDetailInteractorImpl implements NewsDetailInteractor<NewsDetail
     @Override
     public Subscription loadNewsDetail(final RequestCallBack<NewsDetail> callBack, final String postId) {
         return RetrofitManager.getInstance(HostType.NETEASE_NEWS_VIDEO).getNewsDetailObservable(postId)
-                .unsubscribeOn(Schedulers.io())
-                .subscribeOn(Schedulers.io())
                 .map(new Func1<Map<String, NewsDetail>, NewsDetail>() {
                     @Override
                     public NewsDetail call(Map<String, NewsDetail> map) {
+                        KLog.d(Thread.currentThread().getName());
+
                         NewsDetail newsDetail = map.get(postId);
                         changeNewsDetail(newsDetail);
                         return newsDetail;
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(TransformUtils.<NewsDetail>defaultSchedulers())
                 .subscribe(new Observer<NewsDetail>() {
                     @Override
                     public void onCompleted() {

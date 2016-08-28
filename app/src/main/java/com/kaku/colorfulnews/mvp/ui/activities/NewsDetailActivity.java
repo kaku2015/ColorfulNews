@@ -48,6 +48,7 @@ import com.kaku.colorfulnews.mvp.ui.activities.base.BaseActivity;
 import com.kaku.colorfulnews.mvp.view.NewsDetailView;
 import com.kaku.colorfulnews.utils.MyUtils;
 import com.kaku.colorfulnews.utils.NetUtil;
+import com.kaku.colorfulnews.utils.TransformUtils;
 import com.kaku.colorfulnews.widget.URLImageGetter;
 import com.socks.library.KLog;
 
@@ -60,8 +61,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -160,8 +159,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailView {
 
     private void setNewsDetailBodyTv(final NewsDetail newsDetail, final String newsBody) {
         mSubscription = Observable.timer(500, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(TransformUtils.<Long>defaultSchedulers())
                 .subscribe(new Subscriber<Long>() {
                     @Override
                     public void onCompleted() {

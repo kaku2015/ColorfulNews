@@ -23,6 +23,7 @@ import com.kaku.colorfulnews.greendao.NewsChannelTable;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.interactor.NewsChannelInteractor;
 import com.kaku.colorfulnews.repository.db.NewsChannelTableManager;
+import com.kaku.colorfulnews.utils.TransformUtils;
 import com.socks.library.KLog;
 
 import java.util.HashMap;
@@ -35,8 +36,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -60,9 +59,7 @@ public class NewsChannelInteractorImpl implements NewsChannelInteractor<Map<Inte
                 subscriber.onCompleted();
             }
 
-        }).subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        }).compose(TransformUtils.<Map<Integer, List<NewsChannelTable>>>defaultSchedulers())
                 .subscribe(new Subscriber<Map<Integer, List<NewsChannelTable>>>() {
                     @Override
                     public void onCompleted() {

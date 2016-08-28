@@ -22,14 +22,13 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.kaku.colorfulnews.App;
 import com.kaku.colorfulnews.R;
 import com.kaku.colorfulnews.listener.RequestCallBack;
 import com.kaku.colorfulnews.mvp.interactor.PhotoDetailInteractor;
+import com.kaku.colorfulnews.utils.TransformUtils;
 import com.socks.library.KLog;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,9 +39,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author 咖枯
@@ -59,29 +56,34 @@ public class PhotoDetailInteractorImpl implements PhotoDetailInteractor<Uri> {
         return Observable.create(new Observable.OnSubscribe<Bitmap>() {
             @Override
             public void call(final Subscriber<? super Bitmap> subscriber) {
-                Glide.with(App.getAppContext())
-                        .load(url)
-                        .asBitmap()
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                                subscriber.onNext(bitmap);
-                                subscriber.onCompleted();
-                            }
-                        });
+                KLog.d(Thread.currentThread().getName());
+
+                Bitmap bitmap = null;
+                try {
+                    bitmap = Picasso.with(App.getAppContext())
+                            .load(url)
+                            .get();
+                } catch (IOException e) {
+                    subscriber.onError(e);
+                }
+                if (bitmap == null) {
+                    subscriber.onError(new Exception("下载图片失败"));
+                }
+                subscriber.onNext(bitmap);
+                subscriber.onCompleted();
             }
 
         })
-                .subscribeOn(AndroidSchedulers.mainThread()) // glide 需要在主线程中运行
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
                 .flatMap(new Func1<Bitmap, Observable<Uri>>() {
                     @Override
                     public Observable<Uri> call(Bitmap bitmap) {
+                        KLog.d(Thread.currentThread().getName());
+
                         return getUriObservable(bitmap, url);
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(TransformUtils.<Uri>defaultSchedulers())
                 .subscribe(new Subscriber<Uri>() {
                     @Override
                     public void onCompleted() {
