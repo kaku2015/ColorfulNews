@@ -1,4 +1,5 @@
 # ColorfulNews
+--------------
 
 ![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/logo.png)
 
