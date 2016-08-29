@@ -12,6 +12,11 @@
 
 Screenshot
 --------------
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/splash.gif)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/news.gif)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/channel.gif)
+![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/photo.gif)
+
 ![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/1.jpg)
 ![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/2.jpg)
 ![image](https://github.com/kaku2015/ColorfulNews/blob/master/screenshots/3.jpg)
