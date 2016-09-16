@@ -29,6 +29,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.annotation.BindValues;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.event.ChannelChangeEvent;
 import com.kaku.colorfulnews.event.ScrollToTopEvent;
@@ -54,6 +55,7 @@ import rx.functions.Action1;
  * @author 咖枯
  * @version 1.0 2016/6
  */
+@BindValues(mIsHasNavigationView = true)
 public class NewsActivity extends BaseActivity
         implements NewsView {
     private String mCurrentViewPagerName;
@@ -102,7 +104,7 @@ public class NewsActivity extends BaseActivity
 
     @Override
     public void initViews() {
-        mIsHasNavigationView = true;
+//        mIsHasNavigationView = true;
         mBaseNavView = mNavView;
 
         mPresenter = mNewsPresenter;

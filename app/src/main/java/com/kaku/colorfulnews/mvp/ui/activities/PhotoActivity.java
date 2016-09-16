@@ -37,6 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kaku.colorfulnews.R;
+import com.kaku.colorfulnews.annotation.BindValues;
 import com.kaku.colorfulnews.common.Constants;
 import com.kaku.colorfulnews.common.LoadNewsType;
 import com.kaku.colorfulnews.listener.OnItemClickListener;
@@ -58,6 +59,7 @@ import butterknife.OnClick;
  * @author 咖枯
  * @version 1.0 2016/8/6
  */
+@BindValues(mIsHasNavigationView = true)
 public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -102,7 +104,7 @@ public class PhotoActivity extends BaseActivity implements PhotoView, SwipeRefre
 
     @Override
     public void initViews() {
-        mIsHasNavigationView = true;
+//        mIsHasNavigationView = true;
         mBaseNavView = mNavView;
 
         initSwipeRefreshLayout();
