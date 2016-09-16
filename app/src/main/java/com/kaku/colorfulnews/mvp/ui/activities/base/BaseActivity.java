@@ -65,6 +65,7 @@ import rx.Subscription;
  */
 public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
     protected ActivityComponent mActivityComponent;
+    private boolean mIsChangeTheme;
 
     public ActivityComponent getActivityComponent() {
         return mActivityComponent;
@@ -149,7 +150,9 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                     changeToDay();
                     MyUtils.saveTheme(false);
                 }
-                recreate();
+
+                mIsChangeTheme = true;
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
     }
@@ -212,6 +215,12 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                     mClass = null;
+                }
+
+                if (mIsChangeTheme) {
+                    mIsChangeTheme = false;
+                    getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
+                    recreate();
                 }
             }
         });

@@ -36,7 +36,6 @@
         </activity>
         <activity
             android:name=".mvp.ui.activities.NewsActivity"
-            android:launchMode="singleTask"
             android:theme="@style/BaseAppTheme.NoTrans">
         </activity>
         <activity
@@ -56,7 +55,6 @@
         </activity>
         <activity
             android:name=".mvp.ui.activities.PhotoActivity"
-            android:launchMode="singleTask"
             android:theme="@style/BaseAppTheme.NoTrans">
         </activity>
         <activity
